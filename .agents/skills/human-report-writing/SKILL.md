@@ -22,9 +22,23 @@ mà vẫn giữ đúng dữ kiện, đúng thuật ngữ và đúng cấu trúc 
    liệt kê thật sự (bảng, bước quy trình).
 3. **Mỗi chương kết thúc bằng một đoạn "Tóm tắt chương"** 2–3 câu (tóm các kết luận chính);
    đầu chương có thể có 1 câu dẫn giới thiệu các phần sẽ trình bày.
-4. **Nhất quán ngôi kể.** Chọn một ngôi (thường "em") và giữ xuyên suốt; không trộn "em" với
-   "chúng tôi"/"tác giả".
+4. **Nhất quán ngôi kể.** Chọn một ngôi và giữ xuyên suốt; không trộn "em" với "chúng tôi"/"tác giả".
+   Ưu tiên ngôi kể **theo quy định của trường** (nhiều trường VN bắt buộc ngôi thứ 3: "nghiên cứu
+   được tiến hành…", không dùng "tôi/chúng tôi"); nếu trường không quy định thì nhất quán một ngôi.
 5. **Source truth.** Không bịa số liệu/kết quả; không nâng `PARTIAL`/`NOT_FOUND` thành `DONE`.
+
+## Cấm tuyệt đối (định dạng — bất biến)
+
+Những thứ sau **không bao giờ** được xuất hiện trong văn xuôi báo cáo, dù người dùng không nhắc:
+
+- **Không in đậm / bôi đậm chữ (bold).** Không tự ý làm nổi cụm từ trong câu hay đoạn văn. Nếu cần
+  nhấn ý, dùng câu chữ và lập luận, không dùng nét chữ.
+- **Không dùng dấu gạch dài em dash (—).** Thay bằng dấu phẩy, dấu chấm, hoặc tách thành hai câu.
+  (Dấu gạch nối "-" trong từ ghép và gạch đầu dòng vẫn dùng bình thường.)
+- **Không tô nền / highlight màu (đặc biệt nền vàng).** Không dùng công cụ highlight để đánh dấu ý.
+
+Ngoại lệ duy nhất: **tiêu đề chương/mục** dùng style Heading của Word (không phải bold thủ công),
+và **từ khoá trong bảng thuật ngữ** nếu bảng yêu cầu — còn lại thân bài để chữ thường.
 
 ## Dấu hiệu "văn AI" cần loại bỏ
 
@@ -63,6 +77,9 @@ mà vẫn giữ đúng dữ kiện, đúng thuật ngữ và đúng cấu trúc 
 ## Checklist trước khi giao
 
 ```text
+[ ] Không có chữ in đậm / bôi đậm trong thân bài.
+[ ] Không có dấu gạch dài em dash (—).
+[ ] Không có highlight màu / nền vàng.
 [ ] Không còn câu "hướng dẫn nội bộ".
 [ ] Mỗi chương kết thúc bằng "Tóm tắt chương" 2–3 câu.
 [ ] Ngôi kể nhất quán.
@@ -75,6 +92,8 @@ mà vẫn giữ đúng dữ kiện, đúng thuật ngữ và đúng cấu trúc 
 ## Tài liệu tham khảo
 
 - Checklist chi tiết + nhiều ví dụ before/after: xem `reference/checklist.md`.
-- Hướng dẫn cấu trúc & hình thức báo cáo (HCMUS/UET) được nhắc trong `reference/checklist.md`.
+- **Nguồn học viết báo cáo/luận văn** (quy định 12+ trường VN + hướng dẫn quốc tế Purdue OWL,
+  UNC, Reading, Melbourne…): xem `reference/sources.md`. Đọc khi cần tra quy định trình bày,
+  khung IMRaD/CARS, thứ tự viết, hoặc văn phong khách quan.
 
 > Skill này **chỉ lo văn phong**. Để dựng file Word, caption, TOC và render: dùng skill `docx-report`.
