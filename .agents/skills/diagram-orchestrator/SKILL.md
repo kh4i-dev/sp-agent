@@ -81,41 +81,28 @@ Mỗi sơ đồ phải lưu file nguồn và xuất đồng thời SVG (vector) 
 
 ---
 
-## 4. QUY TRÌNH 4 CỔNG KIỂM ĐỊNH (THE 4-GATE VERIFICATION)
+## 4. QUY TRÌNH KIỂM ĐỊNH & BÁO CÁO 5 KẾT QUẢ ĐỘC LẬP
 
 > [!CAUTION]
-> **HỌC THUYẾT CHỐNG BÁO ẢO (ANTI-FALSE-PASS):**
-> Script tự động báo 0 lỗi **KHÔNG ĐỒNG NGHĨA** với việc sơ đồ đạt chuẩn. Agent **BẮT BUỘC** phải tự mở ảnh soi mắt và đối chiếu mã nguồn thực tế trước khi xác nhận hoàn thành!
+> **HỌC THUYẾT CHỐNG BÁO ẢO & QUY CHUẨN VISUAL QA (IMAGE MUST ACTUALLY BE VIEWED):**
+> 1. Xác minh file PNG tồn tại, không rỗng và mở được bình thường.
+> 2. **Dùng công cụ xem ảnh đưa nội dung hình ảnh vào ngữ cảnh của model** (như `view_file` trên PNG) để kiểm tra PNG thực tế.
+> 3. **CẤM coi `os.startfile()`, `Start-Process`, đọc kích thước ảnh, metadata hay đọc source code `.puml` là bằng chứng đã kiểm tra ảnh.**
+> 4. Kiểm tra riêng từng sơ đồ ở kích thước đủ lớn; nếu thiếu công cụ xem ảnh, dừng và báo `BLOCKED — Visual QA unavailable`.
+> 5. **KHÔNG GỘP NĂM KẾT QUẢ DƯỚI ĐÂY THÀNH MỘT TRẠNG THÁI PASS DUY NHẤT NẾU CÒN BƯỚC CHƯA ĐƯỢC KIỂM CHỨNG.**
 
-Mọi sơ đồ phải đi qua 4 cổng nghiệm thu độc lập trước khi bàn giao:
-
-```text
-[Nguồn sự thật / Yêu cầu]
-           │
-┌──────────▼──────────┐
-│ Gate A — Correctness│ ➔ Đối chiếu schema, code, thuật toán. Đúng tên, PK/FK, hướng mũi tên, thứ tự message.
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│ Gate B — Rendering  │ ➔ Cú pháp nguồn hợp lệ. Xuất đủ SVG + PNG > 500 bytes. Giữ nguyên dấu tiếng Việt.
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│ Gate C — Visual QA  │ ➔ Chạy audit script + Soi mắt: Không chen chúc nhãn giữa các tầng, không dồn cục khoảng trắng.
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│ Gate D — Document QA│ ➔ Đặt vào DOCX: Khớp 100% ảnh với Caption, có đoạn văn dẫn dắt, keep_with_next, chiều rộng 14-15.5cm.
-└──────────┬──────────┘
-           │
-       [BÀN GIAO]
-```
+Báo cáo nghiệm thu cuối cùng **BẮT BUỘC** trình bày tách bạch 5 mục:
+1. **Render validation:** File PNG & SVG tồn tại, > 500B, biên dịch sạch không có banner compiler.
+2. **Automated audit:** Script `audit-diagrams.mjs` báo 0 lỗi (không đè toạ độ, tỷ lệ khung hình chuẩn).
+3. **Actual visual inspection:** Agent trực tiếp xem ảnh PNG trong model context: nét chữ thoáng, không chen chúc nhãn giữa các tầng, không lệch dồn cục khoảng trắng.
+4. **Semantic correctness:** Đối chiếu 100% với schema DB, mã nguồn backend hoặc thuật toán (đúng PK/FK, đúng khoảng cách Levenshtein).
+5. **DOCX rendered-page inspection:** Đã kiểm tra trang Word thực tế sau chèn hình (chiều rộng 14–15.5cm, khớp caption Hình X.Y, có `keep_with_next` chống rớt trang).
 
 ### Các trạng thái nghiệm thu:
-- **`PASS`:** Tất cả 4 cổng bắt buộc đã qua với bằng chứng cụ thể, không còn bất kỳ điểm nghẽn thị giác nào.
-- **`PASS WITH CONDITIONS`:** Kết quả sử dụng được nhưng có giới hạn mô hình hóa được nêu rõ trong báo cáo.
-- **`BLOCKED`:** Thiếu nguồn sự thật hoặc công cụ lỗi, dừng lại báo cáo nguyên nhân.
-- **`FAIL`:** Phát hiện lỗi nội dung, đè nhãn, dồn cục bố cục hoặc nhầm ảnh tài liệu; bắt buộc sửa và render lại.
+- **`PASS`:** Tất cả 5 mục bắt buộc đều đạt với bằng chứng cụ thể.
+- **`PASS WITH CONDITIONS`:** Kỹ thuật và thị giác đạt, nhưng có giới hạn mô hình hóa được nêu rõ.
+- **`BLOCKED — Visual QA unavailable`:** Thiếu công cụ xem ảnh hoặc thiếu schema nguồn.
+- **`FAIL`:** Phát hiện lỗi nội dung, đè nhãn, dồn cục khoảng trắng hoặc nhầm ảnh tài liệu; bắt buộc sửa và render lại.
 
 ---
 
@@ -124,7 +111,7 @@ Mọi sơ đồ phải đi qua 4 cổng nghiệm thu độc lập trước khi b
 Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **TUYỆT ĐỐI KHÔNG** xả toàn bộ code block `.puml`, `.dot`, hay `.json` ra khung chat làm rối mắt. Báo cáo bàn giao chuẩn mực bắt buộc gồm:
 1. **Ảnh sơ đồ trực quan (Rendered Preview):** `![Hình X.Y: Tên sơ đồ](path/to/diagram.png)`
 2. **Tiêu đề hình chuẩn mực:** `*Hình X.Y: Tên sơ đồ*`
-3. **Bảng tóm tắt kiểm định 4 Cổng:** Trạng thái Gate A, Gate B, Gate C, Gate D.
+3. **Báo cáo riêng biệt 5 kết quả kiểm chứng:** Trình bày độc lập (Render, Automated, Visual, Semantic, DOCX).
 4. **Đường dẫn tệp nguồn:** Link markdown tới file trên đĩa `[ten_so_do.puml](file:///path/to/ten_so_do.puml)`.
 
 ---
@@ -132,14 +119,14 @@ Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **
 ## 6. CHECKLIST 12 MỤC NGHIỆM THU TRƯỚC KHI ĐƯA VÀO BÁO CÁO
 
 - [ ] 1. Đã xác định đúng loại sơ đồ và câu hỏi duy nhất mà hình cần trả lời (1 sơ đồ = 1 câu hỏi).
-- [ ] 2. Đã kiểm tra nguồn dữ liệu, schema hoặc mã nguồn làm căn cứ (không bịa thông tin).
+- [ ] 2. Đã kiểm tra nguồn dữ liệu, schema hoặc mã nguồn làm căn cứ (Semantic correctness).
 - [ ] 3. Không nhầm lẫn giữa UML Class, ERD CSDL và Cấu trúc dữ liệu RAM (Trie/Tree).
 - [ ] 4. Tên gọi, khóa, quan hệ, điều kiện và hướng mũi tên đều có căn cứ xác minh.
 - [ ] 5. Sơ đồ kiến trúc không nhồi nhét chi tiết CRUD lên đường nối liên tầng (đã đưa sang Sequence).
 - [ ] 6. Cấu trúc dữ liệu RAM (Trie / BK-Tree) cân đối, không lệch dồn cục, khoảng cách Levenshtein chính xác.
 - [ ] 7. Đã chọn công cụ phù hợp nhất cho chính sơ đồ này (PlantUML / Graphviz / tldraw).
-- [ ] 8. Đã lưu file nguồn có thể chỉnh sửa (`.puml`, `.dot`, `.tldr`) và xuất cả SVG + PNG 300 DPI.
-- [ ] 9. Đã kiểm tra qua `audit-diagrams.mjs` và tự soi mắt trực quan (Anti-False-PASS).
-- [ ] 10. Chữ, cạnh, dấu tiếng Việt và chú giải hiển thị rõ ràng ở kích thước in thực tế trên trang A4.
-- [ ] 11. Caption và số thứ tự hình (*Hình X.Y*) đúng với bố cục báo cáo; không nhúng title trong canvas.
-- [ ] 12. Khớp chính xác 100% file ảnh với Caption trong tài liệu DOCX, có văn bản dẫn nhập và `keep_with_next`.
+- [ ] 8. Render validation: File nguồn hợp lệ, xuất đủ cả SVG + PNG 300 DPI > 500B.
+- [ ] 9. Automated audit: Vượt qua `audit-diagrams.mjs` (không đè toạ độ, tỷ lệ khung hình chuẩn).
+- [ ] 10. Actual visual inspection: Đã trực tiếp mở ảnh PNG bằng công cụ xem ảnh vào ngữ cảnh model để soi mắt.
+- [ ] 11. DOCX rendered-page inspection: Khớp 100% file ảnh với Caption Hình X.Y, có câu dẫn nhập và `keep_with_next`.
+- [ ] 12. Báo cáo độc lập 5 kết quả kiểm chứng, không gộp thành 1 chữ PASS duy nhất khi chưa kiểm chứng đủ.
