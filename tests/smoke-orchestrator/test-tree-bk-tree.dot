@@ -1,0 +1,22 @@
+digraph BKTree {
+  dpi=300;
+  rankdir=TB;
+  bgcolor="#ffffff";
+  nodesep=0.6;
+  ranksep=0.7;
+
+  node [fontname="Segoe UI, Arial, sans-serif", fontsize=11, shape=box, style=solid, color="#000000", fontcolor="#000000"];
+  edge [fontname="Segoe UI, Arial, sans-serif", fontsize=10, color="#000000", fontcolor="#000000"];
+
+  root_book [label="book\n(Root)", shape=ellipse];
+  node_books [label="books"];
+  node_cake [label="cake"];
+  node_boo [label="boo"];
+  node_bake [label="bake"];
+
+  root_book -> node_books [label="d=1"];
+  root_book -> node_cake [label="d=4"];
+
+  node_books -> node_boo [label="d=2"];
+  node_cake -> node_bake [label="d=1"];
+}

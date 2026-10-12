@@ -1,0 +1,19 @@
+flowchart LR
+    subgraph Client["Khách hàng & Giao diện"]
+        Web["Web Frontend (Next.js)"]
+        App["Mobile App (Flutter)"]
+    end
+
+    subgraph Gateway["Cổng Kết nối"]
+        API["Kong API Gateway"]
+    end
+
+    subgraph Backend["Hệ thống Dịch vụ"]
+        Auth["Auth Service"]
+        Order["Order Processing Service"]
+    end
+
+    Web -->|HTTPS| API
+    App -->|HTTPS| API
+    API -->|Verify Token| Auth
+    API -->|Create Order| Order

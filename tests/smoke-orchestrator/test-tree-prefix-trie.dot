@@ -1,0 +1,28 @@
+digraph PrefixTrie {
+  dpi=300;
+  rankdir=TB;
+  bgcolor="#ffffff";
+  nodesep=0.5;
+  ranksep=0.6;
+
+  node [fontname="Segoe UI, Arial, sans-serif", fontsize=11, shape=circle, style=solid, color="#000000", fontcolor="#000000"];
+  edge [fontname="Segoe UI, Arial, sans-serif", fontsize=10, color="#000000", fontcolor="#000000"];
+
+  root [label="root", shape=ellipse];
+  
+  node_a [label="a"];
+  node_an [label="n", shape=doublecircle];
+  node_anh [label="h", shape=doublecircle];
+  
+  node_e [label="e"];
+  node_em [label="m", shape=doublecircle];
+  node_en [label="n", shape=doublecircle];
+
+  root -> node_a [label="a"];
+  node_a -> node_an [label="n"];
+  node_an -> node_anh [label="h"];
+
+  root -> node_e [label="e"];
+  node_e -> node_em [label="m"];
+  node_e -> node_en [label="n"];
+}

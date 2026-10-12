@@ -1,0 +1,28 @@
+{
+  "title": "Kiến trúc Hệ thống Bán hàng & Dịch vụ Đặt hàng",
+  "direction": "LR",
+  "groups": [
+    { "id": "client", "title": "Khách hàng & Thiết bị", "color": "blue" },
+    { "id": "gateway", "title": "API Gateway & Bảo mật", "color": "violet" },
+    { "id": "services", "title": "Dịch vụ Nghiệp vụ (Backend)", "color": "green" },
+    { "id": "data", "title": "Hạ tầng Cơ sở Dữ liệu", "color": "orange" }
+  ],
+  "nodes": [
+    { "id": "web", "label": "Web App (Next.js)\nTrang thương mại", "group": "client", "color": "blue", "fill": "semi" },
+    { "id": "mobile", "label": "Mobile App (Flutter)\nAndroid & iOS", "group": "client", "color": "blue", "fill": "semi" },
+    { "id": "gw", "label": "Kong Gateway\nRate limit & JWT Auth", "group": "gateway", "color": "violet", "fill": "semi" },
+    { "id": "order_svc", "label": "Order Service\nXử lý đơn & Giỏ hàng", "group": "services", "color": "green", "fill": "semi" },
+    { "id": "payment_svc", "label": "Payment Service\nCổng thanh toán QR", "group": "services", "color": "green", "fill": "semi" },
+    { "id": "postgres", "label": "PostgreSQL Primary\nĐơn hàng & Giao dịch", "group": "data", "color": "orange", "fill": "semi" },
+    { "id": "redis", "label": "Redis In-Memory\nSession & Cache tồn kho", "group": "data", "color": "red", "fill": "semi" }
+  ],
+  "edges": [
+    { "from": "web", "to": "gw", "label": "HTTPS / JSON", "bend": 0 },
+    { "from": "mobile", "to": "gw", "label": "HTTPS / JSON", "bend": 0 },
+    { "from": "gw", "to": "order_svc", "label": "gRPC call", "bend": 15 },
+    { "from": "gw", "to": "payment_svc", "label": "gRPC call", "bend": -15 },
+    { "from": "order_svc", "to": "postgres", "label": "SQL query", "bend": 0 },
+    { "from": "payment_svc", "to": "postgres", "label": "SQL transaction", "bend": 15 },
+    { "from": "order_svc", "to": "redis", "label": "Cache lookup", "bend": -25 }
+  ]
+}

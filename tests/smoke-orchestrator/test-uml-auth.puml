@@ -1,0 +1,32 @@
+@startuml test-uml-auth
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+skinparam defaultFontSize 12
+skinparam roundCorner 4
+skinparam dpi 300
+autonumber
+
+actor "Người dùng" as User
+participant "Giao diện Web" as Web
+participant "AuthService" as Auth
+participant "PostgreSQL" as DB
+
+User -> Web : Nhập thông tin đăng nhập
+activate Web
+Web -> Auth : POST /api/auth/login
+activate Auth
+
+Auth -> DB : Truy vấn người dùng theo email
+activate DB
+DB --> Auth : Trả về thông tin xác thực
+deactivate DB
+
+Auth -> Auth : So khớp mật khẩu & Sinh JWT token
+Auth --> Web : 200 OK (Trả về accessToken)
+deactivate Auth
+
+Web --> User : Đăng nhập thành công
+deactivate Web
+
+@enduml
