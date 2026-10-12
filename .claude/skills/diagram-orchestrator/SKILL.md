@@ -130,3 +130,15 @@ Khi nhiệm vụ yêu cầu chèn sơ đồ vào file Word báo cáo:
 2. **Caption chuẩn học thuật:** Đặt ngay dưới ảnh, định dạng in nghiêng, cỡ chữ 10.5pt: `*Hình X.Y: Tên sơ đồ*`.
 3. **Chống rớt trang:** Thiết lập `paragraph.paragraph_format.keep_with_next = True` trên ảnh để caption luôn đi liền với hình.
 4. **Render QA:** Chuyển đổi DOCX sang PDF/ảnh trang bằng LibreOffice để soi lại trực quan bố cục thực tế.
+
+---
+
+## 8. QUY CHUẨN BÀN GIAO TRỰC QUAN SẠCH (CLEAN VISUAL PRESENTATION)
+
+Khi báo cáo hoàn thành hoặc audit sơ đồ cho người dùng, Agent **TUYỆT ĐỐI KHÔNG** in code block `.puml`, `.dot`, hay `.json` ra khung chat làm rối mắt. Báo cáo bàn giao chuẩn mực bắt buộc gồm:
+
+1. **Ảnh sơ đồ trực quan (Rendered Preview):** `![Hình X.Y: Tên sơ đồ](path/to/diagram.png)`
+2. **Tiêu đề hình chuẩn mực:** `*Hình X.Y: Tên sơ đồ*`
+3. **Tóm tắt kiểm định `diagram-auditor`:** Trạng thái `[PASS]` 100% (không đè nhãn, không cắt nét, đủ SVG + PNG 300 DPI).
+4. **Đường dẫn tệp nguồn:** Link markdown tới file trên đĩa `[ten_so_do.puml](file:///path/to/ten_so_do.puml)`.
+

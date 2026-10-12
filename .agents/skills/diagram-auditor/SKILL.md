@@ -51,6 +51,16 @@ Mọi sơ đồ trước khi bàn giao cho người dùng **BẮT BUỘC** phả
 ### Cổng 6: Tự Soi Ảnh Trước Khi Gửi (Self-Inspection Gate)
 - **Quy định bất biến cho Agent:** Sau khi render, Agent **phải tự chạy script audit** và kiểm tra file trước khi báo cáo cho người dùng. Không bao giờ bàn giao sơ đồ mà chưa qua bước kiểm định này!
 
+### Cổng 7: Bàn Giao Trực Quan Sạch — Cấm Xả Mã Nguồn (Clean Visual Delivery Gate)
+- **Lỗi gây rối mắt nhất:** Agent in toàn bộ khối mã nguồn (`@startuml ... @enduml` hay mã Graphviz dài cả trang) ra khung chat, khiến màn hình bị rối và người dùng không nhìn thấy được hình ảnh trực quan.
+- **Quy tắc bất biến:**
+  - File mã nguồn (`.puml`, `.dot`, `.tldr`) **chỉ được lưu trên ổ đĩa**, tuyệt đối **KHÔNG in khối code nguồn** ra câu trả lời chat.
+  - Phản hồi bàn giao **BẮT BUỘC CHỈ GỒM**:
+    1. **Ảnh sơ đồ trực quan (Rendered Image Preview):** `![Hình X.X: Tên sơ đồ](path/to/diagram.png)`.
+    2. **Tiêu đề sơ đồ chuẩn:** `*Hình X.X: Tên sơ đồ*`.
+    3. **Bảng tóm tắt kiểm định:** Trạng thái `[PASS]` 100% (không đè chữ, không méo nét, đủ SVG/PNG 300 DPI).
+    4. **Đường dẫn tệp nguồn (chỉ dẫn link Markdown, KHÔNG xổ code):** `[Mã nguồn .puml](file:///path/to/diagram.puml)`.
+
 ---
 
 ## 2. TOOLCHAIN KIỂM ĐỊNH TỰ ĐỘNG
@@ -78,3 +88,22 @@ Script sẽ tự động quét:
 | Đường nối cong vẹo, cắt chéo mặt class | Layout tự do thiếu định hướng | Thêm `skinparam linetype ortho`. Dùng `left to right direction` kết hợp các liên kết ẩn `-[hidden]->` để ép thứ tự. |
 | Nhãn đè lên số lượng `0..*` | Tên quan hệ quá dài | Rút ngắn tên quan hệ hoặc đặt tên nhãn ở giữa mũi tên: `A "1" --> "0..*" B : action >`. |
 | Thiếu file PNG | Chỉ mới xuất SVG | Chạy `render-puml.mjs` xuất đủ cả SVG và PNG. |
+
+---
+
+## 4. QUY CHUẨN ĐỊNH DẠNG BÀN GIAO CHO NGƯỜI DÙNG (CLEAN PRESENTATION)
+
+Khi bàn giao kết quả tạo sơ đồ hoặc audit sơ đồ, Agent trình bày theo mẫu chuẩn sau:
+
+```markdown
+### Kết quả kiểm định sơ đồ: [PASS]
+
+![Hình 3.1: Sơ đồ thực thể liên kết ERD](assets/diagrams/03_erd.png)
+*Hình 3.1: Sơ đồ thực thể liên kết (ERD)*
+
+- **Trạng thái Audit:** Đạt 100% tiêu chuẩn Academic Monochrome (không đè nhãn, không cắt nét, đủ SVG & PNG 300 DPI).
+- **Tệp nguồn:** [03_erd.puml](file:///E:/HOC%20TAP/my-project/sp-agent/assets/diagrams/03_erd.puml) (đã lưu an toàn trên đĩa).
+```
+
+*(Tuyệt đối KHÔNG kèm theo bất kỳ code block PlantUML/DOT nào trong phản hồi bàn giao)*
+

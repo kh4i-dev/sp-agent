@@ -199,6 +199,8 @@ Các bảng kỹ thuật như log kiểm toán, bảng tạm OTP và bảng danh
 - Khi người dùng hỏi: *"Vẽ sơ đồ đầy đủ chi tiết cho toàn bộ code"* → Dùng `plantuml-diagrams` (đầy đủ 26 bảng, 20 class).
 - Khi người dùng nói: *"Sơ đồ đơn giản hơn", "lược bớt chi tiết", "để làm báo cáo bảo vệ", "đông bảng quá khó nhìn", "tối giản lại"* → **KÍCH HOẠT NGAY SKILL `simplified-diagrams`**:
   1. Trích xuất 5-8 thực thể cốt lõi.
-  2. Bật `skinparam handwritten true` (nét vẽ tay phác thảo tự nhiên) + `monochrome true`.
-  3. Render qua Kroki ra `.svg` và `.png`.
-  4. Viết kịch bản phát biểu 60-90 giây rõ ràng, gãy gọn.
+  2. Bố cục 3 cột chuẩn mực, đường nối vuông góc `linetype ortho` hoặc `polyline` (tránh nét sketch méo lệch).
+  3. Render ra `.svg` và `.png` 300 DPI qua `render-puml.mjs`.
+  4. Chạy `diagram-auditor` kiểm định đạt PASS 100%.
+  5. **Bàn giao trực quan sạch (Zero Code Dumps):** Trong phản hồi chat, **CHỈ hiển thị ảnh trực quan (`![Hình X.X](path)`), tiêu đề `Hình X.X: <Tên sơ đồ>`, kịch bản phát biểu 60-90 giây, và link tệp nguồn**. TUYỆT ĐỐI KHÔNG in code block PlantUML ra chat làm rối màn hình.
+

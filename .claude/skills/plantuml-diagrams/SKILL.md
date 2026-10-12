@@ -185,4 +185,6 @@ Output:
    - Liên kết giữa Actor và Use Case luôn dùng nét thẳng `--`, **không dùng mũi tên** (Association chuẩn).
    - Kế thừa tác nhân dùng mũi tên tam giác rỗng `--|>`.
    - Quan hệ `<<include>>` và `<<extend>>` dùng nét đứt `..>`.
-4. **Nhúng tài liệu:** Luôn cập nhật caption dưới hình: `Hình X.Y. <Tên sơ đồ>`.
+4. **Nhúng tài liệu:** Luôn cập nhật caption dưới hình: `Hình X.Y: <Tên sơ đồ>`.
+5. **Bàn giao trực quan sạch (Zero Code Dumps):** Sau khi tạo mã và render thành công, trong phản hồi cho người dùng **CHỈ hiển thị ảnh trực quan** (`![Hình X.Y](path)`), tiêu đề `Hình X.Y: <Tên sơ đồ>`, và link dẫn đến file `.puml`. **TUYỆT ĐỐI CẤM** in/xổ toàn bộ code block `@startuml ... @enduml` ra khung chat làm rối giao diện.
+

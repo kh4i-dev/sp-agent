@@ -36,7 +36,7 @@ Muốn biến một repo trong `vendor/` thành skill thật: copy vào `.claude
 | `diagram-orchestrator` | Điều phối thông minh toàn bộ sơ đồ (PlantUML, Graphviz DOT, tldraw) theo ngữ nghĩa | Sơ đồ chuẩn xác theo công cụ phù hợp nhất |
 | `plantuml-diagrams` | Sơ đồ UML/ERD/Sequence/Activity/Class/Use Case chuẩn mực 100% | `.puml` → SVG/PNG, chuẩn học thuật Trắng-Đen |
 | `simplified-diagrams` | Sơ đồ tinh gọn / Khái niệm (Conceptual) cho thuyết trình & bảo vệ đồ án, 5-8 thực thể cốt lõi | `.puml`, SVG/PNG nét thẳng chuẩn + Kịch bản phát biểu 60s |
-| `diagram-auditor` | Audit và kiểm định chất lượng sơ đồ (chống banner cảnh báo, chống méo lệch, chống đè nhãn, đủ SVG/PNG) | Báo cáo kiểm định PASS/FAIL + Sửa lỗi tự động |
+| `diagram-auditor` | Audit và kiểm định chất lượng sơ đồ (chống banner cảnh báo, chống méo lệch, chống đè nhãn, đủ SVG/PNG, hiển thị ảnh + tiêu đề Hình X.X, cấm xả code nguồn) | Báo cáo kiểm định PASS/FAIL + Ảnh sơ đồ & Tiêu đề Hình X.X |
 | `tldraw-diagrams` | Sơ đồ kiến trúc, flowchart, luồng dữ liệu thẩm mỹ cao, đường cong mềm mại | `.tldr`, `.svg`, `.png` (2x) hiện đại, chỉnh sửa được |
 | `research-report` | Nghiên cứu, tổng hợp, fact-check, dẫn nguồn | Báo cáo có citation đã xác minh |
 | `pdf-toolkit` | Đọc/trích/tạo/OCR/ghép PDF | Text/bảng/ảnh, PDF mới |

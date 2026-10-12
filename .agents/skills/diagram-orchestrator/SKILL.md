@@ -16,6 +16,7 @@ Mục tiêu: Đóng vai trò **nhạc trưởng điều phối (Orchestrator)** 
 3. **Academic Monochrome by Default (Mặc định Trắng - Đen học thuật):** Nền trắng `#FFFFFF`, nét đen `#000000`, 300 DPI, độ tương phản cao, tối ưu cho in ấn A4 và nộp luận văn. Chỉ dùng màu có chủ đích khi người dùng yêu cầu rõ ràng.
 4. **Zero-Title in Canvas:** Tiêu đề sơ đồ luôn nằm ở Caption tài liệu (*Hình X.Y: ...*), tuyệt đối không nhúng cứng từ khóa `title` vào ảnh làm lặp chữ và mất diện tích.
 5. **Auditor Gate Mandatory (Bắt buộc kiểm định):** 100% sơ đồ xuất bản phải đi qua `diagram-auditor` để đảm bảo không đè chữ, không cắt nét, không banner cảnh báo ngầm, đủ cả SVG vector và PNG raster.
+6. **Zero Code Dumps in Output (Cấm xả mã nguồn ra chat):** Khi hoàn thành vẽ và audit sơ đồ, phản hồi bàn giao **CHỈ chứa ảnh trực quan** (`![Hình X.Y](path)`), dòng tiêu đề `Hình X.Y: ...`, và tóm tắt audit. Mã nguồn (`.puml`, `.dot`) đã lưu an toàn trên đĩa; tuyệt đối KHÔNG in toàn bộ code block ra khung chat làm rối mắt người dùng.
 
 ---
 
@@ -129,3 +130,15 @@ Khi nhiệm vụ yêu cầu chèn sơ đồ vào file Word báo cáo:
 2. **Caption chuẩn học thuật:** Đặt ngay dưới ảnh, định dạng in nghiêng, cỡ chữ 10.5pt: `*Hình X.Y: Tên sơ đồ*`.
 3. **Chống rớt trang:** Thiết lập `paragraph.paragraph_format.keep_with_next = True` trên ảnh để caption luôn đi liền với hình.
 4. **Render QA:** Chuyển đổi DOCX sang PDF/ảnh trang bằng LibreOffice để soi lại trực quan bố cục thực tế.
+
+---
+
+## 8. QUY CHUẨN BÀN GIAO TRỰC QUAN SẠCH (CLEAN VISUAL PRESENTATION)
+
+Khi báo cáo hoàn thành hoặc audit sơ đồ cho người dùng, Agent **TUYỆT ĐỐI KHÔNG** in code block `.puml`, `.dot`, hay `.json` ra khung chat làm rối mắt. Báo cáo bàn giao chuẩn mực bắt buộc gồm:
+
+1. **Ảnh sơ đồ trực quan (Rendered Preview):** `![Hình X.Y: Tên sơ đồ](path/to/diagram.png)`
+2. **Tiêu đề hình chuẩn mực:** `*Hình X.Y: Tên sơ đồ*`
+3. **Tóm tắt kiểm định `diagram-auditor`:** Trạng thái `[PASS]` 100% (không đè nhãn, không cắt nét, đủ SVG + PNG 300 DPI).
+4. **Đường dẫn tệp nguồn:** Link markdown tới file trên đĩa `[ten_so_do.puml](file:///path/to/ten_so_do.puml)`.
+
