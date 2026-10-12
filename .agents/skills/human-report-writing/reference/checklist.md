@@ -1,63 +1,83 @@
-# Human Report Writing — reference
+# Human Report Writing — Reference Checklist & Guidelines
 
-Chi tiết cho skill `human-report-writing`. Đọc khi cần checklist đầy đủ và ví dụ.
+Chi tiết hỗ trợ cho skill `human-report-writing`. Đọc khi cần checklist đầy đủ, nguyên tắc nhịp điệu và ví dụ đối chiếu.
 
-## 1. Checklist "đọc như người" (đầy đủ)
+---
 
-### Nội dung & lập luận
-- [ ] Mỗi chương trả lời một câu hỏi rõ ràng, **kết thúc bằng đoạn "Tóm tắt chương" 2–3 câu** (tóm kết luận chính); đầu chương có thể có 1 câu dẫn.
-- [ ] Lập luận theo trình tự vấn đề → giải pháp → kết quả; không nhảy ý.
-- [ ] Mỗi ý có ví dụ, số liệu hoặc tình huống cụ thể.
-- [ ] Không lặp lại nguyên văn ý đã nói ở mục trước.
+## 1. Checklist "Đọc tự nhiên như Kỹ sư thực chiến" (Đầy đủ)
 
-### Câu & đoạn
-- [ ] Câu chủ động, chủ ngữ rõ; hạn chế bị động "được thực hiện bởi".
-- [ ] Độ dài câu đa dạng (có câu ngắn, câu dài) — tránh mọi câu đều ~25 từ.
-- [ ] Mỗi đoạn một ý; đoạn dài tối đa ~5–6 câu.
-- [ ] Ưu tiên đoạn văn; gạch đầu dòng chỉ để liệt kê thật.
+### A. Nội dung, Lập luận & Chiều sâu Kỹ thuật
+- [ ] **Có lý do đánh đổi (Trade-offs):** Giải thích tại sao chọn công nghệ/kiến trúc này thay vì phương án khác.
+- [ ] **Có trở ngại thực tế (Friction):** Nêu lỗi phát sinh, nút thắt cổ chai hoặc bài toán kiểm thử cụ thể thay vì chỉ vẽ bức tranh hoàn hảo.
+- [ ] **Cơ chế thay vì tính từ:** Dùng thông số, cấu hình, giải thuật, tên bảng thay vì tính từ "an toàn", "nhanh chóng", "tối ưu".
+- [ ] **Không chép rác giáo trình:** Bỏ các định nghĩa vỡ lòng (Docker là gì, React là gì); tập trung vào việc áp dụng trong dự án.
+- [ ] **Lập luận có chuỗi nhân quả:** Vấn đề nghiệp vụ → Giải pháp kỹ thuật → Dữ liệu thực nghiệm chứng minh.
+- [ ] **Mỗi chương kết thúc bằng "Tóm tắt chương" 2–3 câu** nêu đọng lại các kết luận kỹ thuật chính; đầu chương có thể có câu dẫn.
 
-### Từ ngữ
-- [ ] Bỏ câu rào đón ("có thể nói rằng", "nhìn chung", "cần được lưu ý rằng").
-- [ ] Không khuôn câu nào lặp quá ~3 lần toàn bài ("cần được", "điều này cho thấy", "bên cạnh đó").
-- [ ] Thuật ngữ nhất quán (một khái niệm — một cách gọi).
-- [ ] Không tuyệt đối hoá khi thiếu bằng chứng.
+### B. Nhịp điệu câu & Cấu trúc đoạn (Cadence & Burstiness)
+- [ ] **Độ dài câu biến thiên linh hoạt:** Đan xen câu ngắn (4–8 từ), câu trung bình (12–20 từ), câu phân tích phức (25–35 từ). Tuyệt đối không để câu nào cũng ~20 từ.
+- [ ] **Chủ động và có chủ thể:** Hạn chế bị động vô căn cứ ("được thực hiện bởi"); nêu rõ chủ thể hành động hoặc thực thể hệ thống.
+- [ ] **Móc xích tự nhiên:** Không mở đầu hàng loạt câu bằng "Bên cạnh đó", "Ngoài ra", "Hơn nữa", "Đồng thời".
+- [ ] **Phá bỏ khuôn mẫu 3 thì:** Không viết mọi tiểu mục theo công thức cơ học: [Giới thiệu] → [Liệt kê] → [Tự khen].
 
-### Dấu hiệu "hướng dẫn nội bộ" (phải bỏ khỏi báo cáo)
-- [ ] Không còn câu kiểu: "trước khi nộp…", "khi nộp bài cần…", "nên ghi rõ là dữ liệu demo…",
-      "minh chứng phù hợp nên gồm…". Đây là việc của người viết, không phải nội dung báo cáo.
-- [ ] Số liệu mô phỏng được nêu **như một câu khẳng định** ("được lấy từ dữ liệu demo…"),
-      không phải như lời nhắc nhở.
+### C. Từ vựng & Dấu hiệu máy móc
+- [ ] **Không từ sáo rỗng trong Fluff Blacklist:** Loại bỏ "đóng vai trò quan trọng", "tối ưu hóa quy trình", "mang tính toàn diện", "hệ sinh thái", "nâng cao trải nghiệm"...
+- [ ] **Bỏ câu rào đón:** "có thể nói rằng", "nhìn chung", "cần được lưu ý rằng"...
+- [ ] **Bỏ câu hướng dẫn nội bộ:** "trước khi nộp...", "khi nộp bài cần...", "số liệu mô phỏng cần ghi rõ...". Chuyển thành câu khẳng định hoặc xóa bỏ.
+- [ ] **Không khuôn câu nào lặp quá ~3 lần:** "điều này cho thấy", "cần được", "không chỉ... mà còn...".
 
-## 2. Ví dụ before → after (rút từ báo cáo thật)
+### D. Định dạng bất biến
+- [ ] **Không có chữ in đậm (bold) trong thân bài.** Chỉ dùng Heading style cho tiêu đề.
+- [ ] **Không có dấu gạch dài em dash (—).**
+- [ ] **Không có highlight màu hay nền vàng.**
+- [ ] **Hạn chế gạch đầu dòng:** Ưu tiên văn xuôi; chỉ dùng bullet khi liệt kê thật sự.
 
-**Before (AI):**
-> "Thị trường thương mại điện tử Việt Nam hiện đang phụ thuộc nặng vào hình thức thanh toán khi
-> nhận hàng. Các số liệu về gian lận COD… thường được sử dụng để mô tả bối cảnh. Tuy nhiên,
-> trước khi nộp báo cáo, cần đối chiếu chính xác từng con số với báo cáo gốc…"
+---
 
-**After (người):**
-> "Thương mại điện tử Việt Nam tăng trưởng nhanh nhưng vẫn phụ thuộc nặng vào thanh toán khi nhận
-> hàng (COD). Theo báo cáo của Cục Thương mại điện tử và Kinh tế số năm 2024, tỷ lệ gian lận trong
-> các đơn COD chiếm khoảng 17,3%…"
+## 2. Các ví dụ Before → After theo chuyên đề kỹ thuật
 
-**Before (AI):**
-> "Trong báo cáo, kết quả được phân biệt thành ba mức: thiết kế dự kiến, chức năng đã cài đặt và
-> chức năng đã có bằng chứng kiểm thử… Nếu chưa có minh chứng tương ứng, số liệu cần được xác minh lại."
+### Ví dụ 1: Kiến trúc Caching & Database
+- **Before (AI sáo rỗng):**
+  > "Hệ thống áp dụng công nghệ caching tiên tiến với Redis nhằm tối ưu hóa hiệu năng truy vấn và đem lại trải nghiệm liền mạch cho người dùng. Bên cạnh đó, cơ sở dữ liệu PostgreSQL cũng đóng vai trò quan trọng trong việc đảm bảo tính toàn vẹn dữ liệu."
+- **AI sửa vội (Cứng đơ hành chính):**
+  > "Hệ thống dùng Redis để lưu dữ liệu tạm và dùng PostgreSQL để lưu dữ liệu chính. Việc này được thực hiện nhằm mục đích giúp hệ thống chạy nhanh hơn và dữ liệu không bị mất."
+- **After (Kỹ sư thực chiến):**
+  > "Nhóm đặt một lớp đệm Redis phía trước PostgreSQL với thời gian sống (TTL) 5 phút cho danh mục sản phẩm. Cơ chế này đạt tỷ lệ cache hit 88%, giúp giảm lượng truy vấn đọc trực tiếp vào cơ sở dữ liệu từ 1.200 xuống còn 140 query mỗi phút trong giờ cao điểm."
 
-**After (người):** (bỏ hẳn — đây là lời nhắc cho người viết, không phải nội dung)
+---
 
-## 3. Cấu trúc & hình thức báo cáo (tham chiếu HCMUS / UET / CTU)
+### Ví dụ 2: Cơ chế Xác thực & Phân quyền
+- **Before (AI sáo rỗng):**
+  > "Module xác thực không chỉ đảm bảo an toàn tuyệt đối cho thông tin tài khoản mà còn cung cấp khả năng phân quyền mạnh mẽ, linh hoạt, đáp ứng toàn diện nhu cầu của hệ thống."
+- **AI sửa vội (Cứng đơ hành chính):**
+  > "Module xác thực thực hiện việc kiểm tra thông tin đăng nhập và phân quyền người dùng theo quy định. Các quyền được chia thành các nhóm khác nhau."
+- **After (Kỹ sư thực chiến):**
+  > "Module xác thực chia người dùng thành ba vai trò: Quản trị viên, Nhân viên kho và Khách hàng. Token JWT gắn kèm danh sách quyền tương ứng, cho phép API gateway chặn truy cập trái phép ngay tại cửa vào mà không cần gọi lại cơ sở dữ liệu."
 
-- **Bố cục:** Trang bìa → Lời cảm ơn → Tóm tắt → Mục lục → Danh mục hình/bảng → Nội dung chính
-  (Mở đầu, Tổng quan/Cơ sở lý thuyết, Phương pháp, Kết quả & thảo luận, Kết luận) → Tài liệu tham khảo → Phụ lục.
-- **Hình thức:** Times New Roman 13, giãn dòng 1,5; mỗi chương bắt đầu trang mới; tên chương in hoa/đậm
-  cỡ 14 đặt giữa; hình/bảng đánh số theo chương (Hình 3.1, Bảng 3.2) và **được tham chiếu trong bài**.
-- **Văn phong:** câu hoàn chỉnh, hạn chế gạch đầu dòng, diễn giải bảng/hình, mỗi chương có tóm tắt,
-  không lỗi chính tả, không đạo văn (trích dẫn nguồn).
-- **Tóm tắt (abstract):** 100–300 từ, gồm ngữ cảnh, mục tiêu, phương pháp, kết quả, kết luận.
+---
 
-## 4. Phân biệt với skill khác
+### Ví dụ 3: Xử lý Bất đồng bộ & Hàng đợi
+- **Before (AI sáo rỗng):**
+  > "Hệ thống tích hợp hàng đợi thông điệp để xử lý các tác vụ ngầm một cách hiệu quả, giúp nâng cao tính ổn định và khả năng mở rộng của toàn bộ nền tảng."
+- **AI sửa vội (Cứng đơ hành chính):**
+  > "Các tác vụ nặng được gửi vào hàng đợi RabbitMQ. Quá trình xử lý sau đó được thực hiện bởi các worker chạy ngầm."
+- **After (Kỹ sư thực chiến):**
+  > "Xử lý đồng bộ gửi email kích hoạt trực tiếp trong luồng đăng ký khiến thời gian phản hồi API kéo dài hơn 2,5 giây mỗi khi máy chủ SMTP chậm. Nhóm chuyển toàn bộ việc gửi email sang hàng đợi RabbitMQ. Máy chủ xác thực trả kết quả thành công cho người dùng trong 85 mili-giây, trong khi worker chạy ngầm xử lý hàng đợi với cơ chế tự động thử lại tối đa 3 lần."
 
-- Văn phong thuần → `human-report-writing` (skill này).
-- Dựng `.docx`, caption, TOC, render & QA → `docx-report`.
-- Vẽ sơ đồ → `mermaid-diagrams`. Thu thập & xác minh nguồn → `research-report`.
+---
+
+## 3. Cấu trúc & Hình thức báo cáo chuẩn (Tham chiếu các trường ĐH)
+
+- **Bố cục:** Trang bìa → Lời cảm ơn → Tóm tắt (100–300 từ) → Mục lục → Danh mục bảng/hình → Nội dung chính (Mở đầu, Tổng quan, Phân tích/Thiết kế, Triển khai & Đánh giá, Kết luận) → Tài liệu tham khảo → Phụ lục.
+- **Quy chuẩn hiển thị:** Times New Roman cỡ 13, giãn dòng 1.3–1.5; lề trái 3–3.5 cm, lề phải 2 cm, trên/dưới 2–2.5 cm.
+- **Tiêu đề & Đánh số:** Tối đa 4 cấp (Chương 1, 1.1, 1.1.1, 1.1.1.1); mỗi nhóm tiểu mục phải có từ 2 mục trở lên.
+- **Bảng & Hình:** Tên bảng đặt phía trên (`Bảng X.Y`), tên hình đặt phía dưới (`Hình X.Y`). Phải có câu tham chiếu rõ ràng trong bài ("xem Hình 3.2"), không dùng "hình dưới đây".
+
+---
+
+## 4. Phân công vai trò giữa các Skill
+
+- **`human-report-writing`:** Văn phong, nhịp điệu, tư duy kỹ sư thực tế, loại bỏ AI slop và tính khô cứng hành chính.
+- **`docx-report`:** Dựng cấu trúc OOXML/python-docx, heading styles, captions, cross-references, TOC, visual render QA.
+- **`mermaid-diagrams`:** Vẽ sơ đồ UML, ERD, Sequence, Flowchart chuẩn kỹ thuật.
+- **`research-report`:** Thu thập, kiểm chứng số liệu và nguồn trích dẫn đáng tin cậy.
