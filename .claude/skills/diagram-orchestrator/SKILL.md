@@ -16,6 +16,7 @@ Mục tiêu: Đóng vai trò **nhạc trưởng điều phối (Orchestrator)** 
 3. **Academic Monochrome by Default (Mặc định Trắng - Đen học thuật):** Nền trắng `#FFFFFF`, nét đen `#000000`, 300 DPI, độ tương phản cao, tối ưu cho in ấn A4 và nộp luận văn. Chỉ dùng màu có chủ đích khi người dùng yêu cầu rõ ràng.
 4. **Zero-Title in Canvas:** Tiêu đề sơ đồ luôn nằm ở Caption tài liệu (*Hình X.Y: ...*), tuyệt đối không nhúng cứng từ khóa `title` vào ảnh làm lặp chữ và mất diện tích.
 5. **Auditor Gate Mandatory (Bắt buộc kiểm định):** 100% sơ đồ xuất bản phải đi qua `diagram-auditor` để đảm bảo không đè chữ, không cắt nét, không banner cảnh báo ngầm, đủ cả SVG vector và PNG raster.
+6. **Zero Code Dumps in Output (Cấm xả mã nguồn ra chat):** Khi hoàn thành vẽ và audit sơ đồ, phản hồi bàn giao **CHỈ chứa ảnh trực quan** (`![Hình X.Y](path)`), dòng tiêu đề `Hình X.Y: ...`, và tóm tắt audit. Mã nguồn (`.puml`, `.dot`) đã lưu an toàn trên đĩa; tuyệt đối KHÔNG in toàn bộ code block ra khung chat làm rối mắt người dùng.
 
 ---
 
