@@ -102,7 +102,34 @@ for (const file of files) {
     }
   }
 
-  // Check 5: Text Collision Detection (Chữ đè chữ)
+  // Check 5: Aspect Ratio Check (Chống sơ đồ dẹt lép hoặc dài ngoằng làm vỡ trang A4)
+  const viewBoxMatch = content.match(/viewBox="([^"]+)"/i);
+  const widthAttrMatch = content.match(/width="([^"]+)"/i);
+  const heightAttrMatch = content.match(/height="([^"]+)"/i);
+
+  let svgWidth = 0;
+  let svgHeight = 0;
+  if (viewBoxMatch) {
+    const vbParts = viewBoxMatch[1].trim().split(/[\s,]+/).map(parseFloat);
+    if (vbParts.length === 4) {
+      svgWidth = vbParts[2];
+      svgHeight = vbParts[3];
+    }
+  } else if (widthAttrMatch && heightAttrMatch) {
+    svgWidth = parseFloat(widthAttrMatch[1]);
+    svgHeight = parseFloat(heightAttrMatch[1]);
+  }
+
+  if (svgWidth > 0 && svgHeight > 0) {
+    const ratio = svgWidth / svgHeight;
+    if (ratio > 3.8) {
+      issues.push(`Tỷ lệ khung hình quá dẹt ngang (${ratio.toFixed(2)}:1 > 3.8). Khi chèn vào Word A4 (khổ rộng ~15cm), chiều cao chỉ còn ~${(15 / ratio).toFixed(1)}cm khiến chữ bị thu nhỏ li ti, không đọc được! Cần tái cấu trúc bố cục nhiều hàng.`);
+    } else if (ratio < 0.28) {
+      issues.push(`Tỷ lệ khung hình quá dài dọc (${ratio.toFixed(2)}:1 < 0.28). Nguy cơ cao bị tràn trang hoặc rớt trang trong tài liệu Word A4.`);
+    }
+  }
+
+  // Check 6: Text Collision Detection (Chữ đè chữ)
   const textRegex = /<text\s+([^>]+)>([^<]+)<\/text>/g;
   let tMatch;
   const texts = [];
@@ -145,7 +172,29 @@ for (const file of files) {
     issues.push(`Phát hiện ${textCollisions.length} điểm va chạm/đè chữ: ${textCollisions.slice(0, 3).join('; ')}`);
   }
 
-  // Check 6: Line-Through-Text Intersection (Đường kẻ cắt ngang mặt chữ)
+  // Check 7: Clustered Edge Labels Congestion (Mật độ nhãn dày đặc chen chúc giữa các tầng)
+  // Các nhãn quan hệ ngắn (độ dài 3-25 ký tự, không chứa cú pháp kiểu dữ liệu) nếu tập trung quá dày đặc trong một dải Y hẹp
+  const standaloneLabels = texts.filter(
+    (t) => t.text.length >= 3 && t.text.length <= 30 && !t.text.includes(':') && !t.text.includes('(') && !t.text.includes(';')
+  );
+  const clusteredLabels = [];
+  for (let i = 0; i < standaloneLabels.length; i++) {
+    const nearby = standaloneLabels.filter(
+      (other, j) => j !== i && Math.abs(other.y - standaloneLabels[i].y) < 22 && Math.abs(other.x - standaloneLabels[i].x) < 120
+    );
+    if (nearby.length >= 3) {
+      const labelNames = [standaloneLabels[i].text, ...nearby.map((n) => n.text)].slice(0, 4).join(', ');
+      const key = `Dải Y ~ ${standaloneLabels[i].y.toFixed(0)}: [${labelNames}]`;
+      if (!clusteredLabels.includes(key)) {
+        clusteredLabels.push(key);
+      }
+    }
+  }
+  if (clusteredLabels.length > 0) {
+    issues.push(`Cảnh báo chen chúc nhãn (Inter-tier Label Congestion): Phát hiện ${clusteredLabels.length} cụm nhãn bị dồn cục quá sát nhau (${clusteredLabels[0]}). Sơ đồ kiến trúc tầng không nên ghi dày đặc thao tác chi tiết lên đường nối; hãy đưa chi tiết vào Sequence Diagram!`);
+  }
+
+  // Check 8: Line-Through-Text Intersection (Đường kẻ cắt ngang mặt chữ)
   const pathRegex = /<path\s+[^>]*d="([^"]+)"[^>]*>/g;
   let pMatch;
   const lineIntersections = [];
@@ -182,10 +231,16 @@ for (const file of files) {
 }
 
 console.log('----------------------------------------------------');
+console.log('[LƯU Ý NGHIỆM THU - ANTI-FALSE-PASS DOCTRINE]:');
+console.log('  * Kết quả script tự động chỉ xác nhận tính toàn vẹn hình học & cú pháp (Gate B & một phần Gate C).');
+console.log('  * Script KHÔNG THỂ thay thế việc kiểm tra ngữ nghĩa (Gate A) và soi trực quan bằng mắt (Gate C Visual QA).');
+console.log('  * Agent KHÔNG ĐƯỢC tuyên bố hoàn thành dự án nếu chưa tự mở ảnh soi mắt và đối chiếu với code/schema!');
+console.log('----------------------------------------------------');
+
 if (totalErrors > 0) {
-  console.error(`[diagram-auditor] KẾT QUẢ: ${totalErrors} lỗi nghiêm trọng phát hiện. Vui lòng sửa triệt để!`);
+  console.error(`[diagram-auditor] KẾT QUẢ: ${totalErrors} lỗi/cảnh báo nghiêm trọng phát hiện. Vui lòng sửa triệt để!`);
   process.exit(1);
 } else {
-  console.log(`[diagram-auditor] KẾT QUẢ: 100% Sơ đồ ĐẠT CHUẨN (${files.length}/${files.length} files).`);
+  console.log(`[diagram-auditor] KẾT QUẢ TỰ ĐỘNG: 100% Sơ đồ ĐẠT CHUẨN KỸ THUẬT SƠ BỘ (${files.length}/${files.length} files).`);
   process.exit(0);
 }

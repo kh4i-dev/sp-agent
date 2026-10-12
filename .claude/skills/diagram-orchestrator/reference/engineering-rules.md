@@ -86,13 +86,17 @@ Tài liệu cẩm nang thực chiến đào sâu nguyên tắc thiết kế, b�
 
 ---
 
-## 7. Component Diagram — Sơ đồ thành phần
-- **Mục đích:** Thể hiện các khối phần mềm lớn và sự phụ thuộc giữa chúng.
+## 7. Component & Layer Architecture Diagram — Sơ đồ thành phần & Kiến trúc tầng
+- **Mục đích:** Thể hiện các khối phần mềm lớn, các tầng kiến trúc (Presentation - Business Logic - Data Access) và sự phụ thuộc giữa chúng.
 - **Công cụ:** PlantUML hoặc tldraw.
 - **Kinh nghiệm cốt lõi:**
   - Component đại diện cho đơn vị kiến trúc có ranh giới rõ ràng.
   - Không biến danh sách thư viện thành component (React, Tailwind là công nghệ, không phải component).
   - Không bịa thêm message broker, microservice nếu hệ thống thực chất là monolith.
+  - **Chống nhồi nhét tương tác (Inter-Tier Anti-Crowding Rule — Bài học Hình 3.1):**
+    - Trong sơ đồ kiến trúc phân tầng, **TUYỆT ĐỐI CẤM** vẽ hàng loạt mũi tên chằng chịt và gắn nhãn các hành động chi tiết như *"Thao tác CRUD"*, *"Yêu cầu xuất / nhập file"*, *"Tìm kiếm từ khóa"*, *"Gửi OTP"*.
+    - Sơ đồ kiến trúc tầng trả lời câu hỏi: *Hệ thống gồm những tầng nào, phụ thuộc nhau ra sao?* Nó KHÔNG trả lời: *Từng bước người dùng bấm nút làm gì!*
+    - Giải pháp chuẩn: Chỉ vẽ 1 mũi tên phụ thuộc tổng quan giữa các tầng (`Gọi API / Yêu cầu dịch vụ` hoặc `Dependency Injection`). Toàn bộ luồng CRUD, tìm kiếm, xuất file **bắt buộc phân rã sang Sơ đồ Tuần tự (Sequence) hoặc Sơ đồ Hoạt động (Activity)** riêng biệt.
 
 ---
 
@@ -121,12 +125,17 @@ Tài liệu cẩm nang thực chiến đào sâu nguyên tắc thiết kế, b�
 
 ---
 
-## 11. Sơ đồ cấu trúc dữ liệu: Prefix Trie & BK-Tree
+## 11. Sơ đồ cấu trúc dữ liệu RAM: Prefix Trie & BK-Tree
 - **Mục đích:** Minh họa cấu trúc dữ liệu trong bộ nhớ RAM phục vụ tìm kiếm.
 - **Công cụ:** **Bắt buộc dùng Graphviz DOT (`.dot`)**.
 - **Kinh nghiệm cốt lõi:**
   - *Prefix Trie:* Node gốc `root`, mỗi cạnh mang 1 ký tự, node kết thúc từ đánh dấu `doublecircle`.
   - *BK-Tree:* Mỗi node là 1 từ, nhãn cạnh là khoảng cách Levenshtein chính xác 100% về mặt toán học. Tuyệt đối không bịa khoảng cách sai lệch chỉ để cân đối hình cây.
+  - **Cân đối khoảng trắng & Chống dồn cục (Whitespace Balance Rule — Bài học Hình 3.4):**
+    - Tránh chọn tập từ mẫu làm cây bị lệch hoàn toàn về một bên, khiến một nửa khung hình bị trống hoác trong khi nửa kia dồn cục chật chội.
+    - Chọn 5–8 từ mẫu đại diện có tiền tố đối xứng (ví dụ: `cat`, `car`, `cart`, `dog`, `dot`) để các nhánh cây tỏa đều về hai phía, giữ tỷ lệ khung hình cân đối (4:3 hoặc 16:9).
+    - Cấu hình Graphviz DOT tối ưu: `graph [nodesep=0.5, ranksep=0.6, splines=polyline, ratio=auto]`.
+    - Tránh để chữ lọt thỏm giữa không gian canvas mênh mông; các nút phải có kích thước và khoảng cách hài hòa.
 
 ---
 

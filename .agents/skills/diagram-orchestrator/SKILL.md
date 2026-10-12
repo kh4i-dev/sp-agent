@@ -59,11 +59,17 @@ Sơ đồ đẹp không cứu được mô hình sai; sơ đồ đúng nhưng kh
 - Khi minh họa BK-Tree, nhãn cạnh bắt buộc phải là khoảng cách Levenshtein chính xác 100% về mặt toán học. Không tự dựng cây sai để đối xứng hình.
 - Phân biệt rõ: hệ thống đã chạy thực tế vs thiết kế đề xuất tương lai vs ví dụ minh họa nhỏ.
 
-### B. Visual Quality & Academic Monochrome
+### B. Visual Quality, Density Control & Academic Monochrome
 - Mặc định **Academic Monochrome**: Nền trắng `#FFFFFF`, viền và chữ đen `#000000`, 300 DPI, tương phản cao.
 - **Zero-Title in Canvas:** Tiêu đề sơ đồ luôn nằm ở Caption tài liệu (*Hình X.Y: ...*), cấm dùng từ khóa `title` trong mã nguồn làm lặp chữ.
-- Bố cục phân tầng rõ ràng (trên xuống dưới hoặc trái sang phải), nhóm liên quan đặt cạnh nhau.
-- Khoảng cách thở: `nodesep 70`, `ranksep 70`, đường nối vuông góc `linetype ortho`.
+- **Kiểm soát mật độ liên tầng (Inter-tier Anti-Crowding):**
+  - Trong sơ đồ kiến trúc (Layers / Packages / Components), **tuyệt đối không nhồi nhét dày đặc nhãn hành động CRUD, tìm kiếm, import/export** lên các đường nối giữa 2 tầng.
+  - Sơ đồ kiến trúc chỉ thể hiện khối cấu trúc và quan hệ phụ thuộc cấp cao (`Phụ thuộc / Gọi API` hoặc `Yêu cầu nghiệp vụ`).
+  - Chi tiết từng luồng tương tác, tham số và kết quả trả về **bắt buộc phân rã sang Sơ đồ Tuần tự (Sequence) hoặc Sơ đồ Hoạt động (Activity)** tương ứng.
+- **Cân đối khoảng trắng & Cấu trúc RAM (RAM Data Structure Balance):**
+  - Khi minh họa cây tiền tố Prefix Trie hoặc BK-Tree trong bộ nhớ: Phải chọn tập từ mẫu đại diện vừa phải (5–8 từ), phân nhánh tỏa đều từ gốc, **cấm dồn cục các node sang một bên làm trống nửa hình còn lại**.
+  - Tỷ lệ khung hình chuẩn từ 4:3 đến 16:9 (ngang) hoặc 1:1, không được dẹt lép (> 3.8) hoặc dài ngoằng (< 0.28).
+  - Khoảng cách thở tiêu chuẩn: `nodesep 70`, `ranksep 70`, đường nối vuông góc `linetype ortho`.
 - Chữ tiếng Việt giữ nguyên dấu, font chuẩn hệ thống (`Segoe UI`, `Arial`).
 
 ### C. Source & Toolchain Execution
@@ -76,6 +82,10 @@ Mỗi sơ đồ phải lưu file nguồn và xuất đồng thời SVG (vector) 
 ---
 
 ## 4. QUY TRÌNH 4 CỔNG KIỂM ĐỊNH (THE 4-GATE VERIFICATION)
+
+> [!CAUTION]
+> **HỌC THUYẾT CHỐNG BÁO ẢO (ANTI-FALSE-PASS):**
+> Script tự động báo 0 lỗi **KHÔNG ĐỒNG NGHĨA** với việc sơ đồ đạt chuẩn. Agent **BẮT BUỘC** phải tự mở ảnh soi mắt và đối chiếu mã nguồn thực tế trước khi xác nhận hoàn thành!
 
 Mọi sơ đồ phải đi qua 4 cổng nghiệm thu độc lập trước khi bàn giao:
 
@@ -91,21 +101,21 @@ Mọi sơ đồ phải đi qua 4 cổng nghiệm thu độc lập trước khi b
 └──────────┬──────────┘
            │
 ┌──────────▼──────────┐
-│ Gate C — Visual QA  │ ➔ Chạy audit-diagrams.mjs + Soi mắt: Không cắt chữ, không đè nhãn, không title canvas.
+│ Gate C — Visual QA  │ ➔ Chạy audit script + Soi mắt: Không chen chúc nhãn giữa các tầng, không dồn cục khoảng trắng.
 └──────────┬──────────┘
            │
 ┌──────────▼──────────┐
-│ Gate D — Document QA│ ➔ Đặt vào DOCX: Chiều rộng 5.8-6.2 inch, caption Hình X.Y, keep_with_next, không rớt trang.
+│ Gate D — Document QA│ ➔ Đặt vào DOCX: Khớp 100% ảnh với Caption, có đoạn văn dẫn dắt, keep_with_next, chiều rộng 14-15.5cm.
 └──────────┬──────────┘
            │
        [BÀN GIAO]
 ```
 
 ### Các trạng thái nghiệm thu:
-- **`PASS`:** Tất cả các cổng bắt buộc đã qua với bằng chứng file thực tế.
-- **`PASS WITH CONDITIONS`:** Kết quả sử dụng được nhưng có giới hạn được nêu rõ.
+- **`PASS`:** Tất cả 4 cổng bắt buộc đã qua với bằng chứng cụ thể, không còn bất kỳ điểm nghẽn thị giác nào.
+- **`PASS WITH CONDITIONS`:** Kết quả sử dụng được nhưng có giới hạn mô hình hóa được nêu rõ trong báo cáo.
 - **`BLOCKED`:** Thiếu nguồn sự thật hoặc công cụ lỗi, dừng lại báo cáo nguyên nhân.
-- **`FAIL`:** Phát hiện lỗi nội dung hoặc bố cục, bắt buộc sửa và render lại.
+- **`FAIL`:** Phát hiện lỗi nội dung, đè nhãn, dồn cục bố cục hoặc nhầm ảnh tài liệu; bắt buộc sửa và render lại.
 
 ---
 
@@ -114,20 +124,22 @@ Mọi sơ đồ phải đi qua 4 cổng nghiệm thu độc lập trước khi b
 Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **TUYỆT ĐỐI KHÔNG** xả toàn bộ code block `.puml`, `.dot`, hay `.json` ra khung chat làm rối mắt. Báo cáo bàn giao chuẩn mực bắt buộc gồm:
 1. **Ảnh sơ đồ trực quan (Rendered Preview):** `![Hình X.Y: Tên sơ đồ](path/to/diagram.png)`
 2. **Tiêu đề hình chuẩn mực:** `*Hình X.Y: Tên sơ đồ*`
-3. **Tóm tắt kiểm định `diagram-auditor`:** Trạng thái `[PASS]` 100% (không đè nhãn, không cắt nét, đủ SVG + PNG 300 DPI).
+3. **Bảng tóm tắt kiểm định 4 Cổng:** Trạng thái Gate A, Gate B, Gate C, Gate D.
 4. **Đường dẫn tệp nguồn:** Link markdown tới file trên đĩa `[ten_so_do.puml](file:///path/to/ten_so_do.puml)`.
 
 ---
 
-## 6. CHECKLIST 10 MỤC NGHIỆM THU TRƯỚC KHI ĐƯA VÀO BÁO CÁO
+## 6. CHECKLIST 12 MỤC NGHIỆM THU TRƯỚC KHI ĐƯA VÀO BÁO CÁO
 
-- [ ] 1. Đã xác định đúng loại sơ đồ và câu hỏi duy nhất mà hình cần trả lời.
+- [ ] 1. Đã xác định đúng loại sơ đồ và câu hỏi duy nhất mà hình cần trả lời (1 sơ đồ = 1 câu hỏi).
 - [ ] 2. Đã kiểm tra nguồn dữ liệu, schema hoặc mã nguồn làm căn cứ (không bịa thông tin).
 - [ ] 3. Không nhầm lẫn giữa UML Class, ERD CSDL và Cấu trúc dữ liệu RAM (Trie/Tree).
 - [ ] 4. Tên gọi, khóa, quan hệ, điều kiện và hướng mũi tên đều có căn cứ xác minh.
-- [ ] 5. Đã chọn công cụ phù hợp nhất cho chính sơ đồ này (PlantUML / Graphviz / tldraw).
-- [ ] 6. Đã lưu file nguồn có thể chỉnh sửa (`.puml`, `.dot`, `.tldr`) và xuất cả SVG + PNG 300 DPI.
-- [ ] 7. Đã kiểm tra sơ đồ thực tế qua `audit-diagrams.mjs`, không chỉ dựa vào thông báo render.
-- [ ] 8. Chữ, cạnh, dấu tiếng Việt và chú giải hiển thị rõ ràng ở kích thước in thực tế trên trang A4.
-- [ ] 9. Caption và số thứ tự hình (*Hình X.Y*) đúng với bố cục báo cáo; không nhúng title trong canvas.
-- [ ] 10. Đã kiểm tra trực quan trang DOCX/PDF sau khi chèn hình (không tràn lề, không rớt caption).
+- [ ] 5. Sơ đồ kiến trúc không nhồi nhét chi tiết CRUD lên đường nối liên tầng (đã đưa sang Sequence).
+- [ ] 6. Cấu trúc dữ liệu RAM (Trie / BK-Tree) cân đối, không lệch dồn cục, khoảng cách Levenshtein chính xác.
+- [ ] 7. Đã chọn công cụ phù hợp nhất cho chính sơ đồ này (PlantUML / Graphviz / tldraw).
+- [ ] 8. Đã lưu file nguồn có thể chỉnh sửa (`.puml`, `.dot`, `.tldr`) và xuất cả SVG + PNG 300 DPI.
+- [ ] 9. Đã kiểm tra qua `audit-diagrams.mjs` và tự soi mắt trực quan (Anti-False-PASS).
+- [ ] 10. Chữ, cạnh, dấu tiếng Việt và chú giải hiển thị rõ ràng ở kích thước in thực tế trên trang A4.
+- [ ] 11. Caption và số thứ tự hình (*Hình X.Y*) đúng với bố cục báo cáo; không nhúng title trong canvas.
+- [ ] 12. Khớp chính xác 100% file ảnh với Caption trong tài liệu DOCX, có văn bản dẫn nhập và `keep_with_next`.

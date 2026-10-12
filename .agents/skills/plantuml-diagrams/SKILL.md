@@ -43,6 +43,7 @@ skinparam ranksep 70                  ' Giãn cách dọc thoáng đãng
 3. **Đường nối vuông góc 90° (`linetype ortho`):** Mọi dây nối gập góc vuông dứt khoát, không đi chéo ngang mặt class khác.
 4. **Khoảng cách thở (Breathing Room):** `nodesep 70` và `ranksep 70` đảm bảo nhãn số lượng (`1`, `0..*`) và tên quan hệ luôn tách bạch, không bao giờ dính chữ.
 5. **Cấm tiệt `skinparam handwritten true`:** Nét sketch méo mó và sinh banner cảnh báo làm mất tính trang nghiêm của báo cáo kỹ thuật.
+6. **Chống nhồi nhét tương tác vào sơ đồ tầng (Inter-tier Anti-Crowding):** Trong sơ đồ kiến trúc phân tầng/khối, cấm chèn dày đặc nhãn thao tác CRUD, tìm kiếm, import/export lên đường nối. Chỉ vẽ khối và mũi tên phụ thuộc; chi tiết tương tác bắt buộc chuyển sang Sequence Diagram.
 
 ---
 

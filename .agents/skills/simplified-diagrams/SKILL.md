@@ -79,7 +79,8 @@ skinparam ranksep 70                  ' Giãn cách dọc thoáng đãng
    - **Cột 2 (Giữa - Luồng tương tác chính):** `CONNECTION_REQUEST`, `CONVERSATION`, `REVIEW`.
    - **Cột 3 (Phải - Doanh thu & Thanh toán):** `SUBSCRIPTION_PLAN`, `PAYMENT_ORDER`.
    - Dùng liên kết ẩn để khóa thẳng hàng 3 cột: `A -[hidden]down- B`.
-3. **KHÔNG ĐÈ NHÃN:** Khoảng cách `nodesep 70` và `ranksep 70` đảm bảo nhãn số lượng và tên quan hệ luôn có khoảng trống riêng biệt.
+3. **KHÔNG ĐÈ NHÃN & KHOẢNG THỞ:** Khoảng cách `nodesep 70` và `ranksep 70` đảm bảo nhãn số lượng và tên quan hệ luôn có khoảng trống riêng biệt.
+4. **CẤM NHỒI NHÉT THAO TÁC CRUD LÊN ĐƯỜNG NỐI LIÊN TẦNG:** Trong sơ đồ kiến trúc phân tầng, tuyệt đối không chèn dày đặc nhãn "Thao tác CRUD", "Tìm kiếm", "Import/Export" lên các mũi tên giữa các tầng. Sơ đồ kiến trúc chỉ thể hiện khối cấu trúc; chi tiết hành động bắt buộc phân rã sang Sơ đồ Tuần tự (Sequence) riêng biệt.
 
 ---
 
