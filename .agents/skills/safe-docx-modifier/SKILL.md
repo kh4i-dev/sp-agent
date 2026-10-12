@@ -61,6 +61,11 @@ Lưu được file vật lý chỉ chứng minh code không bị crash. Nó khô
 2. Kiểm định tính toàn vẹn cú pháp XML (`verify_docx.py`).
 3. Kết xuất (Render PDF/PNG) để soi trực quan từng trang khi có thay đổi lớn.
 
+### Bài học 6: Chờ người dùng nghiệm thu ảnh trước khi thay (User Acceptance Gate)
+Khi thay thế ảnh sơ đồ trong file Word, Agent **BẮT BUỘC** phải hiển thị ảnh render mới và hỏi ý kiến xác nhận từ người dùng trước:
+*"Ảnh đã OK để thay luôn vào tài liệu chưa, hay cần sửa/tinh chỉnh ảnh nào?"*
+Tuyệt đối không được tự ý thực hiện ZIP swap ghi đè `imageX.png` nếu người dùng chưa trực tiếp duyệt hình thức trực quan của sơ đồ!
+
 ---
 
 ## 3. Mẫu Code Python Chuẩn tắc (Safe In-Place Script Pattern)

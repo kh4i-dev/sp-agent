@@ -84,18 +84,18 @@ Mỗi sơ đồ phải lưu file nguồn và xuất đồng thời SVG (vector) 
 ## 4. QUY TRÌNH KIỂM ĐỊNH & BÁO CÁO 5 KẾT QUẢ ĐỘC LẬP
 
 > [!CAUTION]
-> **HỌC THUYẾT CHỐNG BÁO ẢO & QUY CHUẨN VISUAL QA (IMAGE MUST ACTUALLY BE VIEWED):**
+> **HỌC THUYẾT CHỐNG BÁO ẢO & HARD ACCEPTANCE GATE (NO SELF-CERTIFIED PASS):**
 > 1. Xác minh file PNG tồn tại, không rỗng và mở được bình thường.
 > 2. **Dùng công cụ xem ảnh đưa nội dung hình ảnh vào ngữ cảnh của model** (như `view_file` trên PNG) để kiểm tra PNG thực tế.
 > 3. **CẤM coi `os.startfile()`, `Start-Process`, đọc kích thước ảnh, metadata hay đọc source code `.puml` là bằng chứng đã kiểm tra ảnh.**
-> 4. Kiểm tra riêng từng sơ đồ ở kích thước đủ lớn; nếu thiếu công cụ xem ảnh, dừng và báo `BLOCKED — Visual QA unavailable`.
+> 4. **Tách biệt 2 vai trò (Generator vs Adversarial Reviewer):** Người kiểm định phải chủ động tìm lỗi để bác bỏ sản phẩm chưa đạt, không được tự động đồng ý hay tự cấp chứng chỉ hoàn thành cho chính mình.
 > 5. **KHÔNG GỘP NĂM KẾT QUẢ DƯỚI ĐÂY THÀNH MỘT TRẠNG THÁI PASS DUY NHẤT NẾU CÒN BƯỚC CHƯA ĐƯỢC KIỂM CHỨNG.**
 
 Báo cáo nghiệm thu cuối cùng **BẮT BUỘC** trình bày tách bạch 5 mục:
 1. **Render validation:** File PNG & SVG tồn tại, > 500B, biên dịch sạch không có banner compiler.
 2. **Automated audit:** Script `audit-diagrams.mjs` báo 0 lỗi (không đè toạ độ, tỷ lệ khung hình chuẩn).
 3. **Actual visual inspection:** Agent trực tiếp xem ảnh PNG trong model context: nét chữ thoáng, không chen chúc nhãn giữa các tầng, không lệch dồn cục khoảng trắng.
-4. **Semantic correctness:** Đối chiếu 100% với schema DB, mã nguồn backend hoặc thuật toán (đúng PK/FK, đúng khoảng cách Levenshtein).
+4. **Semantic correctness:** Đối chiếu 100% với schema DB, mã nguồn backend hoặc thuật toán (không vi phạm nhảy cóc tầng như `UI -> Store`, đúng PK/FK, đúng khoảng cách Levenshtein).
 5. **DOCX rendered-page inspection:** Đã kiểm tra trang Word thực tế sau chèn hình (chiều rộng 14–15.5cm, khớp caption Hình X.Y, có `keep_with_next` chống rớt trang).
 
 ### Các trạng thái nghiệm thu:
@@ -106,22 +106,34 @@ Báo cáo nghiệm thu cuối cùng **BẮT BUỘC** trình bày tách bạch 5 
 
 ---
 
-## 5. BÀN GIAO TRỰC QUAN SẠCH (ZERO CODE DUMPS)
+## 5. CỔNG NGƯỜI DÙNG NGHIỆM THU — HỎI TRƯỚC KHI THAY VÀO DOCX
+
+> [!IMPORTANT]
+> **QUY TẮC CHỜ NGƯỜI DÙNG DUYỆT (USER ACCEPTANCE CHECKPOINT):**
+> Sau khi tạo ảnh và báo cáo kiểm định 5 cổng, Agent **DỪNG LẠI**, tuyệt đối **KHÔNG TỰ Ý GHI ĐÈ/SWAP ẢNH VÀO FILE WORD** nếu chưa có sự xác nhận của người dùng!
+> 
+> Agent phải hiển thị ảnh trực quan và hỏi người dùng câu hỏi nghiệm thu chuẩn:
+> *"Tôi đã hoàn thành bản vẽ và kiểm định 5 cổng phía trên. Bạn kiểm tra trực quan giúp tôi: Ảnh đã đạt yêu cầu để thay thế luôn vào tài liệu Word chưa, hay cần sửa đổi/tinh chỉnh ảnh nào? Vui lòng phản hồi để tôi tiến hành bước tiếp theo!"*
+
+---
+
+## 6. BÀN GIAO TRỰC QUAN SẠCH (ZERO CODE DUMPS)
 
 Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **TUYỆT ĐỐI KHÔNG** xả toàn bộ code block `.puml`, `.dot`, hay `.json` ra khung chat làm rối mắt. Báo cáo bàn giao chuẩn mực bắt buộc gồm:
 1. **Ảnh sơ đồ trực quan (Rendered Preview):** `![Hình X.Y: Tên sơ đồ](path/to/diagram.png)`
 2. **Tiêu đề hình chuẩn mực:** `*Hình X.Y: Tên sơ đồ*`
 3. **Báo cáo riêng biệt 5 kết quả kiểm chứng:** Trình bày độc lập (Render, Automated, Visual, Semantic, DOCX).
-4. **Đường dẫn tệp nguồn:** Link markdown tới file trên đĩa `[ten_so_do.puml](file:///path/to/ten_so_do.puml)`.
+4. **Câu hỏi xin ý kiến nghiệm thu người dùng** (theo Mục 5).
+5. **Đường dẫn tệp nguồn:** Link markdown tới file trên đĩa `[ten_so_do.puml](file:///path/to/ten_so_do.puml)`.
 
 ---
 
-## 6. CHECKLIST 12 MỤC NGHIỆM THU TRƯỚC KHI ĐƯA VÀO BÁO CÁO
+## 7. CHECKLIST 13 MỤC NGHIỆM THU TRƯỚC KHI ĐƯA VÀO BÁO CÁO
 
 - [ ] 1. Đã xác định đúng loại sơ đồ và câu hỏi duy nhất mà hình cần trả lời (1 sơ đồ = 1 câu hỏi).
 - [ ] 2. Đã kiểm tra nguồn dữ liệu, schema hoặc mã nguồn làm căn cứ (Semantic correctness).
-- [ ] 3. Không nhầm lẫn giữa UML Class, ERD CSDL và Cấu trúc dữ liệu RAM (Trie/Tree).
-- [ ] 4. Tên gọi, khóa, quan hệ, điều kiện và hướng mũi tên đều có căn cứ xác minh.
+- [ ] 3. Kiểm tra mâu thuẫn kiến trúc (không có đường nhảy cóc tầng như `UI -> Store` trong kiến trúc 3 lớp).
+- [ ] 4. Không nhầm lẫn giữa UML Class, ERD CSDL và Cấu trúc dữ liệu RAM (Trie/Tree).
 - [ ] 5. Sơ đồ kiến trúc không nhồi nhét chi tiết CRUD lên đường nối liên tầng (đã đưa sang Sequence).
 - [ ] 6. Cấu trúc dữ liệu RAM (Trie / BK-Tree) cân đối, không lệch dồn cục, khoảng cách Levenshtein chính xác.
 - [ ] 7. Đã chọn công cụ phù hợp nhất cho chính sơ đồ này (PlantUML / Graphviz / tldraw).
@@ -130,3 +142,4 @@ Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **
 - [ ] 10. Actual visual inspection: Đã trực tiếp mở ảnh PNG bằng công cụ xem ảnh vào ngữ cảnh model để soi mắt.
 - [ ] 11. DOCX rendered-page inspection: Khớp 100% file ảnh với Caption Hình X.Y, có câu dẫn nhập và `keep_with_next`.
 - [ ] 12. Báo cáo độc lập 5 kết quả kiểm chứng, không gộp thành 1 chữ PASS duy nhất khi chưa kiểm chứng đủ.
+- [ ] 13. Dừng lại hỏi người dùng nghiệm thu ảnh trước khi thực hiện hành động thay ảnh vào file Word.

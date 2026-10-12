@@ -9,15 +9,25 @@ Mục tiêu: Đảm bảo **100% sơ đồ xuất bản** đạt chuẩn kỹ th
 
 ---
 
-## 1. NGUYÊN TẮC CỐT LÕI: HỘI CHỨNG BÁO ẢO & THE ANTI-FALSE-PASS DOCTRINE
+## 1. HỌC THUYẾT KIỂM ĐỊNH ĐỘC LẬP: HARD ACCEPTANCE GATE — NO SELF-CERTIFIED PASS
 
 > [!CAUTION]
-> **HỘI CHỨNG BÁO ẢO (FALSE PASS SYNDROME):**
-> Script tự động (`audit-diagrams.mjs`) trả về exit code `0` chỉ là **ĐIỀU KIỆN CẦN (Kiểm tra hình học thô)**, **TUYỆT ĐỐI KHÔNG PHẢI ĐIỀU KIỆN ĐỦ**.
-> Một sơ đồ vượt qua script vẫn có thể hoàn toàn **FAIL** về mặt thị giác và ngữ nghĩa:
-> - **Hình 3.1 (Kiến trúc 3 lớp):** Nhiều mũi tên từ UI về Business Logic chen chúc nhau; các nhãn "Thao tác CRUD", "Yêu cầu xuất / nhập file", "Tìm kiếm" bị dồn ứ sát sạt giữa 2 tầng.
-> - **Hình 3.4 (Cấu trúc RAM):** Nửa bên trái dồn cục các node, nửa bên phải để trống hoác; chữ lọt thỏm giữa khoảng không gian thừa mứa.
-> - **Nhầm lẫn tài liệu:** File ảnh trong Word (`image3.png`) bị tráo lộn sang hình khác; caption một đằng nhưng hình vẽ một nẻo.
+> **5 NGUYÊN NHÂN GỐC KHIẾN AGENT BỊ "FALSE PASS" (BÁO ẢO):**
+> 1. **Nhầm lệnh chạy thành công với sản phẩm đạt yêu cầu:** Tạo `.puml` chạy renderer thành công và auditor báo 0 lỗi, nhưng kết quả ấy không chứng minh sơ đồ đúng kiến trúc hay dễ đọc khi in.
+> 2. **Sửa hình nhưng chưa kiểm tra mô hình bên dưới:** Ví dụ trong sơ đồ kiến trúc 3 lớp, file có đường `UI_Main --> Store` nhảy cóc qua `Engine` (Tầng nghiệp vụ). Đây là mâu thuẫn kiến trúc nghiêm trọng nhưng agent chỉ lo vẽ đẹp mũi tên mà không sửa mô hình logic! Chưa làm rõ đang mô tả kiến trúc hiện tại (As-Is) hay mục tiêu (To-Be).
+> 3. **"Mở ảnh" chưa chắc là "đã xem ảnh":** Chạy `Start-Process`, `os.startfile()` hay đọc metadata chỉ mở file trên máy tính hoặc lấy kích thước bytes. Chúng không đưa pixel vào thị giác của model.
+> 4. **Công cụ audit tự động kiểm tra thiếu tiêu chí:** Script chỉ phát hiện toạ độ thô hoặc SVG hợp lệ, bỏ sót mật độ nhãn dày đặc, mũi tên gây hiểu nhầm, hoặc sai lệch quan hệ.
+> 5. **Agent tự sinh rồi tự tuyên bố đạt:** Cùng một agent vừa vẽ, vừa quyết định thế nào là đẹp, vừa khen mình làm tốt. Cần cơ chế kiểm định độc lập (Adversarial Review) với quyền bác bỏ (`REJECT`).
+
+### Nguyên tắc chỉ thị cốt lõi (Hard Acceptance Gate):
+- Mục tiêu của nhiệm vụ là **chất lượng đã được kiểm chứng của sản phẩm cuối cùng**, KHÔNG PHẢI là việc thực thi thành công các lệnh render hay exit code 0 của script.
+- Bắt buộc kiểm tra 5 cổng độc lập có bằng chứng. Một lệnh thành công, một file SVG hợp lệ hay lời tự nhận của agent tạo sơ đồ **KHÔNG PHẢI là bằng chứng hoàn thành**.
+- **Quyền Bác Bỏ (Right to Reject):** Lượt kiểm định (Reviewer) phải chủ động tìm lỗi để bác bỏ sản phẩm chưa đạt. Không tối ưu hóa số lượng kết quả PASS; tối ưu hóa tính đúng đắn và độ tin cậy của sản phẩm bàn giao!
+- **4 Trạng thái nghiệm thu bắt buộc:**
+  - `PASS`: Tất cả các cổng bắt buộc đều có bằng chứng hỗ trợ rõ ràng.
+  - `PASS WITH CONDITIONS`: Còn một số giới hạn nhưng được ghi nhận rõ ràng và được dự án chấp thuận.
+  - `FAIL`: Còn tồn tại lỗi cụ thể chưa được khắc phục.
+  - `BLOCKED`: Một kiểm tra bắt buộc không thể thực hiện được (ví dụ thiếu tool xem ảnh, thiếu schema).
 
 ---
 
@@ -25,7 +35,7 @@ Mục tiêu: Đảm bảo **100% sơ đồ xuất bản** đạt chuẩn kỹ th
 
 Sau khi render mỗi sơ đồ, Agent **BẮT BUỘC** thực hiện quy trình kiểm tra thị giác nghiêm ngặt sau:
 
-1. **Xác minh tính hợp lệ vật lý:** File PNG tồn tại trên đĩa, dung lượng > 0 bytes và mở được bình thường.
+1. **Xác minh file vật lý:** File PNG tồn tại trên đĩa, dung lượng > 0 bytes và mở được bình thường.
 2. **Đưa ảnh trực tiếp vào ngữ cảnh model:** Dùng công cụ xem ảnh có khả năng đưa nội dung hình ảnh vào ngữ cảnh của model (như `view_file` trên tệp `.png`) để trực tiếp kiểm tra hình ảnh thực tế.
 3. **CẤM giả định việc xem ảnh:** Tuyệt đối **KHÔNG** được coi các thao tác sau là bằng chứng đã trực tiếp kiểm tra hình ảnh:
    - Chạy lệnh hệ thống `os.startfile()` hoặc `Start-Process`.
@@ -75,40 +85,35 @@ Sau khi render mỗi sơ đồ, Agent **BẮT BUỘC** thực hiện quy trình 
 1. **Render validation:** File PNG & SVG tồn tại trên đĩa, không rỗng (> 500 bytes), biên dịch sạch sẽ không có banner cảnh báo compiler (`Please use...`, `Warning`).
 2. **Automated audit:** Kết quả từ script `audit-diagrams.mjs` (không có va chạm tọa độ chữ, không có đường cắt ngang chữ, không có nhãn trên Crow's foot ERD, tỷ lệ aspect ratio hợp lý).
 3. **Actual visual inspection:** Kết quả từ việc Agent trực tiếp mở ảnh PNG bằng công cụ xem ảnh vào ngữ cảnh model (soi nét chữ thông thoáng, không chen chúc nhãn giữa các tầng, bố cục cân đối không lệch dồn cục, luồng rõ ràng).
-4. **Semantic correctness:** Đối chiếu 100% với schema CSDL, mã nguồn thật hoặc thuật toán (đúng tên bảng/class, đúng khóa PK/FK, đúng quan hệ 1-N / N-N, đúng khoảng cách Levenshtein toán học trên cạnh BK-Tree).
+4. **Semantic correctness:** Đối chiếu 100% với schema CSDL, mã nguồn thật hoặc kiến trúc quy chuẩn (không vi phạm nhảy cóc tầng như `UI -> Store`, đúng tên bảng/class, đúng khóa PK/FK, đúng khoảng cách Levenshtein toán học trên cạnh BK-Tree).
 5. **DOCX rendered-page inspection:** Đã kiểm tra trực quan trang văn bản sau khi chèn hình (chiều rộng 14–15.5 cm căn giữa, khớp 100% hình với Caption `Hình X.Y`, có câu văn dẫn dắt, có thuộc tính `keep_with_next` chống rớt caption sang trang sau).
 
 ---
 
-## 5. BÀN GIAO TRỰC QUAN SẠCH — CẤM XẢ MÃ NGUỒN (ZERO CODE DUMPS)
+## 5. CỔNG NGƯỜI DÙNG NGHIỆM THU — HỎI TRƯỚC KHI THAY VÀO DOCX
+
+> [!IMPORTANT]
+> **QUY TẮC CHỜ NGƯỜI DÙNG DUYỆT (USER ACCEPTANCE CHECKPOINT):**
+> Sau khi tạo ảnh và báo cáo kiểm định 5 cổng, Agent **DỪNG LẠI**, tuyệt đối **KHÔNG TỰ Ý GHI ĐÈ/SWAP ẢNH VÀO FILE WORD** nếu chưa có sự xác nhận của người dùng!
+> 
+> Agent phải hiển thị ảnh trực quan và hỏi người dùng câu hỏi nghiệm thu chuẩn:
+> *"Tôi đã hoàn thành bản vẽ và kiểm định 5 cổng phía trên. Bạn kiểm tra trực quan giúp tôi: Ảnh đã đạt yêu cầu để thay thế luôn vào tài liệu Word chưa, hay cần sửa đổi/tinh chỉnh ảnh nào? Vui lòng phản hồi để tôi tiến hành bước tiếp theo!"*
+
+---
+
+## 6. BÀN GIAO TRỰC QUAN SẠCH — CẤM XẢ MÃ NGUỒN (ZERO CODE DUMPS)
 
 - File mã nguồn (`.puml`, `.dot`, `.tldr`) **chỉ được lưu trên ổ đĩa**, tuyệt đối **KHÔNG in khối code nguồn** ra câu trả lời chat làm tràn màn hình.
 - Phản hồi bàn giao **BẮT BUỘC CHỈ GỒM**:
   1. **Ảnh sơ đồ trực quan (Rendered Preview):** `![Hình X.Y: Tên sơ đồ](path/to/diagram.png)`.
   2. **Tiêu đề sơ đồ chuẩn:** `*Hình X.Y: Tên sơ đồ*`.
   3. **Báo cáo chi tiết 5 kết quả kiểm chứng độc lập** (không gộp tắt).
-  4. **Đường dẫn tệp nguồn (Link Markdown ngắn gọn):** `[Mã nguồn .puml](file:///path/to/diagram.puml)`.
-
-### Mẫu báo cáo nghiệm thu chuẩn:
-
-```markdown
-### Báo cáo kiểm định sơ đồ: Hình 3.1 — Kiến trúc phân tầng hệ thống
-
-![Hình 3.1: Kiến trúc phân tầng hệ thống](assets/diagrams/01_architecture.png)
-*Hình 3.1: Kiến trúc phân tầng hệ thống (3-Tier Architecture)*
-
-- **1. Render validation:** [PASS] Đã tạo đủ `01_architecture.svg` và `01_architecture.png` (300 DPI, 185 KB), biên dịch sạch sẽ không banner.
-- **2. Automated audit:** [PASS] `audit-diagrams.mjs` báo 0 lỗi, aspect ratio 1.4:1 đạt chuẩn in ấn, không đè toạ độ.
-- **3. Actual visual inspection:** [PASS] Đã mở file PNG soi mắt thực tế qua view_file: Các tầng Presentation, Business Logic và Data Access phân cách rõ ràng; các nhãn CRUD chi tiết đã lược bỏ khỏi liên tầng để tránh chen chúc; nét chữ Segoe UI sắc nét, khoảng thở thoáng đãng.
-- **4. Semantic correctness:** [PASS] Khớp 100% các Controller, Service và Repository trong mã nguồn backend thực tế của dự án.
-- **5. DOCX rendered-page inspection:** [PASS] Ảnh rộng 15.0 cm căn giữa, khớp với caption "Hình 3.1", đoạn văn dẫn dắt nằm ngay trước hình, đã bật `keep_with_next` chống rớt trang.
-
-*Tệp nguồn:* [01_architecture.puml](file:///E:/HOC%20TAP/my-project/sp-agent/assets/diagrams/01_architecture.puml)
-```
+  4. **Câu hỏi xin ý kiến nghiệm thu người dùng** (theo Mục 5).
+  5. **Đường dẫn tệp nguồn (Link Markdown ngắn gọn):** `[Mã nguồn .puml](file:///path/to/diagram.puml)`.
 
 ---
 
-## 6. TOOLCHAIN KIỂM ĐỊNH TỰ ĐỘNG
+## 7. TOOLCHAIN KIỂM ĐỊNH TỰ ĐỘNG
 
 Chạy script kiểm định tích hợp:
 
