@@ -18,12 +18,13 @@ Mục tiêu: bản thảo đọc như một kỹ sư/nhà nghiên cứu thực t
 
 ---
 
-## 2. Hai căn bệnh đối lập cần tránh (Dual Failure Modes)
+## 2. Ba căn bệnh cần tránh (Failure Modes)
 
-1. **Bệnh AI sáo rỗng (AI Slop):** Lạm dụng tính từ hoa mỹ, tâng bốc tính năng ("tối ưu hóa", "toàn diện", "đóng vai trò then chốt", "tiên tiến", "nâng cao trải nghiệm").
-2. **Bệnh khô cứng hành chính (Sterile Bureaucracy):** Khi bị cấm hoa mỹ, agent rút vào vùng an toàn tuyệt đối và viết như một robot vô hồn: câu nào cũng bị động ("được thực hiện bởi"), nhịp điệu phẳng lì, không có nhận định kỹ thuật, không có góc nhìn của người trong cuộc.
+1. **AI sáo rỗng (AI Slop):** Lạm dụng tính từ hoa mỹ, tâng bốc tính năng ("tối ưu hóa", "toàn diện", "đóng vai trò then chốt", "tiên tiến", "nâng cao trải nghiệm").
+2. **Khô cứng hành chính (Sterile Bureaucracy):** Khi bị cấm hoa mỹ, agent rút vào vùng an toàn tuyệt đối và viết như robot vô hồn: câu nào cũng bị động ("được thực hiện bởi"), nhịp điệu phẳng lì, không có nhận định kỹ thuật.
+3. **Quá thân mật / khẩu ngữ (Tech-blog Casual):** Viết như blog cá nhân: "mình", "nhóm mình thử", "nó chạy cực nhanh", "ok", câu cảm thán, tiếng lóng. Tự nhiên nhưng **thiếu nghiêm túc** — không hợp báo cáo/đồ án.
 
-> **Tiêu chuẩn vàng:** Văn phong kỹ sư thực chiến — chắc nịch, gãy gọn, lập luận dựa trên cơ chế và số liệu, có nhịp thở và góc nhìn người làm thực tế.
+> **Tiêu chuẩn vàng:** Văn phong **nghiêm túc nhưng tự nhiên** — khách quan, dứt khoát, lập luận dựa trên cơ chế và số liệu; câu chữ có nhịp thở, không sáo rỗng, không khô cứng, không xuồng xã.
 
 ---
 
@@ -51,7 +52,36 @@ Người đọc báo cáo (thầy cô, hội đồng, đồng nghiệp) đã bi�
 
 ---
 
-## 4. Quy luật Nhịp điệu câu (Cadence & Burstiness)
+## 4. Giọng điệu Trang trọng Vừa phải & Kiểm soát Thuật ngữ
+
+Viết tự nhiên **không** đồng nghĩa với xuồng xã hay nhồi thuật ngữ. Giữ cân bằng ở giữa.
+
+### A. Mức trang trọng (Register)
+- Khách quan, dứt khoát; **không cảm thán, không tiếng lóng, không teencode**.
+- Ngôi kể **nhất quán**: ngôi 3 khách quan ("hệ thống được thiết kế...") hoặc "chúng tôi/em" — chọn một, không trộn.
+- Mỗi nhận định có căn cứ; tránh "chắc là", "có lẽ", "hình như".
+- Câu dài ngắn đan xen vẫn giữ được vẻ nghiêm túc (nhịp thở khác với khẩu ngữ).
+
+### B. Kiểm soát thuật ngữ ngành (Jargon)
+- Chỉ dùng khi cần chính xác; ưu tiên từ ngữ nghiệp vụ dễ hiểu.
+- Lần đầu xuất hiện: viết đầy đủ + viết tắt trong ngoặc; các lần sau dùng viết tắt.
+- **Không chồng nhiều thuật ngữ trong một câu** (tối đa 1–2 thuật ngữ mới/câu).
+- Thuật ngữ dễ gây khó → giải nghĩa ngắn bằng tiếng Việt phổ thông.
+- Không dùng thuật ngữ để "khoe"; xen câu diễn đạt thường để giữ mật độ vừa phải.
+
+### C. Ví dụ hiệu chỉnh
+| Quá thân mật (blog) | Nghiêm túc nhưng tự nhiên |
+|---|---|
+| "Nhóm mình thử Redis, nó chạy cực nhanh." | "Nhóm thử nghiệm lớp đệm Redis; thời gian phản hồi giảm rõ rệt." |
+| "Cái module auth làm ngon lành." | "Module xác thực đáp ứng đầy đủ yêu cầu phân quyền." |
+| "Docker hơi khó cài lúc đầu, sau thì ổn." | "Việc thiết lập Docker ban đầu gặp một số trở ngại, sau đó đã ổn định." |
+| "Không thể tin nổi là nhanh vậy!" | (bỏ — không dùng cảm thán trong báo cáo) |
+
+> Chi tiết đầy đủ + mật độ cân bằng: `reference/register-and-jargon.md`.
+
+---
+
+## 5. Quy luật Nhịp điệu câu (Cadence & Burstiness)
 
 Dấu hiệu nhận biết máy móc rõ nhất là **mọi câu đều dài bằng nhau** (18–25 từ/câu). Đọc liên tiếp sẽ tạo cảm giác ru ngủ và cứng đờ.
 
@@ -64,7 +94,7 @@ Hãy chủ động đan xen nhịp thở:
 
 ---
 
-## 5. Cấm tuyệt đối (Định dạng & Lập luận — Bất biến)
+## 6. Cấm tuyệt đối (Định dạng & Lập luận — Bất biến)
 
 ### A. Về định dạng
 - **Không in đậm / bôi đậm chữ (bold) trong thân bài.** Nhấn ý bằng cấu trúc câu và từ ngữ, không dùng nét chữ. Ngoại lệ: Tiêu đề chương/mục theo Heading style.
@@ -85,7 +115,7 @@ Cấm tiệt các từ/cụm từ sáo rỗng sau:
 
 ---
 
-## 6. Móc xích Logic & Phá bỏ Khuôn mẫu 3 thì
+## 7. Móc xích Logic & Phá bỏ Khuôn mẫu 3 thì
 
 ### Tránh lạm dụng liên từ cơ học
 Không mở đầu mọi câu/đoạn bằng: *Bên cạnh đó, Ngoài ra, Hơn nữa, Đồng thời, Mặt khác*.
@@ -103,7 +133,7 @@ Hãy mở đầu đoạn văn đa dạng:
 
 ---
 
-## 7. Bảng so sánh 3 cấp độ (Evolution Table)
+## 8. Bảng so sánh 3 cấp độ (Evolution Table)
 
 | Cấp 1: AI sáo rỗng (Tệ) | Cấp 2: Sửa vội (Khô cứng hành chính) | Cấp 3: Kỹ sư thực chiến (Chuẩn) |
 | :-- | :-- | :-- |
@@ -113,7 +143,7 @@ Hãy mở đầu đoạn văn đa dạng:
 
 ---
 
-## 8. Quy tắc Bố cục chương & Ngôi kể
+## 9. Quy tắc Bố cục chương & Ngôi kể
 
 1. **Mỗi chương kết thúc bằng một đoạn "Tóm tắt chương"** 2–3 câu (nêu kết luận kỹ thuật chính, không tóm tắt theo kiểu kể lể mục lục).
 2. **Nhất quán ngôi kể:** Ưu tiên ngôi thứ 3 khách quan ("nghiên cứu được tiến hành...", "hệ thống được thiết kế...") theo chuẩn các trường ĐH tại Việt Nam; nếu trường cho phép thì dùng một ngôi duy nhất (em/chúng tôi/tác giả) từ đầu đến cuối.
@@ -121,7 +151,7 @@ Hãy mở đầu đoạn văn đa dạng:
 
 ---
 
-## 9. Checklist trước khi giao
+## 10. Checklist trước khi giao
 
 ```text
 [ ] Không có chữ in đậm / bôi đậm trong thân bài.
@@ -133,14 +163,17 @@ Hãy mở đầu đoạn văn đa dạng:
 [ ] Có lý do đánh đổi (trade-offs) và thông số kỹ thuật cụ thể; không chép rác giáo trình.
 [ ] Các đoạn nối nhau bằng logic nội tại, không lặp chuỗi "Bên cạnh đó / Ngoài ra / Hơn nữa".
 [ ] Mỗi chương kết thúc bằng "Tóm tắt chương" 2–3 câu thực chất.
-[ ] Ngôi kể nhất quán từ đầu đến cuối.
+[ ] Ngôi kể nhất quán từ đầu đến cuối, không trộn.
+[ ] Giọng trang trọng vừa phải: không cảm thán, không tiếng lóng ("cực", "siêu", "ok", "nó").
+[ ] Thuật ngữ không chồng chất (≤ 1–2 thuật ngữ mới/câu); lần đầu có viết đầy đủ + viết tắt.
 [ ] Đã render và đọc lại trên trang in thật (theo skill docx-report).
 ```
 
 ---
 
-## 10. Tài liệu tham khảo sâu
+## 11. Tài liệu tham khảo sâu
 
 - Cẩm nang Giọng văn Thực chiến & Nhịp điệu: xem `reference/voice-and-cadence.md`.
+- Trang trọng vừa phải & kiểm soát thuật ngữ: xem `reference/register-and-jargon.md`.
 - Checklist chi tiết + ví dụ trước/sau: xem `reference/checklist.md`.
 - Nguồn học viết báo cáo (quy định 12+ trường VN + quốc tế): xem `reference/sources.md`.
