@@ -45,6 +45,19 @@ Các repo agent-skill high-star đã clone về **để tra cứu — KHÔNG aut
 
 Muốn biến một repo trong `vendor/` thành skill thật: copy vào `.claude/skills/<name>/` rồi chạy `tools/sync-skills.ps1`.
 
+## Block coordinators (điều phối theo khối — nạp NHANH)
+
+Khi việc thuộc một khối rõ ràng, **nạp coordinator của khối đó** thay vì quét cả bộ skill:
+
+| Khối | Coordinator | Thành viên chính |
+|---|---|---|
+| Báo cáo/đồ án Word (.docx) | `coord-report` | docx-report, human-report-writing, safe-docx-modifier, docx |
+| Tài liệu dự án & viết/sửa docs | `coord-docs` | doc-architect, living-docs, okf-knowledge-format, documentation, documentation-and-adrs, doc-coauthoring, writing-guidelines |
+| Sơ đồ kỹ thuật | `coord-diagrams` | diagram-orchestrator, plantuml-diagrams, tldraw-diagrams, simplified-diagrams, use-case-layout, diagram-design, diagram-auditor |
+| Slide / thuyết trình | `coord-slides` | pptx-deck, pptx, ppt-master, theme-factory, anti-slop |
+| Dữ liệu (Excel/PDF/biểu đồ) | `coord-data` | xlsx-sheet, xlsx, pdf-toolkit, pdf, data-visualization |
+| Nghiên cứu | `coord-research` | research-report, research, research-artifacts |
+
 ## Skill index
 
 | Skill | Dùng khi | Đầu ra chính |
@@ -88,6 +101,12 @@ Muốn biến một repo trong `vendor/` thành skill thật: copy vào `.claude
 
 ```text
 "điều phối skill / chọn skill / nạp skill / phối hợp skill / bắt đầu việc lớn / không biết dùng skill nào / quy trình đồ án" → skill-coordinator
+"viết báo cáo / sửa báo cáo / đồ án / luận văn Word (.docx)" → coord-report
+"viết docs / sửa docs / README / AGENTS.md / ADR / PRD / tài liệu dự án / OKF" → coord-docs
+"sơ đồ / UML / ERD / use case / kiến trúc / flowchart (khối sơ đồ)" → coord-diagrams
+"slide / thuyết trình / PowerPoint / deck / bảo vệ (khối slide)" → coord-slides
+"Excel / bảng tính / PDF / biểu đồ / số liệu (khối dữ liệu)" → coord-data
+"nghiên cứu / tổng hợp / literature review / fact-check (khối nghiên cứu)" → coord-research
 "điều phối sơ đồ / chọn công cụ vẽ sơ đồ / diagram orchestrator / sơ đồ cây / trie / bk-tree" → diagram-orchestrator
 "viết báo cáo / sửa file Word / đồ án / luận văn"        → docx-report
 "sửa docx an toàn / thay ảnh docx / sửa chữ docx ko gen lại / sửa file word hoàn thiện" → safe-docx-modifier

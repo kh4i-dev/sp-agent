@@ -30,6 +30,10 @@ thật cần **nhiều skill phối hợp** (nội dung → sơ đồ → văn p
 | Thiết kế/bố cục (chống slop) | `anti-slop` | `theme-factory`, `diagram-design` |
 | Kỷ luật kỹ thuật / debug | `engineering-discipline` | — |
 
+> **Nạp nhanh theo khối:** nếu việc thuộc một khối rõ ràng, nạp thẳng **coordinator của khối đó** thay vì tự ghép:
+> `coord-report` (báo cáo/đồ án Word) · `coord-docs` (tài liệu dự án, viết/sửa docs) · `coord-diagrams` (sơ đồ) · `coord-slides` (slide) · `coord-data` (Excel/PDF/biểu đồ) · `coord-research` (nghiên cứu).
+> Mỗi coordinator tự khai báo thành viên + thứ tự nạp + cổng của khối mình.
+
 ---
 
 ## 2. Giao thức 1 lần nạp (BẮT BUỘC, làm đúng thứ tự)
