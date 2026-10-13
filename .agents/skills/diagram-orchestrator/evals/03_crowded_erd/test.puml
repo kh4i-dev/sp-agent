@@ -1,0 +1,38 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+skinparam roundCorner 4
+skinparam dpi 300
+skinparam linetype ortho
+left to right direction
+
+entity "USERS" as USERS {
+  * id : UUID <<PK>>
+  --
+  * email : VARCHAR(100)
+}
+
+entity "ORDERS" as ORDERS {
+  * id : UUID <<PK>>
+  --
+  * user_id : UUID <<FK>>
+}
+
+entity "ORDER_ITEMS" as ORDER_ITEMS {
+  * id : UUID <<PK>>
+  --
+  * order_id : UUID <<FK>>
+  * product_id : UUID <<FK>>
+}
+
+entity "PRODUCTS" as PRODUCTS {
+  * id : UUID <<PK>>
+  --
+  * name : VARCHAR(100)
+}
+
+USERS ||--o{ ORDERS
+ORDERS ||--|{ ORDER_ITEMS
+PRODUCTS ||--o{ ORDER_ITEMS
+@enduml

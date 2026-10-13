@@ -1,11 +1,21 @@
 ---
 name: diagram-auditor
-description: Audit và kiểm định chất lượng sơ đồ kỹ thuật (PlantUML, Graphviz DOT, tldraw, SVG, PNG) trước khi gửi cho người dùng hoặc chèn vào báo cáo Word (docx-report). Ngăn chặn dứt điểm hội chứng False PASS (script chạy 0 lỗi nhưng nhìn bằng mắt vẫn méo mó, đè nhãn, dồn cục). Bắt buộc thực hiện Visual QA bằng cách đưa ảnh PNG trực tiếp vào ngữ cảnh model để soi mắt thực tế. Báo cáo độc lập 5 kết quả kiểm chứng (Render validation, Automated audit, Actual visual inspection, Semantic correctness, DOCX rendered-page inspection), cấm gộp thành một chữ PASS chung chung.
+description: Audit và kiểm định chất lượng sơ đồ kỹ thuật (PlantUML, Graphviz DOT, tldraw, SVG, PNG) trước khi gửi hoặc chèn vào báo cáo Word. Chặn hội chứng False PASS (script 0 lỗi nhưng mắt thấy FAIL: đè nhãn, dồn cục, méo lệch). Bắt buộc Visual QA: đưa ảnh PNG vào ngữ cảnh model + LUẬT BẰNG CHỨNG SOI ẢNH (trích ≥3 nhãn nguyên văn + vị trí + dấu vết file). Áp ZERO-COLOR (chỉ thang độ xám, cấm mọi mã màu kể cả khi ảnh mẫu có màu) và cổng bố cục đẹp (chữ ≥9pt, tỷ lệ khung 0.5–2.4, chống node mồ côi/dồn cục/lệch trọng tâm). GATE 0: bắt buộc file Bước 0 đã xác minh bằng bằng chứng (chưa rõ ghi UNKNOWN). Hai cổng tách biệt — Semantic Review (nghiệp vụ/UML) vs Visual Review (hình học): thiếu Bước 0 = FAIL nghiệp vụ dù hình đẹp; cấm căn chỉnh bố cục che lỗi mô hình. Báo cáo 5 kết quả độc lập.
 ---
 
 # Diagram Auditor Skill — Cổng Kiểm Định Chất Lượng Sơ Đồ & Visual QA Thực Tế
 
 Mục tiêu: Đảm bảo **100% sơ đồ xuất bản** đạt chuẩn kỹ thuật và thẩm mỹ in ấn học thuật cao cấp. Chặn đứng tận gốc tình trạng **"Script báo PASS nhưng mắt nhìn thấy FAIL"** — tức là file render được không lỗi cú pháp nhưng bố cục chật chội, nhãn đè nhau, khoảng trắng bất hợp lý, hoặc nhầm lẫn hình ảnh trong tài liệu.
+
+---
+
+## 0. CỔNG TIỀN KIỂM ĐỊNH (GATE 0) — BẮT BUỘC CÓ FILE BƯỚC 0 TRƯỚC KHI AUDIT
+
+> [!CAUTION]
+> **CẤM AUDIT SƠ ĐỒ USE CASE / MÔ HÌNH MIỀN KHI CHƯA CÓ FILE BƯỚC 0.**
+> Trước khi audit bất kỳ sơ đồ Use Case / domain / actor nào, Reviewer **BẮT BUỘC** xác minh tồn tại file `docs/domain/step0-<du-an>.md` (template: [`diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md)), và file đó đã trả lời đủ: bài toán, quy mô, số người vận hành, **trách nhiệm từng tác nhân** (phân biệt ai sửa lỗi IT vs ai không sửa lỗi IT nhưng chịu trách nhiệm nghiệp vụ), ranh giới hệ thống.
+> - **Không có file Bước 0** → trạng thái **BLOCKED** (thiếu nguồn sự thật), KHÔNG được audit và KHÔNG được PASS. Ghi nguyên văn: `⚠️ VI PHẠM KỶ LUẬT: thiếu Bước 0 — lỗi tư duy mô hình hóa, không phải lỗi bố cục.`
+> - **Có file nhưng tác nhân/trách nhiệm mâu thuẫn với sơ đồ** (ví dụ một tác nhân nghiệp vụ *không* sửa lỗi IT lại bị vẽ như người xử lý lỗi kỹ thuật) → **FAIL**.
 
 ---
 
@@ -33,6 +43,19 @@ Mục tiêu: Đảm bảo **100% sơ đồ xuất bản** đạt chuẩn kỹ th
 
 ## 2. QUY CHUẨN BẮT BUỘC: VISUAL QA — IMAGE MUST ACTUALLY BE VIEWED
 
+> [!CAUTION]
+> **LUẬT BẰNG CHỨNG SOI ẢNH (PROOF-OF-VIEW) — KHÔNG CÓ BẰNG CHỨNG THÌ KHÔNG PHẢI PASS.**
+> Việc "đã mở ảnh" là vô nghĩa nếu không để lại **bằng chứng quan sát cụ thể**. Agent BẮT BUỘC ghi lại:
+> 1. **≥ 3 nhãn/chữ đọc được nguyên văn** từ chính ảnh PNG (không lấy từ file `.puml`).
+> 2. **Vị trí tương đối** các khối chính (ví dụ: "Actor Khách ở cột trái, hàng giữa").
+> 3. **Danh sách lỗi phát hiện hoặc xác nhận "không lỗi"** cho từng mục trong Danh mục lỗi bắt buộc (Mục 2, điểm 5) và 13 tiêu chí bố cục đẹp.
+> 4. **Mã băm / dấu vết của đúng file đã soi** (tên file + dung lượng + thời điểm render) để chứng minh đã soi ảnh *sau* lần render cuối, không soi ảnh cũ.
+> Không có 4 mục bằng chứng này → trạng thái **KHÔNG THỂ là PASS** (tối đa `PASS WITH CONDITIONS` hoặc `BLOCKED`).
+
+### 2.0. LUẬT CHỐNG SAO CHÉP MÀU ẢNH MẪU (REFERENCE-COLOR PROHIBITION)
+> [!IMPORTANT]
+> Nếu người dùng gửi sơ đồ mẫu **có màu**, đó KHÔNG phải lệnh cho phép dùng màu. Agent chỉ sao chép **cấu trúc/bố cục/nhóm/quan hệ** từ ảnh mẫu, và **BẮT BUỘC xuất B&W**. Mọi mã màu phi thang độ xám phát hiện trong SVG render → **FAIL** (hard-block), kể cả khi người dùng nài nỉ (trừ khi có ghi đè tường minh `override-monochrome: true`).
+
 Sau khi render mỗi sơ đồ, Agent **BẮT BUỘC** thực hiện quy trình kiểm tra thị giác nghiêm ngặt sau:
 
 1. **Xác minh file vật lý:** File PNG tồn tại trên đĩa, dung lượng > 0 bytes và mở được bình thường.
@@ -48,10 +71,15 @@ Sau khi render mỗi sơ đồ, Agent **BẮT BUỘC** thực hiện quy trình 
    - Nhãn không gắn đúng vào đường nối tương ứng (lơ lửng, lệch vị trí).
    - Mũi tên sai hướng logic hoặc đi chéo ngang mặt khối khác.
    - Đường nối cắt xuyên qua khung hoặc cắt qua nội dung của box.
-   - Cỡ chữ quá nhỏ so với tỷ lệ chung, không đọc được khi in ra A4.
+   - Cỡ chữ quá nhỏ so với tỷ lệ chung (< 9pt), không đọc được khi in ra A4.
    - Khoảng trắng bất hợp lý (lệch dồn cục sang một bên, để trống hoác bên còn lại).
    - Luồng nghiệp vụ rối rắm, khó hiểu cho người đọc.
-6. **Vòng lặp sửa lỗi có kiểm chứng:** Chỉ sửa sau khi đã xác định chính xác lỗi; sau khi sửa mã nguồn bắt buộc phải render lại và **mở xem ảnh mới** để xác nhận lỗi đã biến mất.
+   - **Màu phi thang độ xám lọt vào ảnh** (dấu hiệu copy màu từ ảnh mẫu) → vi phạm zero-color.
+   - **Node mồ côi** (khối không có đường nối nào) hoặc **node trùng chồng** lên nhau.
+   - **Cụm dồn cục (clustering):** ≥ 3 node cách nhau < 30px.
+   - **Trọng tâm lệch:** các khối dồn về một góc, để trống hoác phần lớn khung hình.
+   - **Tỷ lệ khung hình** ngoài khoảng 0.5–2.4 (dẹt lép hoặc dài ngoằng).
+6. **Vòng lặp sửa lỗi thực nghiệm bằng cô lập biến số (Single-Variable Empirical Isolation):** Chỉ sửa sau khi đã xác định chính xác giả thuyết lỗi; **chỉ thay đổi một biến số duy nhất tại một thời điểm** (ví dụ: gỡ nhãn cạnh nghi vấn trước, giữ nguyên cấu trúc package và layout); sau khi sửa bắt buộc render lại và **mở xem ảnh mới** để so sánh trực tiếp với ảnh mốc (baseline). Tuyệt đối không thay đổi đồng loạt nhiều yếu tố rồi võ đoán nguyên nhân.
 7. **Xử lý khi thiếu công cụ xem ảnh:** Nếu môi trường thiếu công cụ xem ảnh đưa được pixel vào ngữ cảnh model, Agent phải dừng lại và báo:
    `BLOCKED — Visual QA unavailable`. Tuyệt đối không được đoán mò kết quả dựa trên output của renderer hay script auditor!
 
@@ -69,9 +97,32 @@ Sau khi render mỗi sơ đồ, Agent **BẮT BUỘC** thực hiện quy trình 
 | Cấm viết text label lên đường Crow's foot trong ERD | **Kiểm tra được 100%** | Kiểm tra đúng thực thể |
 | **Mật độ nhãn chen chúc giữa các tầng kiến trúc** | Cảnh báo dải Y hẹp | **BẮT BUỘC Agent soi mắt** |
 | **Sự cân đối khoảng trắng (Whitespace balance)** | Cảnh báo aspect ratio cực đoan | **BẮT BUỘC Agent soi mắt** |
+| **Luật zero-color (chỉ cho phép thang độ xám)** | **Kiểm tra được 100%** (quét mọi `fill`/`stroke`/`rgb()`) | Xác nhận lại |
+| **Cỡ chữ tối thiểu (≥ 9pt) & tỷ lệ khung 0.5–2.4** | **Kiểm tra được 100%** | Xác nhận lại |
+| **Node mồ côi / node trùng chồng** | Cảnh báo heuristic | **BẮT BUỘC Agent soi mắt** |
+| **Trọng tâm khối bị lệch (centroid skew)** | Cảnh báo heuristic (lệch > 20%/trục) | **BẮT BUỘC Agent soi mắt** |
 | **Tính đúng đắn ngữ nghĩa (Đúng code, đúng schema DB)** | *Không kiểm tra được* | **BẮT BUỘC Agent đối chiếu** |
 | **Khớp hình ảnh với Caption trong Word DOCX** | *Không kiểm tra được* | **BẮT BUỘC Agent đối chiếu** |
 | **Bố cục in ấn trang Word A4 (Chống rớt trang, rớt caption)** | *Không kiểm tra được* | **BẮT BUỘC Agent đối chiếu** |
+| **Giả định "đã dùng package/nodesep/ranksep nên hết giao cắt"** | *Không kiểm tra được* (cấu hình KHÔNG phải bằng chứng) | **BẮT BUỘC render + soi ảnh thật** |
+
+---
+
+## 3.5. HAI CỔNG NGHIỆM THU TÁCH BIỆT (SEMANTIC REVIEW vs VISUAL REVIEW)
+
+> [!CAUTION]
+> **KHÔNG ĐƯỢC GỘP — VÀ THỨ TỰ BẤT BIẾN.**
+> Nghiệm thu gồm **HAI cổng độc lập**, mỗi cổng có quyền phán riêng:
+
+| Cổng | Phán cái gì | Gồm các mục | Điều kiện FAIL |
+| :--- | :--- | :--- | :--- |
+| **A. Semantic Review (Nghiệp vụ/UML)** | Mô hình **ĐÚNG hay SAI** | Bước 0 (đủ + có bằng chứng/`UNKNOWN` khai báo), đối chiếu schema/code/kiến trúc, đúng quan hệ include/extend/kế thừa, đúng tác nhân & ranh giới | **Thiếu Bước 0 đã xác minh** = FAIL nghiệp vụ; tác nhân/trách nhiệm mâu thuẫn = FAIL |
+| **B. Visual Review (Hình học)** | Hình **ĐỌC ĐƯỢC hay KHÓ ĐỌC** | Render thật + đo kích thước + soi PNG (Proof-of-View) + chạy `audit-diagrams.mjs` + 13 tiêu chí bố cục | Đè chữ/cắt nét/màu phi xám/chữ <9pt/dồn cục = FAIL thị giác |
+
+**Ba luật bất di bất dịch:**
+1. **Không có Bước 0 đã XÁC MINH → KHÔNG VẼ, KHÔNG AUDIT** (BLOCKED).
+2. **Có Bước 0 nhưng mô hình SAI → KHÔNG được căn chỉnh bố cục để che lỗi** (sửa mô hình trước; cấm dùng mẹo trình bày để giấu lỗi nghiệp vụ).
+3. **Mô hình ĐÚNG nhưng hình KHÓ ĐỌC → tiếp tục tối ưu bố cục + kiểm tra lại** — **FAIL ở cổng B KHÔNG làm mất hiệu lực của cổng A**, và ngược lại: **cổng A FAIL thì mọi nỗ lực làm đẹp ở cổng B đều vô nghĩa** — không được lấy hình đẹp để bù cho mô hình sai.
 
 ---
 
@@ -82,10 +133,10 @@ Sau khi render mỗi sơ đồ, Agent **BẮT BUỘC** thực hiện quy trình 
 > **KHÔNG GỘP NĂM KẾT QUẢ DƯỚI ĐÂY THÀNH MỘT TRẠNG THÁI PASS DUY NHẤT NẾU CÒN BƯỚC CHƯA ĐƯỢC KIỂM CHỨNG.**
 > Báo cáo nghiệm thu bắt buộc phải trình bày riêng rẽ từng mục:
 
-1. **Render validation:** File PNG & SVG tồn tại trên đĩa, không rỗng (> 500 bytes), biên dịch sạch sẽ không có banner cảnh báo compiler (`Please use...`, `Warning`).
-2. **Automated audit:** Kết quả từ script `audit-diagrams.mjs` (không có va chạm tọa độ chữ, không có đường cắt ngang chữ, không có nhãn trên Crow's foot ERD, tỷ lệ aspect ratio hợp lý).
-3. **Actual visual inspection:** Kết quả từ việc Agent trực tiếp mở ảnh PNG bằng công cụ xem ảnh vào ngữ cảnh model (soi nét chữ thông thoáng, không chen chúc nhãn giữa các tầng, bố cục cân đối không lệch dồn cục, luồng rõ ràng).
-4. **Semantic correctness:** Đối chiếu 100% với schema CSDL, mã nguồn thật hoặc kiến trúc quy chuẩn (không vi phạm nhảy cóc tầng như `UI -> Store`, đúng tên bảng/class, đúng khóa PK/FK, đúng khoảng cách Levenshtein toán học trên cạnh BK-Tree).
+1. **Render validation:** File PNG & SVG tồn tại trên đĩa, không rỗng (> 500 bytes), biên dịch sạch sẽ không có banner cảnh báo compiler (`Please use...`, `Warning`), và SVG **không chứa mã màu phi thang độ xám**.
+2. **Automated audit:** Kết quả từ script `audit-diagrams.mjs` (0 lỗi ĐỎ): không va chạm tọa độ chữ, không đường cắt ngang chữ, không nhãn trên Crow's foot ERD, **màu grayscale đạt luật zero-color**, **cỡ chữ nhỏ nhất ≥ 9pt**, tỷ lệ aspect ratio hợp lý (0.5–2.4). Các cảnh báo VÀNG phải được Agent phân xử.
+3. **Actual visual inspection:** Kết quả từ việc Agent trực tiếp mở ảnh PNG bằng công cụ xem ảnh vào ngữ cảnh model, **kèm bằng chứng soi ảnh ở Mục 2** (soi nét chữ thông thoáng, không chen chúc nhãn giữa các tầng, bố cục cân đối không lệch dồn cục, không node mồ côi, luồng rõ ràng, đạt 13 tiêu chí bố cục đẹp).
+4. **Semantic correctness (Cổng A — Nghiệp vụ):** Xác minh **Bước 0 đã có và có bằng chứng** (mỗi trách nhiệm tác nhân trỏ nguồn, chỗ chưa rõ ghi `UNKNOWN`), rồi đối chiếu 100% với schema CSDL, mã nguồn thật hoặc kiến trúc quy chuẩn (không vi phạm nhảy cóc tầng như `UI -> Store`, đúng tên bảng/class, đúng khóa PK/FK, đúng khoảng cách Levenshtein toán học trên cạnh BK-Tree). **Thiếu Bước 0 đã xác minh → FAIL nghiệp vụ, bất kể hình đẹp tới đâu.**
 5. **DOCX rendered-page inspection:** Đã kiểm tra trực quan trang văn bản sau khi chèn hình (chiều rộng 14–15.5 cm căn giữa, khớp 100% hình với Caption `Hình X.Y`, có câu văn dẫn dắt, có thuộc tính `keep_with_next` chống rớt caption sang trang sau).
 
 ---
@@ -111,6 +162,11 @@ Sau khi render mỗi sơ đồ, Agent **BẮT BUỘC** thực hiện quy trình 
   4. **Câu hỏi xin ý kiến nghiệm thu người dùng** (theo Mục 5).
   5. **Đường dẫn tệp nguồn (Link Markdown ngắn gọn):** `[Mã nguồn .puml](file:///path/to/diagram.puml)`.
 
+### 6.1. Quy chuẩn Thư mục Lưu trữ: Sơ đồ ra Sơ đồ, Ảnh chụp ra Ảnh chụp
+- **`docs/screenshots/`**: 100% CHỈ chứa ảnh chụp màn hình UI thực tế của phần mềm (`01_tong_quan_giao_dien.png`, `02_...png`). Tuyệt đối CẤM để sơ đồ hoặc file `.puml`/`.dot` vào đây.
+- **`docs/diagrams/`**: Chứa toàn bộ mã nguồn vector (`.dot`, `.puml`, `.tldr`) và file xuất vector/raster (`.svg`, `.png`).
+- **`docs/tools/` hoặc `tools/`**: Toàn bộ script hỗ trợ (render, audit, convert) phải nằm trong thư mục công cụ, CẤM rải rác ở thư mục gốc dự án.
+
 ---
 
 ## 7. TOOLCHAIN KIỂM ĐỊNH TỰ ĐỘNG
@@ -118,6 +174,12 @@ Sau khi render mỗi sơ đồ, Agent **BẮT BUỘC** thực hiện quy trình 
 Chạy script kiểm định tích hợp:
 
 ```bash
-# Kiểm tra toàn bộ thư mục export sơ đồ
+# Kiểm tra toàn bộ thư mục export sơ đồ (mặc định BẬT luật zero-color)
 node .claude/skills/diagram-auditor/scripts/audit-diagrams.mjs <duong-dan-thu-muc>
+
+# Chỉ dùng khi có ghi đè tường minh override-monochrome: true
+node .claude/skills/diagram-auditor/scripts/audit-diagrams.mjs <duong-dan-thu-muc> --allow-color
 ```
+
+- **Lỗi ĐỎ (`FAIL`)** chặn cứng: banner compiler, SVG hỏng, thiếu PNG, `title` nhúng, nhãn ERD trên Crow's foot, quan hệ trùng, đè chữ, đường cắt chữ, **màu phi thang độ xám**, **cỡ chữ < 9pt**, tỷ lệ khung ngoài 0.5–2.4.
+- **Cảnh báo VÀNG (advisory)** không chặn CI nhưng Agent **phải phân xử bằng mắt**: trọng tâm lệch, cụm dồn cục, tổng số nhãn lớn (gợi ý phân rã).

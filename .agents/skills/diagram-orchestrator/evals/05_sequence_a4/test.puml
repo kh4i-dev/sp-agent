@@ -1,0 +1,31 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+autonumber
+
+actor "Người dùng" as User
+participant "Web App" as App
+participant "Order Service" as Order
+participant "Payment Gateway" as Pay
+database "PostgreSQL" as DB
+
+User -> App : Nhấn "Đặt hàng"
+activate App
+App -> Order : POST /api/orders
+activate Order
+Order -> DB : Lưu đơn hàng (PENDING)
+activate DB
+DB --> Order : Lưu thành công
+deactivate DB
+
+Order -> Pay : Tạo giao dịch thanh toán
+activate Pay
+Pay --> Order : Trả về mã QR
+deactivate Pay
+
+Order --> App : Hiển thị mã QR thanh toán
+deactivate Order
+App --> User : Quét mã thanh toán
+deactivate App
+@enduml

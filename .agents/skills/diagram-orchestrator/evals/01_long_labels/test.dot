@@ -1,0 +1,36 @@
+digraph G {
+  dpi=300;
+  rankdir=TB;
+  bgcolor="#ffffff";
+  compound=true;
+  ranksep=0.8;
+  nodesep=0.8;
+
+  node [fontname="Segoe UI, Arial, sans-serif", fontsize=11, shape=box, style=solid, color="#000000", fontcolor="#000000"];
+  edge [fontname="Segoe UI, Arial, sans-serif", fontsize=10, color="#000000", fontcolor="#000000"];
+
+  subgraph cluster_client {
+    label="Presentation Layer";
+    fontname="Segoe UI, Arial, sans-serif";
+    fontsize=12;
+    color="#000000";
+    style=dashed;
+    margin=20;
+    WebUI [label="Web App UI"];
+  }
+
+  subgraph cluster_backend {
+    label="Core Service Layer";
+    labelloc="b";
+    fontname="Segoe UI, Arial, sans-serif";
+    fontsize=12;
+    color="#000000";
+    style=dashed;
+    margin=20;
+    Gateway [label="API Gateway"];
+    AuthSvc [label="Auth Service"];
+  }
+
+  WebUI -> Gateway [label=" Gọi API "];
+  Gateway -> AuthSvc [label=" Ủy quyền "];
+}

@@ -1,0 +1,36 @@
+digraph BalancedTrie {
+  dpi=300;
+  rankdir=TB;
+  bgcolor="#ffffff";
+  nodesep=0.7;
+  ranksep=0.7;
+
+  node [fontname="Segoe UI, Arial, sans-serif", fontsize=11, shape=circle, style=solid, color="#000000", fontcolor="#000000"];
+  edge [fontname="Segoe UI, Arial, sans-serif", fontsize=10, color="#000000", fontcolor="#000000"];
+
+  root [label="ε", shape=ellipse];
+
+  // Nhánh 1: b
+  n_b [label="b"];
+  n_ba [label="a"];
+  n_bat [label="t", shape=doublecircle];
+  root -> n_b [label="b"];
+  n_b -> n_ba [label="a"];
+  n_ba -> n_bat [label="t"];
+
+  // Nhánh 2: c
+  n_c [label="c"];
+  n_ca [label="a"];
+  n_cat [label="t", shape=doublecircle];
+  root -> n_c [label="c"];
+  n_c -> n_ca [label="a"];
+  n_ca -> n_cat [label="t"];
+
+  // Nhánh 3: d
+  n_d [label="d"];
+  n_do [label="o"];
+  n_dog [label="g", shape=doublecircle];
+  root -> n_d [label="d"];
+  n_d -> n_do [label="o"];
+  n_do -> n_dog [label="g"];
+}

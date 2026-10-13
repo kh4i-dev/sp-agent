@@ -1,0 +1,29 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+skinparam roundCorner 4
+skinparam dpi 300
+skinparam linetype ortho
+left to right direction
+
+package "Presentation Layer" {
+  class UserController
+  class AuthController
+}
+
+package "Application Layer" {
+  class UserService
+  class AuthService
+}
+
+package "Infrastructure Layer" {
+  class UserRepository
+  class TokenProvider
+}
+
+UserController --> UserService
+AuthController --> AuthService
+UserService --> UserRepository
+AuthService --> TokenProvider
+@enduml

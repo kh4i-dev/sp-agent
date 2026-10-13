@@ -21,15 +21,15 @@ Một sơ đồ để trình chiếu hoặc phát biểu chỉ được chứa t
 Khi nhận một schema 20-50 bảng hoặc hàng chục class:
 1. **TẦNG CỐT LÕI (CORE DOMAIN — GIỮ 100%):**
    - Chỉ giữ các thực thể trực tiếp tạo ra giá trị nghiệp vụ chính của hệ thống.
-   - Ví dụ nền tảng gia sư: `User`, `TutorProfile`, `ConnectionRequest`, `Conversation`, `SubscriptionPlan`, `PaymentOrder`, `Review`.
+   - Ví dụ mô hình khái niệm (trung tính — thay bằng thực thể thực của dự án): `User`, `Profile`, `Request`, `Conversation`, `Plan`, `Order`, `Review`.
 2. **TẦNG CHI TIẾT (VALUE OBJECTS / AGGREGATES — GỘP VÀO THỰC THỂ CHA):**
-   - Không vẽ bảng riêng cho: `Message` (gộp vào `Conversation`), `Document` (gộp vào `TutorProfile`), danh mục `Subject`/`Grade`/`Area` (gộp thành mảng thuộc tính `subjects[]`, `grades[]` trong `TutorProfile`).
+   - Không vẽ bảng riêng cho: `Message` (gộp vào `Conversation`), `Document` (gộp vào `Profile`), danh mục `Category`/`Tag`/`Region` (gộp thành mảng thuộc tính `categories[]`, `tags[]` trong `Profile`).
 3. **TẦNG HẠ TẦNG & KỸ THUẬT (INFRASTRUCTURE — ẨN HOÀN TOÀN):**
    - Tuyệt đối không đưa vào sơ đồ thuyết minh các bảng:
-     - Log / Audit: `AuditLog`, `SePayWebhookLog`, `SystemLog`.
+     - Log / Audit: `AuditLog`, `WebhookLog`, `SystemLog`.
      - Kỹ thuật / Auth: `PendingRegistration`, `OtpSession`, `RefreshToken`.
-     - Cấu hình / CMS: `PageConfig`, `SystemSetting`, `IncidentAlert`.
-     - Bảng join trung gian: `TutorSubject`, `TutorGrade`, `TutorArea`.
+     - Cấu hình / CMS: `PageConfig`, `SystemSetting`, `Alert`.
+     - Bảng join trung gian: `ProfileTag`, `ProfileCategory`, `ProfileRegion`.
 
 ### Quy tắc 3: Mỗi mũi tên là một câu chuyện 10 giây
 Mỗi đường nối trên sơ đồ phải trả lời được câu hỏi: *"Người thuyết trình sẽ nói gì về mũi tên này khi chỉ tay lên slide?"*
@@ -39,10 +39,10 @@ Nếu một đường nối chỉ mang tính kỹ thuật foreign key mà không
 Tuyệt đối **KHÔNG** nhồi nhét toàn bộ hệ thống vào 1 Sơ đồ Tuần tự nguyên khối (Sequence Monolith Anti-Pattern) vì sẽ có tới 15-20 lifeline, 50 tin nhắn chạy dọc, không ai có thể theo dõi được!
 Thay vào đó, **luôn phân rã thành 4 – 5 sơ đồ tuần tự tương ứng với 4 – 5 Use Case trọng điểm**:
 1. **SEQ-01:** Đăng ký & Xác thực OTP qua Email (Auth & OTP).
-2. **SEQ-02:** Gửi yêu cầu kết nối & Kiểm tra hạn mức gói (Connection & Quota Check).
-3. **SEQ-03:** Gia sư chấp nhận kết nối & Mở phòng Chat Realtime (Accept & Chat).
-4. **SEQ-04:** Quét VietQR & Webhook SePay kích hoạt gói tự động (Payment & HMAC Webhook).
-5. **SEQ-05:** Nộp minh chứng & Kiểm duyệt hồ sơ gia sư (Tutor Verification).
+2. **SEQ-02:** Gửi yêu cầu & Kiểm tra hạn mức gói (Request & Quota Check).
+3. **SEQ-03:** Chấp nhận yêu cầu & Mở phòng Chat Realtime (Accept & Chat).
+4. **SEQ-04:** Thanh toán QR & Webhook kích hoạt gói tự động (Payment & Webhook).
+5. **SEQ-05:** Nộp minh chứng & Kiểm duyệt hồ sơ (Verification).
 
 **Tiêu chuẩn cho mỗi Sơ đồ Tuần tự tinh gọn:**
 - Chỉ gồm 4 – 6 lifelines (Actor, Web UI, Core Service, PostgreSQL, 1 External Service nếu có).
@@ -75,9 +75,9 @@ skinparam ranksep 70                  ' Giãn cách dọc thoáng đãng
 ### Các nguyên tắc bất biến:
 1. **CẤM NHÚNG TIÊU ĐỀ (`title` = BANNED):** Không dùng `title ...`. Tiêu đề sơ đồ luôn nằm ở dòng caption trong tài liệu báo cáo Word/Slide.
 2. **BỐ CỤC 3 CỘT (3-COLUMN GRID LAYOUT):**
-   - **Cột 1 (Trái - Tài khoản & Hồ sơ):** `USER`, `TUTOR_PROFILE`.
-   - **Cột 2 (Giữa - Luồng tương tác chính):** `CONNECTION_REQUEST`, `CONVERSATION`, `REVIEW`.
-   - **Cột 3 (Phải - Doanh thu & Thanh toán):** `SUBSCRIPTION_PLAN`, `PAYMENT_ORDER`.
+   - **Cột 1 (Trái - Tài khoản & Hồ sơ):** `USER`, `PROFILE`.
+   - **Cột 2 (Giữa - Luồng tương tác chính):** `REQUEST`, `CONVERSATION`, `REVIEW`.
+   - **Cột 3 (Phải - Doanh thu & Thanh toán):** `PLAN`, `ORDER`.
    - Dùng liên kết ẩn để khóa thẳng hàng 3 cột: `A -[hidden]down- B`.
 3. **KHÔNG ĐÈ NHÃN & KHOẢNG THỞ:** Khoảng cách `nodesep 70` và `ranksep 70` đảm bảo nhãn số lượng và tên quan hệ luôn có khoảng trống riêng biệt.
 4. **CẤM NHỒI NHÉT THAO TÁC CRUD LÊN ĐƯỜNG NỐI LIÊN TẦNG:** Trong sơ đồ kiến trúc phân tầng, tuyệt đối không chèn dày đặc nhãn "Thao tác CRUD", "Tìm kiếm", "Import/Export" lên các mũi tên giữa các tầng. Sơ đồ kiến trúc chỉ thể hiện khối cấu trúc; chi tiết hành động bắt buộc phân rã sang Sơ đồ Tuần tự (Sequence) riêng biệt.
@@ -102,23 +102,23 @@ entity "USER\n(Người dùng)" as USER {
   --
   email : String
   phone : String
-  role : USER | MOD | ADMIN
+  role : USER | MODERATOR | ADMIN
   fullName : String
   address : String
 }
 
-entity "TUTOR_PROFILE\n(Hồ sơ Gia sư)" as TUTOR {
+entity "PROFILE\n(Hồ sơ)" as PROFILE {
   * id : UUID <<PK>>
   --
   headline : String
   experienceYears : Int
-  subjects : String[] (Môn dạy)
-  hourlyRate : Int
+  categories : String[]
+  price : Int
   verificationStatus : Status
   ratingAvg : Float
 }
 
-entity "CONNECTION_REQUEST\n(Yêu cầu kết nối)" as CONN {
+entity "REQUEST\n(Yêu cầu)" as REQ {
   * id : UUID <<PK>>
   --
   status : PENDING | ACCEPTED | REJECTED
@@ -135,21 +135,21 @@ entity "CONVERSATION\n(Hội thoại & Chat)" as CHAT {
   lastMessageAt : DateTime
 }
 
-entity "SUBSCRIPTION_PLAN\n(Gói dịch vụ)" as PLAN {
+entity "PLAN\n(Gói dịch vụ)" as PLAN {
   * id : UUID <<PK>>
   --
   code : BASIC | ADVANCED | PRO
   priceMonthly : Int
-  connectionQuota : Int (Lượt kết nối/tháng)
+  quota : Int (Hạn mức/tháng)
 }
 
-entity "PAYMENT_ORDER\n(Đơn thanh toán VietQR)" as ORDER {
+entity "ORDER\n(Đơn thanh toán)" as ORD {
   * id : UUID <<PK>>
   --
-  code : String (Mã TOPUP)
+  code : String (Mã thanh toán)
   amount : Int
   status : PENDING | PAID
-  bankTransactionCode : String
+  transactionCode : String
 }
 
 entity "REVIEW\n(Đánh giá uy tín)" as REVIEW {
@@ -160,17 +160,17 @@ entity "REVIEW\n(Đánh giá uy tín)" as REVIEW {
 }
 
 ' Mối quan hệ nghiệp vụ trực quan
-USER ||--o| TUTOR : "1. Đăng ký làm gia sư"
-USER ||--o{ CONN : "2. Gửi yêu cầu kết nối"
-TUTOR ||--o{ CONN : "Nhận yêu cầu"
-CONN ||--o| CHAT : "3. Chấp nhận -> Mở phòng chat"
+USER ||--o| PROFILE : "1. Tạo hồ sơ"
+USER ||--o{ REQ : "2. Gửi yêu cầu"
+PROFILE ||--o{ REQ : "Nhận yêu cầu"
+REQ ||--o| CHAT : "3. Chấp nhận -> Mở phòng chat"
 
-USER ||--o{ ORDER : "4. Mua gói dịch vụ"
-PLAN ||--o{ ORDER : "Định giá gói"
-ORDER ||--o| USER : "5. Kích hoạt hạn mức kết nối"
+USER ||--o{ ORD : "4. Mua gói dịch vụ"
+PLAN ||--o{ ORD : "Định giá gói"
+ORD ||--o| USER : "5. Kích hoạt hạn mức"
 
-CONN ||--o{ REVIEW : "6. Kết thúc -> Đánh giá 1-5 sao"
-TUTOR ||--o{ REVIEW : "Tích lũy điểm uy tín"
+REQ ||--o{ REVIEW : "6. Kết thúc -> Đánh giá 1-5 sao"
+PROFILE ||--o{ REVIEW : "Tích lũy điểm uy tín"
 @enduml
 ```
 
@@ -185,10 +185,10 @@ Khi xuất ra sơ đồ tinh gọn, skill **BẮT BUỘC** sinh kèm đoạn k�
 "Kính thưa Thầy Cô trong Hội đồng,
 Trên slide là **Sơ đồ thực thể khái niệm** của hệ thống, được tinh gọn thành 7 thực thể trung tâm đại diện cho toàn bộ giá trị cốt lõi:
 
-1. **Phân hệ Hồ sơ:** Người dùng (`USER`) có thể đăng ký nâng cấp thành Gia sư (`TUTOR_PROFILE`) với hồ sơ năng lực và chứng chỉ xác minh.
-2. **Phân hệ Kết nối & Tương tác:** Phụ huynh gửi yêu cầu kết nối (`CONNECTION_REQUEST`). Khi gia sư chấp nhận, hệ thống tự động sinh phòng trò chuyện (`CONVERSATION`) để hai bên thảo luận chi tiết mà không thu phí hoa hồng bài học.
-3. **Phân hệ Gói dịch vụ & Doanh thu:** Nền tảng duy trì vận hành bằng mô hình bán lượt kết nối (`SUBSCRIPTION_PLAN`). Người dùng quét mã VietQR tự động qua SePay (`PAYMENT_ORDER`) để kích hoạt thêm lượt kết nối mỗi tháng.
-4. **Phân hệ Xây dựng Niềm tin:** Sau khi kết nối, hai bên đánh giá lẫn nhau (`REVIEW`) 1-5 sao để duy trì minh bạch học đường.
+1. **Phân hệ Tài khoản & Hồ sơ:** Người dùng (`USER`) có thể tạo và cập nhật hồ sơ (`PROFILE`) với thông tin năng lực và trạng thái xác minh.
+2. **Phân hệ Yêu cầu & Tương tác:** Một người dùng gửi yêu cầu (`REQUEST`). Khi được chấp nhận, hệ thống tự động sinh phòng trò chuyện (`CONVERSATION`) để hai bên trao đổi chi tiết.
+3. **Phân hệ Gói dịch vụ & Doanh thu:** Nền tảng vận hành theo mô hình bán hạn mức (`PLAN`). Người dùng thanh toán qua cổng QR (`ORDER`) để kích hoạt thêm hạn mức mỗi tháng.
+4. **Phân hệ Xây dựng Niềm tin:** Sau khi hoàn tất, hai bên đánh giá lẫn nhau (`REVIEW`) 1-5 sao để duy trì tính minh bạch.
 
 Các bảng kỹ thuật như log kiểm toán, bảng tạm OTP và bảng danh mục được quản lý ngầm ở tầng cơ sở hạ tầng để đảm bảo hệ thống vận hành trơn tru."
 ```

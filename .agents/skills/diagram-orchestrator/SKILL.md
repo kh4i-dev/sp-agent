@@ -1,29 +1,144 @@
 ---
 name: diagram-orchestrator
-description: Điều phối thông minh toàn bộ hệ thống sơ đồ kỹ thuật cho báo cáo Word (docx-report), slide (pptx-deck), đồ án tốt nghiệp và tài liệu kiến trúc. Tự động phân tích ngữ nghĩa và nguồn dữ liệu để chọn chính xác công cụ tối ưu cho từng sơ đồ riêng biệt (PlantUML cho UML/ERD chuẩn mực; Graphviz DOT cho cấu trúc cây Prefix Trie, BK-Tree, đồ thị thuật toán; tldraw/draw.io cho kiến trúc tổng thể trực quan tự do); áp dụng chuẩn thẩm mỹ Academic Monochrome (Trắng - Đen học thuật 300 DPI, không title nhúng trong ảnh) và bắt buộc đi qua cổng kiểm định diagram-auditor trước khi xuất bản. Dùng khi cần vẽ sơ đồ, chọn công cụ vẽ sơ đồ, diagram orchestrator, sơ đồ cây, trie, bk-tree, kiến trúc hệ thống, phối hợp sơ đồ.
+description: Điều phối thông minh toàn bộ hệ thống sơ đồ kỹ thuật cho báo cáo Word (docx-report), slide (pptx-deck), đồ án tốt nghiệp và tài liệu kiến trúc. Tự động phân tích ngữ nghĩa và nguồn dữ liệu để chọn chính xác công cụ tối ưu cho từng sơ đồ riêng biệt (PlantUML cho UML/ERD chuẩn mực; Graphviz DOT cho cấu trúc cây Prefix Trie, BK-Tree, đồ thị thuật toán; tldraw/draw.io cho kiến trúc tổng thể trực quan tự do); áp dụng Giao thức Giải quyết Vấn đề Thông minh (Intelligent Problem-Solving Protocol), chuẩn thẩm mỹ Academic Monochrome (Trắng - Đen học thuật 300 DPI, không title nhúng trong ảnh) và bắt buộc đi qua cổng kiểm định diagram-auditor trước khi xuất bản. Dùng khi cần vẽ sơ đồ, chọn công cụ vẽ sơ đồ, diagram orchestrator, sơ đồ cây, trie, bk-tree, kiến trúc hệ thống, phối hợp sơ đồ.
 ---
 
 # Diagram Orchestrator Skill — Điều Phối Sơ Đồ Kỹ Thuật Thích Ứng
 
-Mục tiêu: Đóng vai trò **nhạc trưởng điều phối (Orchestrator)** cho toàn bộ quy trình vẽ sơ đồ kỹ thuật. Skill phân tích ngữ nghĩa, cấu trúc dữ liệu, và yêu cầu trình bày để **tự chọn công cụ phù hợp nhất cho từng sơ đồ riêng biệt**, không mặc định dùng PlantUML cho mọi trường hợp, không tạo renderer mới khi repo đã có sẵn, và kiểm định chất lượng nghiêm ngặt trước khi bàn giao.
+Mục tiêu: Đóng vai trò **nhạc trưởng điều phối (Orchestrator)** cho toàn bộ quy trình vẽ sơ đồ kỹ thuật. Skill vận hành theo **Giao thức Giải Quyết Vấn Đề Thông Minh (Intelligent Problem-Solving Protocol)**: không đơn thuần là người thực thi lệnh mù quáng (command executor), mà đóng vai trò như một Kiến trúc sư phần mềm, Chuyên gia phân tích miền và Người phản biện độc lập để tạo ra kết quả chính xác, rõ ràng, thẩm mỹ và có thể kiểm chứng bằng bằng chứng thực tế.
 
-Sơ đồ đẹp không cứu được mô hình sai; sơ đồ đúng nhưng khó đọc cũng chưa hoàn thành nhiệm vụ. Phải kiểm tra cả ba: **đúng nội dung, đúng cách biểu diễn và đúng chất lượng hình ảnh**.
-
----
-
-## 1. BẢY NGUYÊN TẮC XƯƠNG MÁU (CORE BATTLE-TESTED PRINCIPLES)
-
-1. **Tìm nguồn sự thật trước khi vẽ:** Use Case dựa trên yêu cầu nghiệp vụ; ERD dựa trên schema/migration thật; Sequence dựa trên luồng xử lý mã nguồn; Class Diagram dựa trên class/interface thật. Tuyệt đối không tự bịa thêm `AdminService`, bảng `Logs`, lớp `Repository` hay Actor mới chỉ vì chúng hay gặp ở dự án khác.
-2. **Một sơ đồ chỉ trả lời một câu hỏi chính:** Use Case trả lời ai dùng hệ thống để đạt mục tiêu gì; ERD trả lời dữ liệu lưu trữ thế nào; Sequence trả lời thành phần tương tác theo trình tự nào. Không nhét chung bảng dữ liệu, hàm xử lý, luồng nghiệp vụ và cấu trúc RAM vào cùng một hình.
-3. **Không đánh đồng mọi loại quan hệ:** Quan hệ UML không mặc nhiên là Foreign Key trong CSDL; Lời gọi hàm trong Sequence không phải quan hệ kế thừa; Đường nối trong flowchart không phải lúc nào cũng là luồng dữ liệu. Ký hiệu phải mang đúng ngữ nghĩa của loại sơ đồ đó.
-4. **Phân biệt mô hình thiết kế với hiện trạng triển khai:** Nếu thiết kế trước khi code, gọi là mô hình thiết kế đề xuất. Nếu mô tả hệ thống đang chạy, phải đối chiếu 100% với mã nguồn hiện hành.
-5. **Không ép mọi sơ đồ vừa một trang bằng cách thu nhỏ chữ:** Nếu sơ đồ quá rộng hoặc nhiều chi tiết, phân rã thành sơ đồ tổng quan và các sơ đồ chi tiết. Kích thước chữ phải đọc rõ ở kích thước in thực tế trên trang A4.
-6. **Mỗi sơ đồ phải có tệp nguồn để sửa lại:** Giữ nguyên `.puml`, `.dot` hoặc `.tldr`. PNG và SVG chỉ là đầu ra. Khi nghiệp vụ đổi, sửa từ file nguồn, render lại và kiểm tra.
-7. **Không tuyên bố PASS chỉ vì công cụ render thành công:** Compiler xuất được ảnh không có nghĩa nội dung đúng. Bắt buộc có hai lượt đánh giá độc lập: một lượt kiểm tra ngữ nghĩa/tính nhất quán; một lượt kiểm tra hình ảnh, đường nối và bố cục.
+Sơ đồ đẹp không cứu được mô hình sai; sơ đồ đúng nhưng khó đọc cũng chưa hoàn thành nhiệm vụ. Phải bảo đảm cả ba: **đúng nội dung, đúng cách biểu diễn và đúng chất lượng hình ảnh**.
 
 ---
 
-## 2. BẢNG ĐỊNH TUYẾN: LOẠI SƠ ĐỒ NÀO CHO CÂU HỎI NÀO?
+## 1. GIAO THỨC TƯ DUY & GIẢI QUYẾT VẤN ĐỀ (INTELLIGENT PROBLEM-SOLVING PROTOCOL)
+
+### Mission
+Act as a software architect, domain analyst, visual designer, and critical reviewer — not merely a command executor.
+The objective is not to produce an artifact quickly or maximize successful tool calls. The objective is to produce the most suitable, correct, understandable, maintainable, and verifiable result for the user's actual problem.
+
+### 1.1. Understand before acting
+Before implementation, establish:
+- What problem must be solved?
+- What is the authoritative source of truth?
+- What does success look like to the user?
+- Which constraints are mandatory?
+- Which facts remain uncertain?
+- Which existing parts are already good and must not be degraded?
+
+Inspect the actual repository, source files, existing skills, available tools, and relevant examples. Do not assume a claimed capability exists until it has been verified. Separate verified facts, reasonable inferences, design proposals, and unknowns. Do not invent facts to fill gaps.
+
+### 1.2. Explore before committing to a solution
+For non-trivial tasks, consider at least three genuinely different approaches before selecting one:
+- Different suitable diagram types.
+- Different ways to group and arrange components.
+- Different placements or routing strategies.
+- Whether one diagram should be split into multiple focused diagrams.
+- Whether an existing renderer or skill already provides a better solution.
+
+Do not generate cosmetic variations of the same flawed design and call them independent alternatives. Assess each candidate: semantic correctness, readability, maintainability, implementation cost, and known risks. Select the best-supported option and explain the decision concisely with evidence and trade-offs.
+
+### 1.3. Preserve what already works
+Inspect the existing result before rewriting it. Identify:
+- What is correct and should remain.
+- What is demonstrably wrong.
+- What is merely a preference.
+- What is uncertain and requires a test.
+
+Make the smallest change that adequately solves the demonstrated problem. Never apply a local fix by destroying correct semantics, useful structure, or established project conventions. Do not turn a successful workaround into an absolute rule unless its general validity is established.
+
+### 1.4. Use evidence-driven experimentation
+When the cause of a problem is uncertain:
+1. State a testable hypothesis.
+2. Establish a reproducible baseline.
+3. Change one relevant variable at a time (Single-Variable Isolation).
+4. Re-run the affected process.
+5. Compare the new result with the baseline.
+6. Accept, reject, or refine the hypothesis based on evidence.
+
+Do not claim a root cause merely because a change happened to improve the output.
+
+### 1.5. Choose tools intelligently
+Select tools according to the problem's semantics and practical requirements. Do not force every task through a single default tool:
+- **PlantUML:** Structured UML (Use Case, Sequence, Class, State, Activity).
+- **Graphviz (DOT):** Algorithmic graphs, trees (Prefix Trie, BK-Tree, AST).
+- **draw.io / tldraw:** Freeform high-level architecture with visual regions.
+
+Inspect capabilities and limitations of each tool before relying on it. A tool producing valid output is not proof that the output is semantically correct or visually usable.
+
+### 1.6. Build a real feedback loop
+After producing a result:
+- Inspect the actual artifact.
+- Compare it against explicit acceptance criteria.
+- Use an adversarial reviewer that actively searches for failure modes.
+- Record concrete defects with evidence.
+- Fix identified causes rather than applying random cosmetic changes.
+- Re-run all checks affected by the changes.
+
+When image inspection is required, use a tool that actually exposes the rendered image to visual analysis (`view_file`). Opening a file in an OS application is not proof that the model inspected it.
+
+### 1.7. Apply the protocol to diagrams
+For every diagram, complete these stages:
+A0. **(Use Case / mô hình miền) BẮT BUỘC làm Bước 0 trước:** tạo file `docs/domain/step0-<du-an>.md` theo template [`reference/step0-bai-toan-va-tac-nhan.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md) — xác định bài toán, quy mô, số người vận hành, **trách nhiệm từng tác nhân** (phân biệt ai sửa lỗi IT vs ai không sửa lỗi IT nhưng chịu trách nhiệm nghiệp vụ), ranh giới hệ thống, quan hệ thật sự cần. **Không có file Bước 0 → CẤM vẽ** (vi phạm kỷ luật, sản phẩm bị bác bỏ).  
+A. Define purpose, notation, audience, abstraction level, and source of truth.  
+B. Validate semantics before choosing layout.  
+C. Select the appropriate rendering tool.  
+D. Plan layout and identify potentially difficult relationships or long labels.  
+E. Generate editable source and render the actual image.  
+F. Inspect rendered image for semantic errors, clipping, overlapping labels, poor spacing, unreadable text, and visual imbalance.  
+G. If embedded in DOCX, inspect final rendered pages.  
+H. Record final validation evidence and unresolved limitations.  
+*Do not collapse all these stages into a single automated PASS.*
+
+### 1.8. Learn from repeated failures
+Maintain a concise failure record when recurring issues appear:
+- Original problem & observed symptoms.
+- Confirmed cause & experiment used to investigate it.
+- Change that resolved it and conditions under which the fix is valid.
+- Any remaining limitations.
+
+### 1.9. Completion criteria
+Before declaring a task complete, report:
+- **Changed:** What was actually modified.
+- **Decision:** Why the selected approach fits the problem.
+- **Evidence:** What was inspected, executed, tested, rendered, or independently reviewed.
+- **Remaining uncertainty:** What could not be verified.
+- **Status:** PASS, PASS WITH CONDITIONS, FAIL, or BLOCKED.
+
+---
+
+## 2. BÀI KIỂM TRA NĂNG LỰC TƯ DUY (3 LITMUS TESTS)
+
+| Tình huống thực tế | Agent phản xạ máy móc (Cần tránh) | Agent thông minh (Bắt buộc) |
+|---|---|---|
+| **Nhãn cạnh chồng lên viền/node** | Xóa nhãn, xóa package, đổi hướng mũi tên cùng lúc mà không biết cái nào có tác dụng. | Đặt giả thuyết (do `splines=ortho` hoặc thiếu không gian), thử 1 biến (rút gọn nhãn / `xlabel` / tăng khoảng cách), so sánh trước/sau. |
+| **Sơ đồ kiến trúc có quan hệ sai (nhảy cóc tầng)** | Giữ nguyên quan hệ sai để tránh phải vẽ lại bố cục; cố căn lề cho "đẹp". | Ưu tiên tính đúng đắn kiến trúc: sửa quan hệ cho đúng tầng dù phải tổ chức lại layout. |
+| **Sơ đồ quá phức tạp, chằng chịt 20-30 node** | Cố nhét tất cả vào 1 hình, thu nhỏ cỡ chữ đến mức không đọc được. | Chủ động đề xuất phân rã: 1 hình tổng quan (5-8 khối) + các hình phân đoạn chuyên sâu (Sequence/Use Case). |
+
+---
+
+## 3. BẢY NGUYÊN TẮC XƯƠNG MÁU & NGUYÊN TẮC KỸ THUẬT CÓ ĐIỀU KIỆN
+
+1. **Tìm nguồn sự thật trước khi vẽ:** Use Case dựa trên yêu cầu nghiệp vụ; ERD dựa trên schema/migration thật; Sequence dựa trên luồng xử lý mã nguồn; Class Diagram dựa trên class/interface thật. Tuyệt đối không tự bịa thêm `AdminService`, bảng `Logs`, lớp `Repository` hay Actor mới.
+2. **Một sơ đồ chỉ trả lời một câu hỏi chính:** Không nhét chung bảng dữ liệu, hàm xử lý, luồng nghiệp vụ và cấu trúc RAM vào cùng một hình.
+3. **Không đánh đồng mọi loại quan hệ:** Quan hệ UML không mặc nhiên là FK trong CSDL; Lời gọi hàm trong Sequence không phải quan hệ kế thừa; Đường nối trong flowchart không phải lúc nào cũng là luồng dữ liệu.
+4. **Phân biệt mô hình thiết kế với hiện trạng triển khai:** Nếu mô tả hệ thống đang chạy, phải đối chiếu 100% với mã nguồn hiện hành.
+5. **Không ép mọi sơ đồ vừa một trang bằng cách thu nhỏ chữ:** Kích thước chữ phải đọc rõ ở kích thước in thực tế trên trang A4. Nếu quá tải, bắt buộc phân rã sơ đồ.
+6. **Mỗi sơ đồ phải có tệp nguồn để sửa lại:** Giữ nguyên `.puml`, `.dot` hoặc `.tldr`. PNG và SVG chỉ là đầu ra.
+7. **Không tuyên bố PASS chỉ vì công cụ render thành công:** Phải qua kiểm tra độc lập cả về ngữ nghĩa lẫn hình học.
+8. **Chốt ngữ nghĩa trước khi bố cục:** Xác định rõ component diagram (tĩnh), data-flow diagram (dữ liệu) hay sequence diagram (thời gian).
+9. **Chỉ dùng nhãn dài khi có đủ không gian hình học:** Không đặt nhãn dài lên ranh giới package hoặc vùng giao nhau chật hẹp.
+10. **Layout là cấu hình phải được kiểm chứng thực nghiệm (Single-Variable Isolation):** Khi gặp lỗi bố cục, chỉ đổi 1 biến tại 1 thời điểm. Cấm xóa package và phá vỡ cấu trúc tổng thể một cách mù quáng.
+11. **Phân định rạch ròi Ảnh chụp (Screenshots) vs. Sơ đồ (Diagrams):**
+    - `docs/screenshots/`: 100% CHỈ chứa ảnh chụp màn hình UI thực tế (`01_*.png` -> `09_*.png`). CẤM để sơ đồ hoặc file `.puml`/`.dot` vào đây.
+    - `docs/diagrams/`: Chứa mã nguồn sơ đồ (`.puml`, `.dot`) và file xuất vector/raster (`.svg`, `.png`).
+    - Bàn giao trực quan sạch: CẤM xả mã nguồn sơ đồ ra chat gây tràn màn hình; chỉ lưu file đĩa và nhúng ảnh render preview kèm link.
+12. **Kỷ luật thư mục công cụ (Dedicated Tools):** Toàn bộ script hỗ trợ (render, audit, convert) phải nằm trong `tools/` hoặc `docs/tools/`, tuyệt đối CẤM rải rác ở thư mục gốc dự án.
+13. **Kỷ luật Bước 0 — Không hiểu bài toán thì cấm vẽ (Iron Discipline):** Sơ đồ Use Case/mô hình miền chỉ được bắt đầu sau khi có file Bước 0 **đã xác minh bằng bằng chứng** (mỗi trách nhiệm tác nhân trỏ nguồn; chỗ chưa rõ ghi `UNKNOWN`, cấm tự suy diễn). Nếu Agent vẽ khi chưa có file này, **BẮT BUỘC tự tố cáo vi phạm** (`⚠️ VI PHẠM KỶ LUẬT: thiếu Bước 0`), dừng lại, làm lại từ gốc. **Nghiệm thu gồm 2 cổng tách biệt:** Semantic Review (nghiệp vụ/UML) và Visual Review (hình học) — **thiếu Bước 0 = FAIL nghiệp vụ**, dù hình đẹp tới đâu; và **cấm căn chỉnh bố cục để che lỗi mô hình**. Không tự tha thứ, không nể nang.
+
+---
+
+## 4. BẢNG ĐỊNH TUYẾN: LOẠI SƠ ĐỒ NÀO CHO CÂU HỎI NÀO?
 
 | Khi cần trả lời câu hỏi... | Loại sơ đồ | Công cụ tối ưu | Định dạng & Renderer |
 |---|---|---|---|
@@ -39,6 +154,9 @@ Sơ đồ đẹp không cứu được mô hình sai; sơ đồ đúng nhưng kh
 | Kiến trúc tổng quan cần bố trí tự do, bo góc mềm mại, theo vùng? | **High-Level Arch**| **tldraw / draw.io** | `.tldr` → `render.mjs` |
 | Luồng dữ liệu đi giữa tiến trình, kho dữ liệu và thực thể ngoài? | **DFD** | **draw.io / tldraw** | `.tldr` / vector |
 
+> [!NOTE]
+> **Bẫy kiểm soát vị trí:** PlantUML/Graphviz **KHÔNG cho ghim vị trí tuyệt đối** từng phần tử — chúng tự sắp xếp (dễ dồn tác nhân về một phía). Với bố cục đòi hỏi vị trí chính xác theo tay — ví dụ **Use Case đặt tác nhân hai bên** hoặc sơ đồ bố trí theo vùng — phải chuyển sang **draw.io / tldraw / SVG vẽ tay**. Đừng cố ép PlantUML ghim vị trí bằng hack vô ích.
+
 ### Bẫy kinh điển: Class Diagram không thay thế ERD & Cấu trúc RAM
 
 | Tiêu chí | Class Diagram (Thiết kế lớp) | ERD (Cơ sở dữ liệu) | Cấu trúc dữ liệu RAM (Trie/Tree) |
@@ -50,17 +168,18 @@ Sơ đồ đẹp không cứu được mô hình sai; sơ đồ đúng nhưng kh
 
 ---
 
-## 3. UNIVERSAL DIAGRAM ENGINEERING RULES
+## 5. UNIVERSAL DIAGRAM ENGINEERING RULES
 
 ### A. Semantic Integrity (Tính toàn vẹn ngữ nghĩa)
 - Xác định rõ: mục tiêu của hình, người đọc, nguồn sự thật và mức độ trừu tượng.
 - Chọn công cụ dựa trên thông tin cần truyền tải, không chọn chỉ vì renderer đó tiện nhất.
 - Tuyệt đối không tự vẽ quan hệ Foreign Key dựa trên tên cột giống nhau mà chưa kiểm tra schema/migration thật.
 - Khi minh họa BK-Tree, nhãn cạnh bắt buộc phải là khoảng cách Levenshtein chính xác 100% về mặt toán học. Không tự dựng cây sai để đối xứng hình.
-- Phân biệt rõ: hệ thống đã chạy thực tế vs thiết kế đề xuất tương lai vs ví dụ minh họa nhỏ.
 
 ### B. Visual Quality, Density Control & Academic Monochrome
 - Mặc định **Academic Monochrome**: Nền trắng `#FFFFFF`, viền và chữ đen `#000000`, 300 DPI, tương phản cao.
+- **LUẬT ZERO-COLOR BẤT BIẾN (kể cả khi ảnh mẫu người dùng có màu):** Nếu người dùng gửi sơ đồ mẫu nhiều màu, Agent **chỉ sao chép cấu trúc/bố cục/nhóm/quan hệ**, tuyệt đối **KHÔNG sao chép màu**. Nhóm màu trong ảnh mẫu phải dịch sang `package`/`rectangle`, nét liền-đứt, `<<stereotype>>`. Mọi mã màu phi thang độ xám (`max(R,G,B) - min(R,G,B) > 12`) trong SVG render = **FAIL** (script `audit-diagrams.mjs` chặn cứng, trừ khi có ghi đè tường minh `override-monochrome: true`).
+- **Cổng bố cục đẹp đo được (Layout Beauty Gate):** cỡ chữ nhỏ nhất ≥ 9pt; tỷ lệ khung 0.5–2.4; không node mồ côi/node trùng chồng; không cụm dồn cục (≥3 node < 30px); trọng tâm khối không lệch > 20%/trục; tổng node/hình ≤ 15 (vượt → bắt buộc phân rã).
 - **Zero-Title in Canvas:** Tiêu đề sơ đồ luôn nằm ở Caption tài liệu (*Hình X.Y: ...*), cấm dùng từ khóa `title` trong mã nguồn làm lặp chữ.
 - **Kiểm soát mật độ liên tầng (Inter-tier Anti-Crowding):**
   - Trong sơ đồ kiến trúc (Layers / Packages / Components), **tuyệt đối không nhồi nhét dày đặc nhãn hành động CRUD, tìm kiếm, import/export** lên các đường nối giữa 2 tầng.
@@ -81,7 +200,7 @@ Mỗi sơ đồ phải lưu file nguồn và xuất đồng thời SVG (vector) 
 
 ---
 
-## 4. QUY TRÌNH KIỂM ĐỊNH & BÁO CÁO 5 KẾT QUẢ ĐỘC LẬP
+## 6. QUY TRÌNH KIỂM ĐỊNH & BÁO CÁO 5 KẾT QUẢ ĐỘC LẬP
 
 > [!CAUTION]
 > **HỌC THUYẾT CHỐNG BÁO ẢO & HARD ACCEPTANCE GATE (NO SELF-CERTIFIED PASS):**
@@ -92,8 +211,8 @@ Mỗi sơ đồ phải lưu file nguồn và xuất đồng thời SVG (vector) 
 > 5. **KHÔNG GỘP NĂM KẾT QUẢ DƯỚI ĐÂY THÀNH MỘT TRẠNG THÁI PASS DUY NHẤT NẾU CÒN BƯỚC CHƯA ĐƯỢC KIỂM CHỨNG.**
 
 Báo cáo nghiệm thu cuối cùng **BẮT BUỘC** trình bày tách bạch 5 mục:
-1. **Render validation:** File PNG & SVG tồn tại, > 500B, biên dịch sạch không có banner compiler.
-2. **Automated audit:** Script `audit-diagrams.mjs` báo 0 lỗi (không đè toạ độ, tỷ lệ khung hình chuẩn).
+1. **Render validation:** File PNG & SVG tồn tại, > 500B, biên dịch sạch không có banner compiler, SVG **không chứa mã màu phi thang độ xám**.
+2. **Automated audit:** Script `audit-diagrams.mjs` báo **0 LỖI ĐỎ** (không đè toạ độ, tỷ lệ khung hình chuẩn, **đạt ZERO-COLOR**, **cỡ chữ ≥ 9pt**). Cảnh báo VÀNG phải được Agent soi mắt phân xử.
 3. **Actual visual inspection:** Agent trực tiếp xem ảnh PNG trong model context: nét chữ thoáng, không chen chúc nhãn giữa các tầng, không lệch dồn cục khoảng trắng.
 4. **Semantic correctness:** Đối chiếu 100% với schema DB, mã nguồn backend hoặc thuật toán (không vi phạm nhảy cóc tầng như `UI -> Store`, đúng PK/FK, đúng khoảng cách Levenshtein).
 5. **DOCX rendered-page inspection:** Đã kiểm tra trang Word thực tế sau chèn hình (chiều rộng 14–15.5cm, khớp caption Hình X.Y, có `keep_with_next` chống rớt trang).
@@ -106,7 +225,7 @@ Báo cáo nghiệm thu cuối cùng **BẮT BUỘC** trình bày tách bạch 5 
 
 ---
 
-## 5. CỔNG NGƯỜI DÙNG NGHIỆM THU — HỎI TRƯỚC KHI THAY VÀO DOCX
+## 7. CỔNG NGƯỜI DÙNG NGHIỆM THU — HỎI TRƯỚC KHI THAY VÀO DOCX
 
 > [!IMPORTANT]
 > **QUY TẮC CHỜ NGƯỜI DÙNG DUYỆT (USER ACCEPTANCE CHECKPOINT):**
@@ -117,19 +236,20 @@ Báo cáo nghiệm thu cuối cùng **BẮT BUỘC** trình bày tách bạch 5 
 
 ---
 
-## 6. BÀN GIAO TRỰC QUAN SẠCH (ZERO CODE DUMPS)
+## 8. BÀN GIAO TRỰC QUAN SẠCH (ZERO CODE DUMPS)
 
 Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **TUYỆT ĐỐI KHÔNG** xả toàn bộ code block `.puml`, `.dot`, hay `.json` ra khung chat làm rối mắt. Báo cáo bàn giao chuẩn mực bắt buộc gồm:
 1. **Ảnh sơ đồ trực quan (Rendered Preview):** `![Hình X.Y: Tên sơ đồ](path/to/diagram.png)`
 2. **Tiêu đề hình chuẩn mực:** `*Hình X.Y: Tên sơ đồ*`
 3. **Báo cáo riêng biệt 5 kết quả kiểm chứng:** Trình bày độc lập (Render, Automated, Visual, Semantic, DOCX).
-4. **Câu hỏi xin ý kiến nghiệm thu người dùng** (theo Mục 5).
+4. **Câu hỏi xin ý kiến nghiệm thu người dùng** (theo Mục 7).
 5. **Đường dẫn tệp nguồn:** Link markdown tới file trên đĩa `[ten_so_do.puml](file:///path/to/ten_so_do.puml)`.
 
 ---
 
-## 7. CHECKLIST 13 MỤC NGHIỆM THU TRƯỚC KHI ĐƯA VÀO BÁO CÁO
+## 9. CHECKLIST 14 MỤC NGHIỆM THU TRƯỚC KHI ĐƯA VÀO BÁO CÁO
 
+- [ ] 0. **Bước 0 (bắt buộc):** Đã có file `step0-<du-an>.md` xác định bài toán, quy mô, số người vận hành, trách nhiệm từng tác nhân (phân biệt ai sửa lỗi IT / ai không), ranh giới hệ thống — TRƯỚC khi vẽ.
 - [ ] 1. Đã xác định đúng loại sơ đồ và câu hỏi duy nhất mà hình cần trả lời (1 sơ đồ = 1 câu hỏi).
 - [ ] 2. Đã kiểm tra nguồn dữ liệu, schema hoặc mã nguồn làm căn cứ (Semantic correctness).
 - [ ] 3. Kiểm tra mâu thuẫn kiến trúc (không có đường nhảy cóc tầng như `UI -> Store` trong kiến trúc 3 lớp).
@@ -143,3 +263,15 @@ Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **
 - [ ] 11. DOCX rendered-page inspection: Khớp 100% file ảnh với Caption Hình X.Y, có câu dẫn nhập và `keep_with_next`.
 - [ ] 12. Báo cáo độc lập 5 kết quả kiểm chứng, không gộp thành 1 chữ PASS duy nhất khi chưa kiểm chứng đủ.
 - [ ] 13. Dừng lại hỏi người dùng nghiệm thu ảnh trước khi thực hiện hành động thay ảnh vào file Word.
+
+---
+
+## 10. TÀI NGUYÊN NÂNG CAO & BỘ KIỂM THỬ (EVALS & REFERENCES)
+
+Theo chuẩn thiết kế Progressive Disclosure của OpenAI Codex và Anthropic Claude Code, các tài nguyên đào sâu được tổ chức độc lập để nạp khi cần:
+- **Bước 0 — Xác định bài toán & vai trò tác nhân (BẮT BUỘC trước khi vẽ Use Case):** [`reference/step0-bai-toan-va-tac-nhan.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md) (Problem statement, quy mô, ma trận trách nhiệm tác nhân **kèm nguồn bằng chứng / UNKNOWN**, ranh giới hệ thống, luồng lỗi–kiểm duyệt nếu có, ví dụ điền mẫu **trung tính**). Tác nhân của dự án cụ thể được điền ở bản copy theo dự án, KHÔNG hard-code vào skill.
+- **Nguyên tắc thiết kế thị giác & bố cục:** [`reference/design-principles.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/design-principles.md) (Visual hierarchy, whitespace budget, routing, typography, khổ in A4).
+- **Thư viện tương phản Mẫu Tốt & Mẫu Lỗi (Gallery):** [`reference/diagram-gallery.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/diagram-gallery.md) (Đối chiếu mẫu đúng vs mẫu sai cho Use Case, Class, ERD, Sequence, Architecture, Trie/BK-Tree).
+- **Chuẩn hệ sinh thái Agent chính thức:** [`reference/benchmark-ecosystem.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/benchmark-ecosystem.md) (Nghiên cứu kiến trúc từ `openai/codex`, `anthropics/claude-code`, `openai/plugins`, `anthropics/skills`).
+- **Bộ bài kiểm thử đánh giá chất lượng (Evals Suite):** [`evals/README.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/evals/README.md) — Chạy test runner: `node .claude/skills/diagram-orchestrator/scripts/run-evals.mjs`.
+

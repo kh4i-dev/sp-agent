@@ -100,6 +100,8 @@ Sử dụng **Section Break (Next Page)** để chia báo cáo thành 3 phần r
 3. **Section 3 — Nội dung chính (Body Matter):** Từ Mở đầu / Chương 1 đến hết Kết luận, Tài liệu tham khảo, Phụ lục.
    - **Đánh số Ả Rập (`1, 2, 3...`)**, bắt đầu lại từ số 1 (`start_type = 1`), căn giữa hoặc góc phải chân trang/đầu trang.
 
+> **Đã tự động hóa:** `edit_docx.py --cover-end "LỜI CAM ĐOAN" --body-start "MỞ ĐẦU"` **tách Section** và đặt `pgNumType` (bìa không số | front-matter `lowerRoman` | thân bài `decimal start=1`), chèn field PAGE vào footer từng section. Mốc khớp theo đầu đoạn, không phân biệt hoa thường. Chỉ tự tách khi tài liệu đang ở **1 section**; tài liệu đã nhiều section phức tạp phải tách tay. `--add-page-numbers` (không mốc) = đánh liên tục. Render bằng **Word COM** để field cập nhật.
+
 ### D. Công thức Toán học & Kỹ thuật (Equations)
 - **Trình bày:** Mỗi công thức nằm riêng trên một dòng, **căn giữa (Center)**.
 - **Đánh số công thức:** Đánh số theo chương trong dấu ngoặc đơn, đặt **sát lề phải (Right-align)**: `(Chương.Số)`, ví dụ: `(2.1)`, `(3.4)`.
@@ -140,8 +142,53 @@ H1  CHƯƠNG 2...
 Nguyên tắc: không giả heading bằng chữ đậm; không gõ tay `1.1.1` nếu numbering đã quản lý;
 không đổi numbering hiện có nếu chưa audit TOC; sau khi sửa phải kiểm tra Navigation Pane.
 
+### 3.1. Khóa Heading 1 & ép Times New Roman (bất biến)
+
+- **Ngắt trang (Page Break Before):** Mọi `Heading 1` (CHƯƠNG / MỞ ĐẦU / KẾT LUẬN / TÀI LIỆU THAM KHẢO…) **BẮT BUỘC** đặt `paragraph_format.page_break_before = True`. Dùng thuộc tính đoạn `page_break_before` — **KHÔNG** rải `doc.add_page_break()` (chèn ký tự ngắt trang thủ công dễ sinh trang trắng khi Heading 1 đã ở đầu trang sau `Section Break Next Page`). Heading 2/3/4/5 **KHÔNG** ép ngắt trang.
+- **Font Heading:** Toàn bộ Heading 1–4 dùng **Times New Roman**, **màu đen `RGBColor(0,0,0)`**, **KHÔNG in nghiêng**. Phải chuẩn hóa ở **cả hai tầng**: (a) cấp Style `doc.styles["Heading 1"]`, và (b) mọi **run** trong đoạn heading thực tế. Lý do: Style Heading mặc định của Word là `Calibri Light` + màu xanh theme, hoặc bị direct formatting phủ đè — bỏ qua một tầng là lộ font lạ khi render.
+- **Ép `w:rFonts`:** Set đủ 4 khe `w:ascii`, `w:hAnsi`, `w:eastAsia`, `w:cs` = `Times New Roman` để Word không fallback font (đặc biệt khi mở trên máy thiếu font).
+- **Chống mồ côi:** Mọi Heading đặt `keep_with_next = True` để tiêu đề không bị bỏ trơ ở đáy trang.
+
+```python
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Pt, RGBColor
+
+def format_heading_styles(doc, font_name="Times New Roman", sizes_pt=(16, 14, 13, 12)):
+    for level in range(1, 5):
+        st = doc.styles[f"Heading {level}"]
+        st.font.name = font_name
+        st.font.bold = True
+        st.font.italic = False
+        st.font.color.rgb = RGBColor(0, 0, 0)
+        st.font.size = Pt(sizes_pt[level - 1])
+        rpr = st.element.get_or_add_rPr()
+        rfonts = rpr.find(qn("w:rFonts")) or OxmlElement("w:rFonts")
+        rpr.insert(0, rfonts)
+        for attr in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"):
+            rfonts.set(qn(attr), font_name)
+        st.paragraph_format.keep_with_next = True
+        if level == 1:
+            st.paragraph_format.page_break_before = True  # KHÓA HEADING 1 LUÔN ĐẦU TRANG MỚI
+
+    for p in doc.paragraphs:
+        name = (p.style.name or "").lower()
+        if "heading" not in name and "tiêu đề" not in name:
+            continue
+        lvl = next((int(c) for c in name if c.isdigit()), 1)
+        p.paragraph_format.keep_with_next = True
+        p.paragraph_format.page_break_before = (lvl == 1)
+        for r in p.runs:
+            r.font.name = font_name
+            r.font.italic = False
+            r.font.color.rgb = RGBColor(0, 0, 0)
+```
+
+> Lệnh tự động: `python scripts/edit_docx.py report.docx --academic-format` (đã bao gồm khóa Heading 1 + ép Times New Roman), hoặc chỉ heading: `--style-headings`.
+
 QA: cấp heading không nhảy; không có Heading 4 nằm trực tiếp dưới Heading 1 khi tài liệu không có cấu trúc đó;
-TOC phản ánh đúng hierarchy; số mục không trùng/mất; không có heading rỗng.
+TOC phản ánh đúng hierarchy; số mục không trùng/mất; không có heading rỗng;
+mỗi Heading 1 ở đầu trang mới và không sinh trang trắng; heading render đúng Times New Roman màu đen.
 
 ## 4. Tables & Style (Bảng biểu học thuật)
 
@@ -222,6 +269,8 @@ Khi thêm/xóa hình: cập nhật field, kiểm tra numbering, kiểm tra các 
 
 Không được: để `Hình 3.4` xuất hiện trước `Hình 3.2`; tham chiếu tới số không tồn tại; caption và hình cách xa nhau.
 
+> **Đã tự động hóa:** `edit_docx.py --number-captions` chuyển caption text `Hình X.Y:` / `Bảng X.Y:` thành **field SEQ** (tự tăng, reset theo chương; số chương lấy từ Heading 1 dạng "CHƯƠNG N") + **bookmark**, đồng thời biến các tham chiếu text ("Hình 3.2", "Bảng 3.2") trong thân bài thành **field REF** (cross-reference tự cập nhật khi chèn/xóa). Dùng `--caption-plain` để đánh số đơn giản (Hình 1, 2, 3…). Numbering chỉ hiển thị đúng sau khi cập nhật field (render Word COM tự update).
+
 ## 7. TOC & Navigation
 
 TOC và Danh mục hình/bảng được tạo tự động bằng OOXML Field Codes, không gõ tay:
@@ -258,8 +307,10 @@ không mất mục con; không có tiêu đề nằm ngoài TOC do dùng sai sty
 > 4. Chỉ khi 100% trang ảnh đạt yêu cầu thị giác mới được phát hành hoặc bàn giao cho người dùng.
 
 ```bash
-python scripts/render_docx.py input.docx --output_dir render --emit_pdf --dpi 150
+python scripts/render_docx.py input.docx --output_dir render --dpi 150
 ```
+> `--emit_pdf`: giữ để tương thích (mặc định đã luôn xuất PDF). `--pdf_only`: chỉ PDF, không render PNG.
+> Render bằng **Word COM** tự cập nhật field (TOC/TOF/TOT/PAGE). **LibreOffice (soffice) KHÔNG tự cập nhật field** → phải Update Field (`Ctrl+A` → `F9`) trước khi render, nếu không TOC sẽ trống/sai số trang.
 
 Vòng lặp chuẩn: `Edit → Render PDF → Render PNG → Soi từng ảnh PNG → Có lỗi? Sửa → Render lại | Hết lỗi? Hoàn tất`.
 
@@ -273,9 +324,10 @@ Checklist:
 
 ```text
 [ ] Normal = Times New Roman 13
-[ ] Heading 1 nhất quán
-[ ] Heading 2 nhất quán
-[ ] Heading 3 nhất quán
+[ ] Heading 1 nhất quán — Times New Roman, màu đen, KHÔNG nghiêng
+[ ] Heading 1 BẮT BUỘC page_break_before=True (luôn ở đầu trang mới)
+[ ] Heading 2 nhất quán — Times New Roman, màu đen, keep_with_next
+[ ] Heading 3 nhất quán — Times New Roman, màu đen, keep_with_next
 [ ] Caption nhất quán
 [ ] Table style nhất quán
 [ ] Paragraph spacing nhất quán
@@ -311,8 +363,9 @@ Output: `Structural changes / Visual changes / Unexpected regressions / Approved
 
 ## 12. Pitfalls công cụ (từ nghiên cứu)
 
-- `python-docx` KHÔNG hỗ trợ tracked changes và có thể nuốt `w:ins`/`w:del` khi lưu; khi lưu chỉ ghi lại một phần các OOXML part (có thể mất printSettings/customXml). Sửa revision nên dùng OOXML trực tiếp hoặc `docx-revisions`.
+- `python-docx` KHÔNG hỗ trợ tracked changes và có thể nuốt `w:ins`/`w:del` khi lưu; khi lưu chỉ ghi lại một phần các OOXML part (có thể mất printSettings/customXml). Sửa revision nên dùng OOXML trực tiếp hoặc `docx-revisions`. Cách an toàn có sẵn: `scripts/revisions.py --list` (đọc-only) để audit, `--accept` / `--reject` (Word COM, lưu ra **bản sao**) để chốt bản sạch.
 - Nhiều tiến trình `soffice` chạy song song dùng chung profile sẽ im lặng không tạo output (exit 1). Luôn truyền `-env:UserInstallation=file:///<profile riêng>` (script render đã xử lý).
 - `docx2pdf` chỉ chạy trên máy có Microsoft Word (COM/JXA).
 - `pandoc` KHÔNG chuyển DOCX → PDF trực tiếp; phải qua LaTeX/HTML.
 - Font thiếu trên máy render sẽ bị thay thế âm thầm và làm lệch layout.
+- `.doc` (Word 97–2003, nhị phân) KHÔNG đọc được bằng `python-docx`; dùng `scripts/convert_doc.py` (Word COM / LibreOffice) để chuyển sang `.docx` trước.

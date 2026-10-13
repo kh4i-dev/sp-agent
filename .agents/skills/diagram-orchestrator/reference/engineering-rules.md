@@ -9,7 +9,7 @@ Tài liệu cẩm nang thực chiến đào sâu nguyên tắc thiết kế, b�
 - **Công cụ:** PlantUML (`.puml`).
 - **Câu hỏi cần trả lời:** Ai sử dụng hệ thống? Họ muốn hoàn thành việc gì? Phạm vi hệ thống nằm ở đâu?
 - **Kinh nghiệm cốt lõi:**
-  - Tên Use Case là mục tiêu nghiệp vụ: `Gửi yêu cầu kết nối`, `Tìm kiếm gia sư`, `Thanh toán gói`.
+  - Tên Use Case là mục tiêu nghiệp vụ: `Gửi yêu cầu`, `Tìm kiếm <đối tượng>`, `Thanh toán gói`.
   - Actor là vai trò tương tác, không phải người cụ thể.
   - Vẽ rõ khung ranh giới hệ thống: Actor nằm ngoài, Use Case hình elip nằm trong.
   - `<<include>>`: Hành vi tách ra là phần bắt buộc phải thực hiện trong Use Case gốc.

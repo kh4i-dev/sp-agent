@@ -187,20 +187,30 @@ def replace_images_in_docx(
                     for p in root.findall('.//w:p', NS):
                         blip = p.find(f".//a:blip[@r:embed='{rid}']", NS)
                         if blip is not None:
+                            # Xóa sạch toàn bộ thuộc tính cắt ảnh cũ (srcRect)
+                            srcRect = p.find('.//a:srcRect', NS)
+                            if srcRect is not None and len(srcRect.attrib) > 0:
+                                srcRect.attrib.clear()
+                                modified_xml = True
+
                             extent = p.find('.//wp:extent', NS)
                             if extent is not None:
                                 old_cx = int(extent.attrib.get('cx', 0))
                                 if old_cx > 0:
                                     new_cy = int(old_cx * new_aspect)
+                                    MAX_CY = 6000000  # Giới hạn chiều cao an toàn ~16.6cm tránh tràn trang
+                                    if new_cy > MAX_CY:
+                                        scale = MAX_CY / new_cy
+                                        new_cy = MAX_CY
+                                        old_cx = int(old_cx * scale)
+                                        extent.set('cx', str(old_cx))
                                     extent.set('cy', str(new_cy))
                                     modified_xml = True
                             ext = p.find('.//a:xfrm/a:ext', NS)
                             if ext is not None:
-                                old_cx = int(ext.attrib.get('cx', 0))
-                                if old_cx > 0:
-                                    new_cy = int(old_cx * new_aspect)
-                                    ext.set('cy', str(new_cy))
-                                    modified_xml = True
+                                ext.set('cx', str(old_cx))
+                                ext.set('cy', str(new_cy))
+                                modified_xml = True
 
                 if modified_xml:
                     tree.write(str(doc_xml_path), encoding='utf-8', xml_declaration=True)

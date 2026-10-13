@@ -1,0 +1,13 @@
+# Python build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Vendored third-party repos (clone để tra cứu — KHÔNG commit; xem vendor/README.md)
+vendor/
+!vendor/README.md
+
+# OS / editor
+Thumbs.db
+.DS_Store
+*.tmp

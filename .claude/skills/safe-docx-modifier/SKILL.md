@@ -66,6 +66,18 @@ Khi thay thế ảnh sơ đồ trong file Word, Agent **BẮT BUỘC** phải hi
 *"Ảnh đã OK để thay luôn vào tài liệu chưa, hay cần sửa/tinh chỉnh ảnh nào?"*
 Tuyệt đối không được tự ý thực hiện ZIP swap ghi đè `imageX.png` nếu người dùng chưa trực tiếp duyệt hình thức trực quan của sơ đồ!
 
+### Bài học 7: Kỷ luật thư mục công cụ — TUYỆT ĐỐI KHÔNG rải rác script ở root
+Mọi công cụ/script bổ trợ sửa DOCX, inspect XML, hoán đổi ảnh hay render BẮT BUỘC phải nằm trong thư mục công cụ của dự án (`docs/tools/` hoặc `tools/`).
+- Tuyệt đối CẤM tạo các script Python tạm thời (`replace_docx_images.py`, `inspect_docx_xml.py`, `apply_*.py`) rải rác ngay tại thư mục gốc (`root`) của dự án làm ô nhiễm git repository.
+
+### Bài học 8: Phân định rạch ròi 2 không gian tài liệu (Báo cáo học thuật vs. Open-Source Docs)
+- **Báo cáo học thuật / Đồ án môn học**: Đặt ở không gian riêng (ví dụ `reports/` hoặc `docs/report/` / tên tệp báo cáo riêng), phục vụ in ấn nộp trường, bảo vệ đề tài.
+- **Tài liệu dự án Open-Source (`docs/`)**: Phục vụ phát hành mã nguồn mở lâu dài (Architecture, Developer Guide, API Reference, User Manual). Tránh để file báo cáo học thuật làm ô nhiễm tài liệu mở.
+
+### Bài học 9: Phân định triệt để Ảnh chụp (Screenshots) và Sơ đồ (Diagrams)
+- `docs/screenshots/`: 100% CHỈ chứa ảnh chụp màn hình UI thực tế của phần mềm (`01_*.png` -> `09_*.png`). Tuyệt đối CẤM để sơ đồ hoặc file `.puml`/`.dot` vào đây.
+- `docs/diagrams/`: Chứa mã nguồn sơ đồ (`.puml`, `.dot`, `.tldr`) và file xuất vector/raster (`.svg`, `.png`). CẤM xả code sơ đồ ra chat, chỉ đưa ảnh render preview và link file.
+
 ---
 
 ## 3. Mẫu Code Python Chuẩn tắc (Safe In-Place Script Pattern)
@@ -209,3 +221,6 @@ python scripts/verify_docx.py path/to/document.docx \
 - ❌ **CẤM** thay file ảnh mà không cập nhật lại kích thước `cy` trong OpenXML (gây méo tỷ lệ khung hình).
 - ❌ **CẤM** tự ý suy đoán số liệu kỹ thuật, mã sinh viên hoặc kết quả test khi chưa đối chiếu nguồn.
 - ❌ **CẤM** kết luận hoàn tất khi chưa kiểm định cú pháp XML (`verify_docx.py`) và tạo bản sao lưu an toàn (`.bak_safe`).
+- ❌ **CẤM** tạo các script sửa docx/kiểm tra rải rác ở thư mục gốc (`root`) của dự án; bắt buộc phải đặt trong `tools/` hoặc `docs/tools/`.
+- ❌ **CẤM** lẫn lộn sơ đồ (`.puml`, `.dot`, `hinh_*`) vào thư mục `docs/screenshots/` (vốn chỉ dành cho ảnh UI thật).
+- ❌ **CẤM** xả khối mã nguồn sơ đồ ra chat gây tràn màn hình; chỉ lưu file đĩa và gửi ảnh preview kèm link.

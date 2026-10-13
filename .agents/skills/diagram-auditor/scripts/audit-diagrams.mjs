@@ -9,12 +9,38 @@
  * 5. Chống đường đi trùng lặp / song song quá sát nhau (Parallel edge congestion < 8px)
  * 6. Chống nhãn đè lên đường Crow's foot trong ERD (Chuẩn Visual Paradigm & Lucidchart)
  * 7. Kiểm tra đủ cặp SVG vector + PNG 300DPI
+ * 8. ZERO-COLOR GATE: chỉ cho phép thang độ xám — cấm mọi mã màu (kể cả copy từ ảnh mẫu)
+ * 9. Cỡ chữ tối thiểu ≥ 9pt (đọc được khi in A4) + tỷ lệ khung 0.5–2.4
+ * 10. Heuristic bố cục (advisory): lệch trọng tâm, cụm dồn cục, mật độ nhãn dày
+ *
+ * Cờ: --allow-color  → tắt ZERO-COLOR GATE (chỉ dùng khi có ghi đè tường minh override-monochrome: true)
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
 
-const targetDir = process.argv[2] || process.cwd();
+const cliArgs = process.argv.slice(2);
+const targetDir = cliArgs.find((a) => !a.startsWith('--')) || process.cwd();
+const allowColor = cliArgs.includes('--allow-color');
+
+function isGrayscaleHex(hex) {
+  let h = hex.replace('#', '').toLowerCase();
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+  if (h.length !== 6) return true;
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  if ([r, g, b].some((n) => isNaN(n))) return true;
+  return Math.max(r, g, b) - Math.min(r, g, b) <= 12;
+}
+
+const GRAY_NAMES = new Set([
+  'none', 'transparent', 'currentcolor', 'inherit', 'url',
+  'white', 'black', 'gray', 'grey', 'silver', 'gainsboro', 'whitesmoke',
+  'dimgray', 'dimgrey', 'darkgray', 'darkgrey', 'lightgray', 'lightgrey',
+  'lightgrey', 'darkslategray', 'darkslategrey', 'slategray', 'slategrey'
+]);
+
 
 console.log(`[diagram-auditor] Đang kiểm định chất lượng sơ đồ tại: ${targetDir}`);
 
@@ -31,6 +57,7 @@ if (files.length === 0) {
 }
 
 let totalErrors = 0;
+let totalWarnings = 0;
 
 const BANNER_PATTERNS = [
   /Please[\s\u00a0]+use/i,
@@ -48,6 +75,7 @@ for (const file of files) {
   const pngPath = filePath.replace(/\.svg$/, '.png');
   const content = fs.readFileSync(filePath, 'utf8');
   const issues = [];
+  const warnings = [];
 
   // Check 1: Banner / Warning text
   for (const pattern of BANNER_PATTERNS) {
@@ -162,9 +190,13 @@ for (const file of files) {
     for (let j = i + 1; j < texts.length; j++) {
       const a = texts[i];
       const b = texts[j];
-      // Nếu 2 chữ khác nhau nhưng toạ độ x, y gần nhau dưới 15px -> va chạm/đè nhãn
-      if (a.text !== b.text && Math.abs(a.y - b.y) < 12 && Math.abs(a.x - b.x) < 25) {
-        textCollisions.push(`'${a.text}' và '${b.text}' bị chồng đè toạ độ (dx=${Math.abs(a.x - b.x).toFixed(1)}, dy=${Math.abs(a.y - b.y).toFixed(1)})`);
+      // Kiểm tra thực tế va chạm hộp chữ nhật (AABB Bounding Box Overlap)
+      const overlapX = Math.min(a.maxX, b.maxX) - Math.max(a.minX, b.minX);
+      const overlapY = Math.min(a.maxY, b.maxY) - Math.max(a.minY, b.minY);
+
+      // Nếu cả chiều X và Y đều giao cắt (thực sự đè chữ lên nhau)
+      if (a.text !== b.text && overlapX > 1 && overlapY > 1) {
+        textCollisions.push(`'${a.text}' và '${b.text}' bị chồng đè toạ độ (overlapX=${overlapX.toFixed(1)}px, overlapY=${overlapY.toFixed(1)}px)`);
       }
     }
   }
@@ -219,11 +251,80 @@ for (const file of files) {
     issues.push(`Phát hiện ${lineIntersections.length} điểm đường kẻ cắt ngang mặt chữ: ${lineIntersections.slice(0, 2).join('; ')}`);
   }
 
+  // Check 9: ZERO-COLOR GATE (Chỉ cho phép thang độ xám)
+  if (!allowColor) {
+    const colorViolations = new Set();
+    const colorAttrRegex = /(?:fill|stroke|stop-color|flood-color|color)\s*[:=]\s*["']?\s*(#[0-9a-fA-F]{3,8}|rgb\([^)]*\)|[a-zA-Z]+)/g;
+    let cMatch;
+    while ((cMatch = colorAttrRegex.exec(content)) !== null) {
+      const raw = cMatch[1].trim();
+      const low = raw.toLowerCase();
+      if (low.startsWith('#')) {
+        if (!isGrayscaleHex(low)) colorViolations.add(raw);
+      } else if (low.startsWith('rgb')) {
+        const nums = (raw.match(/[0-9.]+/g) || []).map(Number);
+        if (nums.length >= 3) {
+          const [r, g, b] = nums;
+          if (Math.max(r, g, b) - Math.min(r, g, b) > 12) colorViolations.add(raw);
+        }
+      } else if (!GRAY_NAMES.has(low)) {
+        colorViolations.add(raw);
+      }
+    }
+    if (colorViolations.size > 0) {
+      issues.push(`VI PHẠM ZERO-COLOR: phát hiện ${colorViolations.size} mã màu phi thang độ xám (${[...colorViolations].slice(0, 5).join(', ')}). Sơ đồ báo cáo BẮT BUỘC trắng-đen — kể cả khi ảnh mẫu người dùng có màu thì cũng KHÔNG được sao chép màu!`);
+    }
+  }
+
+  // Check 10: Minimum font size (đọc được khi in A4)
+  const fontSizes = [];
+  const fsRegex = /font-size\s*[:=]\s*"?'?([0-9.]+)/g;
+  let fm;
+  while ((fm = fsRegex.exec(content)) !== null) {
+    const v = parseFloat(fm[1]);
+    if (!isNaN(v) && v > 0) fontSizes.push(v);
+  }
+  const tinyFonts = fontSizes.filter((v) => v < 9);
+  if (tinyFonts.length > 0) {
+    issues.push(`Cỡ chữ quá nhỏ: ${tinyFonts.length} nhãn có font-size < 9pt (nhỏ nhất ${Math.min(...tinyFonts).toFixed(1)}pt). Trên trang A4 (~15cm) sẽ khó đọc; tăng cỡ chữ hoặc phân rã sơ đồ.`);
+  }
+
+  // Check 11: Layout heuristics — CẢNH BÁO VÀNG (Agent phải soi mắt phân xử)
+  if (svgWidth > 0 && svgHeight > 0 && texts.length >= 5) {
+    const cx = texts.reduce((s, t) => s + (t.minX + t.maxX) / 2, 0) / texts.length;
+    const cy = texts.reduce((s, t) => s + (t.minY + t.maxY) / 2, 0) / texts.length;
+    const dx = Math.abs(cx - svgWidth / 2) / svgWidth;
+    const dy = Math.abs(cy - svgHeight / 2) / svgHeight;
+    if (dx > 0.2 || dy > 0.2) {
+      warnings.push(`Trọng tâm khối lệch tâm khung (Δx=${(dx * 100).toFixed(0)}%, Δy=${(dy * 100).toFixed(0)}%). Cân nhắc tái bố cục cho khoảng trắng cân đối.`);
+    }
+  }
+  let crowdedPairs = 0;
+  for (let i = 0; i < texts.length; i++) {
+    for (let j = i + 1; j < texts.length; j++) {
+      const a = texts[i];
+      const b = texts[j];
+      if (a.text !== b.text && Math.abs(a.x - b.x) < 30 && Math.abs(a.y - b.y) < 30) crowdedPairs++;
+    }
+  }
+  if (crowdedPairs >= 12) {
+    warnings.push(`Mật độ nhãn cao (${crowdedPairs} cặp nhãn cách nhau < 30px). Nguy cơ dồn cục khi in nhỏ; cân nhắc tăng nodesep/ranksep hoặc phân rã.`);
+  }
+  if (texts.length > 80) {
+    warnings.push(`Sơ đồ có ${texts.length} nhãn — khá dày. Cân nhắc phân rã thành 1 sơ đồ tổng quan + các sơ đồ chuyên sâu (Use Case/Sequence).`);
+  }
+
   if (issues.length > 0) {
     totalErrors += issues.length;
     console.log(`❌ [FAIL] ${file}:`);
     for (const issue of issues) {
       console.log(`    - ${issue}`);
+    }
+  } else if (warnings.length > 0) {
+    totalWarnings += warnings.length;
+    console.log(`⚠️  [PASS*] ${file}: đạt lỗi chặn cứng, còn ${warnings.length} cảnh báo VÀNG cần Agent soi mắt phân xử:`);
+    for (const w of warnings) {
+      console.log(`    ! ${w}`);
     }
   } else {
     console.log(`✓ [PASS] ${file} (Chuẩn mực 100%, không đè chữ, không cắt nét, đủ SVG + PNG)`);
@@ -232,15 +333,20 @@ for (const file of files) {
 
 console.log('----------------------------------------------------');
 console.log('[LƯU Ý NGHIỆM THU - ANTI-FALSE-PASS DOCTRINE]:');
-console.log('  * Kết quả script tự động chỉ xác nhận tính toàn vẹn hình học & cú pháp (Gate B & một phần Gate C).');
-console.log('  * Script KHÔNG THỂ thay thế việc kiểm tra ngữ nghĩa (Gate A) và soi trực quan bằng mắt (Gate C Visual QA).');
-console.log('  * Agent KHÔNG ĐƯỢC tuyên bố hoàn thành dự án nếu chưa tự mở ảnh soi mắt và đối chiếu với code/schema!');
+console.log('  * Lỗi ĐỎ (FAIL) chặn cứng: banner, SVG hỏng, thiếu PNG, title nhúng, nhãn ERD,');
+console.log('    quan hệ trùng, đè chữ, đường cắt chữ, VI PHẠM ZERO-COLOR, cỡ chữ < 9pt, tỷ lệ khung lệch.');
+console.log('  * Cảnh báo VÀNG (PASS*) KHÔNG chặn tự động — nhưng Agent BẮT BUỘC soi mắt phân xử.');
+console.log('  * Script KHÔNG THỂ thay thế kiểm tra ngữ nghĩa (Gate A) và soi trực quan bằng mắt (Gate C).');
+console.log('  * Agent KHÔNG ĐƯỢC tuyên bố hoàn thành nếu chưa tự mở ảnh soi mắt + có bằng chứng soi ảnh!');
 console.log('----------------------------------------------------');
 
 if (totalErrors > 0) {
-  console.error(`[diagram-auditor] KẾT QUẢ: ${totalErrors} lỗi/cảnh báo nghiêm trọng phát hiện. Vui lòng sửa triệt để!`);
+  console.error(`[diagram-auditor] KẾT QUẢ: ${totalErrors} LỖI ĐỎ nghiêm trọng phát hiện (+ ${totalWarnings} cảnh báo vàng). Vui lòng sửa triệt để!`);
   process.exit(1);
 } else {
-  console.log(`[diagram-auditor] KẾT QUẢ TỰ ĐỘNG: 100% Sơ đồ ĐẠT CHUẨN KỸ THUẬT SƠ BỘ (${files.length}/${files.length} files).`);
+  console.log(`[diagram-auditor] KẾT QUẢ TỰ ĐỘNG: 100% sơ đồ ĐẠT lỗi chặn cứng (${files.length}/${files.length} files).`);
+  if (totalWarnings > 0) {
+    console.log(`[diagram-auditor] Còn ${totalWarnings} cảnh báo VÀNG cần Agent soi mắt phân xử trước khi PASS (không được bỏ qua).`);
+  }
   process.exit(0);
 }

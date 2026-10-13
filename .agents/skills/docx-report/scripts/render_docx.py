@@ -19,6 +19,12 @@ import sys
 import tempfile
 from pathlib import Path
 
+# Đảm bảo in tiếng Việt không bị lỗi charmap trên Windows terminal
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 
 def is_windows():
     return platform.system() == "Windows"
@@ -41,45 +47,95 @@ def find_soffice():
     return None
 
 
+def _ps_quote(value):
+    """Bọc một chuỗi thành literal single-quote hợp lệ cho PowerShell."""
+    return "'" + str(value).replace("'", "''") + "'"
+
+
+def _word_com_powershell(work_docx, out_pdf_path):
+    """Fallback: xuất PDF bằng Word COM qua PowerShell (khi thiếu pywin32)."""
+    script = f"""
+    $ErrorActionPreference = 'Stop';
+    $word = $null; $doc = $null;
+    try {{
+        $word = New-Object -ComObject Word.Application;
+        $word.Visible = $false;
+        $word.DisplayAlerts = 0;                      # wdAlertsNone: không hỏi "Save changes?"
+        $doc = $word.Documents.Open({_ps_quote(work_docx)}, $false, $false);
+        try {{ $doc.Fields.Update(); }} catch {{ }};
+        $target = {_ps_quote(out_pdf_path)};
+        $fmt = 17;                                    # wdFormatPDF
+        $doc.SaveAs([ref]$target, [ref]$fmt);
+    }} finally {{
+        if ($doc -ne $null) {{ try {{ $doc.Close($false); }} catch {{ }} }};
+        if ($word -ne $null) {{
+            try {{ $word.Quit(); }} catch {{ }};
+            [System.Runtime.InteropServices.Marshal]::ReleaseComObject($word) | Out-Null;
+        }}
+    }}
+    """
+    cmd = ["powershell", "-NoProfile", "-NonInteractive", "-Command", script]
+    res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if res.returncode != 0 or not Path(out_pdf_path).exists():
+        raise RuntimeError(f"Word PowerShell export thất bại: {res.stderr}")
+    return Path(out_pdf_path)
+
+
 def docx_to_pdf_word_com(docx_path, out_pdf_path):
-    """Chuyển đổi DOCX sang PDF bằng Microsoft Word COM trên Windows."""
-    try:
-        import win32com.client  # type: ignore
-        word = win32com.client.DispatchEx("Word.Application")
-    except Exception:
-        # Fallback PowerShell nếu chưa cài pywin32
-        cmd = [
-            "powershell",
-            "-NoProfile",
-            "-Command",
-            f"""
-            $word = New-Object -ComObject Word.Application;
-            try {{
-                $doc = $word.Documents.Open('{Path(docx_path).resolve()}', $false, $true);
-                $doc.SaveAs([ref]'{Path(out_pdf_path).resolve()}', [ref]17);
-                $doc.Close();
-            }} finally {{
-                $word.Quit();
-                [System.Runtime.InteropServices.Marshal]::ReleaseComObject($word) | Out-Null;
-            }}
-            """
-        ]
-        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        if res.returncode != 0 or not Path(out_pdf_path).exists():
-            raise RuntimeError(f"Word PowerShell export thất bại: {res.stderr}")
-        return Path(out_pdf_path)
+    """Chuyển đổi DOCX sang PDF bằng Microsoft Word COM trên Windows.
+
+    Mở trên BẢN SAO tạm (không khóa file gốc), tắt mọi hộp thoại, và LUÔN đóng
+    tài liệu + thoát Word trong finally -> tránh treo WINWORD.EXE / kẹt file.
+    """
+    docx_path = Path(docx_path).resolve()
+    out_pdf_path = Path(out_pdf_path).resolve()
+
+    tmp_dir = tempfile.mkdtemp(prefix="docx_word_com_")
+    tmp_docx = Path(tmp_dir) / docx_path.name
+    shutil.copy2(docx_path, tmp_docx)
 
     try:
-        doc = word.Documents.Open(str(Path(docx_path).resolve()), False, True)
-        # 17 = wdFormatPDF
-        doc.SaveAs(str(Path(out_pdf_path).resolve()), FileFormat=17)
-        doc.Close()
-        return Path(out_pdf_path)
-    finally:
         try:
-            word.Quit()
+            import win32com.client  # type: ignore
+            import pythoncom  # type: ignore
         except Exception:
-            pass
+            return _word_com_powershell(tmp_docx, out_pdf_path)
+
+        pythoncom.CoInitialize()
+        word = None
+        doc = None
+        try:
+            word = win32com.client.DispatchEx("Word.Application")
+            word.Visible = False
+            word.DisplayAlerts = 0        # wdAlertsNone: không bao giờ hỏi "Save changes?"
+            # Mở KHÔNG read-only (trên bản sao) để cập nhật được field TOC/TOF/PAGE.
+            doc = word.Documents.Open(str(tmp_docx), False, False)
+            try:
+                doc.Fields.Update()               # cập nhật mọi field (TOC, PAGE, SEQ...)
+                for toc in doc.TablesOfContents:
+                    toc.Update()                  # cập nhật riêng TOC để số trang chắc chắn đúng
+            except Exception as e:
+                print(f"[Cảnh báo] Không cập nhật được field Word: {e}", file=sys.stderr)
+            # 17 = wdFormatPDF
+            doc.SaveAs(str(out_pdf_path), FileFormat=17)
+            return out_pdf_path
+        finally:
+            if doc is not None:
+                try:
+                    doc.Close(SaveChanges=False)
+                except Exception:
+                    pass
+            if word is not None:
+                try:
+                    word.Quit()
+                except Exception:
+                    pass
+            try:
+                pythoncom.CoUninitialize()
+            except Exception:
+                pass
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
 def docx_to_pdf_soffice(docx_path, out_dir):
@@ -158,7 +214,10 @@ def main():
     ap.add_argument("docx", help="Đường dẫn file .docx")
     ap.add_argument("--output_dir", default="render", help="Thư mục xuất ảnh (mặc định: render)")
     ap.add_argument("--dpi", type=int, default=150, help="DPI xuất ảnh (mặc định: 150)")
-    ap.add_argument("--emit_pdf", action="store_true", help="Chỉ xuất file PDF")
+    ap.add_argument("--emit_pdf", action="store_true",
+                    help="(Mặc định luôn xuất PDF.) Giữ cờ này để tương thích ngược; không ảnh hưởng kết quả.")
+    ap.add_argument("--pdf_only", action="store_true",
+                    help="Chỉ xuất PDF, KHÔNG render PNG từng trang.")
     args = ap.parse_args()
 
     docx_path = Path(args.docx)
@@ -172,8 +231,8 @@ def main():
     pdf_path = docx_to_pdf(docx_path, out_dir)
     print(f"   Đã xuất PDF: {pdf_path}")
 
-    if args.emit_pdf:
-        print(">> Hoàn thành (chế độ --emit_pdf).")
+    if args.pdf_only:
+        print(">> Hoàn thành (chế độ --pdf_only).")
         return
 
     print(">> Đang render từng trang ra PNG...")

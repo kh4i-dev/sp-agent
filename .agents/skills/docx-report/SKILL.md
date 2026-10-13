@@ -40,11 +40,38 @@ Bạn KHÔNG chỉ viết văn xuôi. Bạn phải tạo ra một file `.docx` �
 | Việc | Công cụ | Ghi chú |
 |---|---|---|
 | Đọc & Audit cấu trúc | `scripts/inspect_docx.py` | Đếm từ, thống kê bảng, hình, liệt kê cây Heading |
-| Chuẩn hóa học thuật & Style | `scripts/edit_docx.py` | Áp dụng `--academic-format`: thụt lề 1 tab (1.27cm), căn đều 2 bên, lề giấy 3.5cm, style bảng & caption, chèn TOC/TOF/TOT |
+| Chuẩn hóa học thuật & Style | `scripts/edit_docx.py` | `--academic-format`: lề giấy 3.5/2/3/3cm, thụt lề 1 tab, Justify, giãn dòng 1.35, **Heading Times New Roman + Heading 1 khóa đầu trang**, style bảng (11pt), **caption bảng tự chuyển xuống dưới bảng** |
+| Chèn trường tự động | `scripts/edit_docx.py` | `--add-toc --add-tof --add-tot` (Mục lục/Danh mục hình/Danh mục bảng), `--add-page-numbers` (số trang) |
+| **Sinh bìa / phần đầu** | `scripts/make_cover.py` | `--kind doan\|btl`: Bìa chính, Bìa lót, Nhiệm vụ; `--full` thêm Phiếu thông qua/Ghi điểm/Lời cam đoan; viền hoa văn chừa gáy + logo; `--prepend-to` ghép lên đầu báo cáo |
 | **Thay ảnh siêu tốc (Non-destructive)** | `scripts/replace_docx_images.py` | **Thay thế ảnh trực tiếp vào ZIP OOXML, bảo toàn 100% định dạng, style, bảng biểu của file Word đã sửa đẹp** |
+| Chuyển `.doc` → `.docx` | `scripts/convert_doc.py` | Word 97–2003 không đọc được bằng python-docx — convert bằng Word COM / LibreOffice |
+| Tracked changes | `scripts/revisions.py` | `--list` (read-only) · `--accept` / `--reject` (thao tác trên **bản sao**) |
 | Tạo mới | `python-docx` | Thư viện chuẩn tạo docx từ Python |
-| Render kiểm tra | `scripts/render_docx.py` | Xuất PDF & PNG (tự động nhận Word COM Windows / soffice) |
+| Render kiểm tra | `scripts/render_docx.py` | Xuất PDF + PNG; **tự cập nhật field (TOC/PAGE) khi dùng Word COM** |
 
+**Bảng cờ `edit_docx.py` (chạy `python edit_docx.py report.docx <cờ>`):**
+
+| Cờ | Tác dụng |
+|---|---|
+| `--academic-format` | Trọn gói: lề, văn xuôi, heading, bảng, caption |
+| `--style-headings` | Chỉ heading: TNR, màu đen; **Heading 1 page-break-before**; H2–5 keep-with-next |
+| `--style-tables` | Chỉ bảng: header in đậm/căn trái, nền trắng, cantSplit, tblHeader |
+| `--style-captions` | Chỉ caption: **chuyển caption bảng/hình về đúng vị trí (dưới bảng/hình)** + định dạng |
+| `--table-font-size 11` | Cỡ chữ trong bảng (mặc định 11pt; chuẩn 10.5–12) |
+| `--add-toc` / `--add-tof` / `--add-tot` | Chèn field Mục lục / Danh mục hình / Danh mục bảng |
+| `--add-page-numbers` | Chèn field PAGE vào footer (số trang liên tục) |
+| `--cover-end "LỜI CAM ĐOAN"` | Mốc bắt đầu front-matter; **trước mốc = bìa không đánh số** (tách Section) |
+| `--body-start "MỞ ĐẦU"` | Mốc bắt đầu thân bài; **từ mốc = số Ả Rập bắt đầu lại từ 1** (tách Section) |
+| `--number-captions` | Tự đánh số caption bằng field (SEQ, theo chương) + bookmark; tham chiếu "Hình 3.2"/"Bảng 3.2" trong bài thành cross-reference (REF). Thêm `--caption-plain` để đánh số đơn giản (Hình 1, 2, 3…) |
+| `--replace "old" "new"` / `--replace-many map.json` | Thay thế văn bản |
+
+> **Đánh số trang theo phần (chuẩn đồ án):**
+> ```bash
+> python scripts/edit_docx.py report.docx --cover-end "LỜI CAM ĐOAN" --body-start "MỞ ĐẦU" -o out.docx
+> ```
+> → Bìa (không số) | Front-matter (i, ii, iii) | Thân bài (1, 2, 3…). Mốc khớp theo **đầu đoạn** (không phân biệt hoa thường). Nếu chỉ cần đánh liên tục, dùng `--add-page-numbers`.
+
+> **Lưu ý cập nhật field**: TOC/TOF/TOT/PAGE chỉ hiển thị đúng sau khi **cập nhật field**. `render_docx.py` dùng **Word COM** sẽ tự `Fields.Update()` trước khi xuất PDF. Nếu render bằng **LibreOffice (soffice)**, field **không tự cập nhật** → mở bằng Word bấm `Ctrl+A` → `F9` (hoặc `References → Update Table`) rồi render lại trước khi kết luận.
 
 Cài đặt nhanh:
 
@@ -59,6 +86,87 @@ pip install python-docx docx-revisions Pillow
 > Script render: `scripts/render_docx.py`.
 > Script sửa DOCX: `scripts/edit_docx.py`.
 > Script kiểm tra DOCX: `scripts/inspect_docx.py`.
+> **Sinh bìa / phần đầu (2 định dạng Đồ án & BTL): `scripts/make_cover.py`** — chi tiết `reference/cover-formats.md`.
+> Chuyển `.doc` → `.docx`: `scripts/convert_doc.py`. · Tracked changes: `scripts/revisions.py`.
+> Quy mô & độ sâu báo cáo (chống báo cáo mỏng): `reference/report-scope.md`.
+> Ngôn từ caption / tên hình (mềm hóa, tránh cụm kỹ thuật cứng): `reference/caption-wording.md`.
+
+## Phần đầu tài liệu (Bìa) — HỎI ĐỊNH DẠNG TRƯỚC (bất biến)
+
+Khi người dùng cần **bìa / phần đầu tài liệu**, **BẮT BUỘC hỏi** họ chọn loại nào (không tự đoán):
+
+1. **Đồ án PTTKHT** (`--kind doan`): tiêu đề **"ĐỒ ÁN PHÂN TÍCH THIẾT KẾ HỆ THỐNG"**; có Nhiệm vụ thiết kế; cấu trúc 13 phần.
+2. **Báo cáo bài tập lớn** (`--kind btl`): tiêu đề **"BÁO CÁO BÀI TẬP LỚN"** + **MÔN HỌC** + **NĂM HỌC**; phần đầu gọn hơn.
+
+### Phỏng vấn thu thập thông tin (BẮT BUỘC — kiểu `grill-me`)
+
+**KHÔNG hardcode tên sinh viên / giảng viên.** `make_cover.py` sẽ **báo lỗi** nếu thiếu thông tin bắt buộc.
+Trước khi sinh bìa, **hỏi người dùng TỪNG CÂU MỘT** (mỗi câu kèm 1 đáp án gợi ý), không tự bịa:
+
+1. Loại tài liệu? → *Đồ án PTTKHT* / *Báo cáo bài tập lớn* (gợi ý: Đồ án PTTKHT)
+2. Tên đề tài (đúng như bìa)?
+3. Giáo viên hướng dẫn (học vị + họ tên)?
+4. Họ tên sinh viên?
+5. Lớp? · 6. MSSV? · 7. Niên khóa (VD 2022-2026)?
+8. Ngành? · Hệ? (gợi ý: KỸ THUẬT MÁY TÍNH / ĐẠI HỌC CHÍNH QUY)
+9. Bộ môn / Khoa? (gợi ý: CÔNG NGHỆ THÔNG TIN / KHOA ĐIỆN TỬ)
+10. *(BTL)* Môn học + Năm học? · *(Đồ án)* Ngày giao / ngày hoàn thành nhiệm vụ?
+11. Năm trên bìa? (gợi ý: năm hiện tại)
+12. Mục tiêu số trang / có dùng `--full` (Phiếu thông qua + Ghi điểm + Cam đoan) không?
+
+Chỉ khi đã có đủ **đề tài + GVHD + SV + lớp + MSSV** (+ môn học nếu BTL) mới chạy script.
+
+```bash
+# Đồ án
+python scripts/make_cover.py --kind doan --out bia.docx --topic "..." --gvhd "..." \
+    --sv "..." --lop "..." --mssv "..." --khoa-dao-tao "2022-2026" --year 2026
+# BTL
+python scripts/make_cover.py --kind btl --out bia.docx --mon-hoc "CÔNG NGHỆ PHẦN MỀM" \
+    --nam-hoc "2025-2026" --topic "..." --gvhd "..." --sv "..." --lop "..." --mssv "..." --year 2026
+# Ghép lên ĐẦU báo cáo có sẵn
+python scripts/make_cover.py --kind btl --prepend-to report.docx -o report_full.docx --data data.json
+```
+
+Bìa gồm **Bìa chính + Bìa lót + Nhiệm vụ**, có **khung viền hoa văn bám theo lề văn bản (`offsetFrom="text"`) để chừa gáy đóng quyển** + logo TNUT. Sau khi ghép bìa, chạy bộ đánh số trang để thân bài bắt đầu từ 1 (xem ở trên).
+
+## Phạm vi công cụ (trung thực — đọc trước khi hứa với người dùng)
+
+**Đã có script làm được (đã kiểm chứng chạy thật):**
+- Chuẩn hóa học thuật: lề, văn xuôi, **heading (TNR + Heading 1 khóa đầu trang)**, bảng (11pt), caption.
+- **Tự chuyển caption bảng/hình về đúng vị trí** (dưới bảng/hình) khi caption đang nằm trên.
+- Chèn field TOC/TOF/TOT + số trang (PAGE); render bằng Word COM **tự cập nhật field**.
+- **Tách Section + đánh số trang chuẩn**: bìa (không số) | front-matter (La Mã i,ii) | thân bài (Ả Rập từ 1) — qua `--cover-end` / `--body-start`.
+- **Sinh bìa/phần đầu 2 định dạng (Đồ án PTTKHT & Báo cáo BTL)** — có viền hoa văn chừa gáy, logo TNUT; `--full` thêm **Phiếu thông qua đồ án + Phiếu ghi điểm + Lời cam đoan**; ghép được lên đầu báo cáo có sẵn.
+- **Caption tự đánh số (SEQ) + cross-reference (REF)** — `edit_docx.py --number-captions` (Hình/Bảng theo chương, tự cập nhật khi chèn/xóa; tham chiếu trong bài tự liên kết).
+- **Danh mục từ viết tắt** (bảng ẩn viền, A–Z) — `make_cover.py --abbr "CSDL:Cơ sở dữ liệu;API:..."` hoặc `--full`.
+- **Chuyển `.doc` cũ → `.docx`** — `convert_doc.py` (Word COM / LibreOffice).
+- **Tracked changes an toàn** — `revisions.py --list` (read-only) / `--accept` / `--reject` (tác trên bản sao).
+- Thay ảnh in-place; render PDF→PNG; audit cấu trúc.
+
+**Hạn chế đã biết (không báo quá lời):**
+- Tách Section tự động (bìa/front-matter/thân) chỉ chạy khi tài liệu đang ở **1 section**; tài liệu nhiều section phức tạp → tách tay.
+- Caption đánh số **theo chương** cần Heading 1 dạng "CHƯƠNG N"; nếu không có thì dùng `--caption-plain`.
+- Sửa nội dung mà file có tracked changes phải dùng `revisions.py` trước (python-docx nuốt `w:ins`/`w:del` khi lưu — xem `rules.md` §12).
+
+
+## Ngữ nghĩa & Quy mô báo cáo — CHỐNG BÁO CÁO MỎNG (bất biến)
+
+Trước khi viết, **xác nhận mục tiêu số trang** với người dùng. Phải đạt quy mô tối thiểu:
+
+| Loại | Trang nội dung tối thiểu | Ghi chú |
+|---|---|---|
+| **Đồ án PTTKHT** | **40 – 60 trang** | Không kể bìa/phụ lục/danh mục |
+| **Báo cáo bài tập lớn (BTL)** | **15 – 30 trang** | |
+| Báo cáo môn ngắn | **10 – 15 trang** | |
+
+**Quy tắc cứng (không vi phạm):**
+- **Cấm tóm tắt suông**: mỗi mục (Heading 3) phải có **đoạn văn hoàn chỉnh (≥ 5–8 câu)** + dẫn chứng (bảng/sơ đồ/số liệu/ví dụ).
+- **Mỗi chương đạt số trang tối thiểu**; nếu mỏng → mở rộng bằng phân tích, ca kiểm thử, sơ đồ — **KHÔNG chèn chữ rỗng/lặp**.
+- Đồ án phải có **đủ sơ đồ** (tổ chức, use case, lớp, hoạt động, trạng thái, ERD) + **bảng đặc tả** + **ảnh chụp màn hình thật**.
+- Thiếu dữ liệu để đủ độ sâu → **HỎI người dùng**, tuyệt đối **không bịa** (đánh dấu `TODO` nếu chưa có).
+- Sau render **đếm số trang từng chương**; mỏng hơn chuẩn → viết bổ sung rồi render lại.
+
+> Bảng độ sâu theo từng chương + checklist "báo cáo mỏng" + bộ skill phối hợp: `reference/report-scope.md`.
 
 ## Quy trình 3 nhánh
 
@@ -129,7 +237,7 @@ Mọi agent khi làm việc với file Word PHẢI KHẮC CỐT GHI TÂM 7 thấ
 5. **Bẫy Chú thích mồ côi & Gãy đôi hàng (Orphan Captions & Split Rows)**:
    - *Sai lầm:* Đặt bảng hoặc hình sát đáy trang mà không lường trước ngắt trang.
    - *Thực tế:* Thân bảng ở trang trước, nhưng dòng Caption văng sang đầu trang sau; hoặc 1 hàng bảng bị cắt ngang lưng làm đôi.
-   - *Giải pháp:* Luôn bật `<w:cantSplit/>` cho mọi hàng bảng; bật `keep_with_next = True` cho ảnh; chủ động thêm `doc.add_page_break()` trước các bảng dài gần cuối trang.
+   - *Giải pháp:* Luôn bật `<w:cantSplit/>` cho mọi hàng bảng; bật `keep_with_next = True` cho ảnh. Nếu bảng dài nằm sát đáy trang, ưu tiên đặt thuộc tính **đoạn `keep_with_next`** cho dòng trước bảng, và **CHỈ** dùng `doc.add_page_break()` như phương án cuối — vì chèn ngắt trang thủ công ở sai vị trí sẽ sinh **trang trắng** (xem quy tắc Heading 1 dùng `page_break_before`).
 6. **Bẫy "Ảo tưởng hoàn thành" qua text log (Blind Console Deception)**:
    - *Sai lầm:* Thấy script Python chạy ra `exit code 0` là vội vàng tin rằng file đã hoàn hảo và báo cáo người dùng.
    - *Thực tế:* 90% lỗi vỡ bảng, lệch lề, mất font chỉ hiện ra trên trang render thực tế.
@@ -138,6 +246,20 @@ Mọi agent khi làm việc với file Word PHẢI KHẮC CỐT GHI TÂM 7 thấ
    - *Sai lầm:* Dùng paragraph thường rồi bôi đậm và tăng cỡ chữ để làm tiêu đề.
    - *Thực tế:* Navigation Pane bị trống, Mục lục tự động (TOC) nhảy sai trang hoặc không cập nhật được.
    - *Giải pháp:* Bắt buộc dùng `doc.add_heading(text, level=N)` và áp dụng đúng Heading Styles chuẩn của Word.
+8. **Bẫy Rải rác Script công cụ ở thư mục gốc (Scattered Scripts Trap)**:
+   - *Sai lầm:* Tạo các script Python tạm thời (`replace_docx_images.py`, `inspect_docx_xml.py`, `apply_*.py`) rải rác ngay tại thư mục gốc (`root`) của dự án.
+   - *Thực tế:* Gây rác dự án, lẫn lộn mã nguồn phần mềm với công cụ tài liệu.
+   - *Giải pháp:* **Bắt buộc gom toàn bộ công cụ sửa docx/render vào thư mục `tools/` (hoặc `docs/tools/`) của dự án.**
+9. **Bẫy Lẫn lộn Không gian Tài liệu (Monolithic Docs Pollution)**:
+   - *Sai lầm:* Để chung file Báo cáo học thuật/BTL (.docx nộp bài) vào cùng thư mục với tài liệu dự án Open-Source.
+   - *Thực tế:* Gây khó khăn khi phát hành mã nguồn mở, lẫn lộn thông tin sinh viên/đồ án với docs dự án.
+   - *Giải pháp:* **Phân tách 2 không gian tài liệu độc lập:** 1 thư mục/tài liệu cho Báo cáo học thuật (`reports/` hoặc `docs/report/`) và 1 thư mục `docs/` cho dự án Open-Source (chứa Architecture, Guides, API, Diagrams, Screenshots).
+10. **Bẫy Trộn lẫn Ảnh chụp và Sơ đồ (Screenshots vs. Diagrams Mixing)**:
+    - *Sai lầm:* Để file vẽ sơ đồ (`.puml`, `.dot`, `hinh_*.png`) vào thư mục `screenshots/`, hoặc xả code sơ đồ ra màn hình chat.
+    - *Giải pháp:*
+      - `docs/screenshots/`: 100% CHỈ chứa ảnh chụp màn hình UI thật của ứng dụng (`01_*.png` ...).
+      - `docs/diagrams/`: Chứa mã nguồn sơ đồ (`.puml`, `.dot`) và file ảnh xuất vector/raster (`.svg`, `.png`).
+      - CẤM xả khối mã nguồn sơ đồ ra chat, chỉ đưa ảnh render preview và link file.
 
 ## Quy tắc patch (bất biến)
 
@@ -155,6 +277,49 @@ Heading 3 = 1.1. / 1.2.
 Heading 4 = 1.1.1.
 ```
 
+> **QUY TẮC HEADING CHUẨN (bất biến):**
+> 1. **Khóa Heading 1 ở đầu trang (Page Break Before)**: Mọi `Heading 1` (CHƯƠNG / MỞ ĐẦU / KẾT LUẬN…) **BẮT BUỘC** đặt `paragraph_format.page_break_before = True` để luôn bắt đầu ở đầu một trang mới. Dùng thuộc tính `page_break_before` (thuộc tính đoạn) **KHÔNG** chèn ký tự ngắt trang thủ công `doc.add_page_break()` (tránh sinh trang trắng khi Heading 1 đã nằm sẵn đầu trang sau `Section Break`). Heading 2/3/4 **KHÔNG** ép ngắt trang (chỉ `keep_with_next = True` để chống mồ côi).
+> 2. **Heading cũng là Times New Roman**: Toàn bộ Heading 1–4 dùng **Times New Roman**, **màu đen `RGBColor(0,0,0)`**, **KHÔNG in nghiêng**. Phải sửa cả **cấp Style** (`doc.styles["Heading 1"]`) *và* mọi **run** thực tế trong đoạn heading (Style Word mặc định là `Calibri Light` + màu xanh theme — nếu bỏ qua sẽ lộ font lạ). Ép thêm `w:rFonts` (ascii/hAnsi/eastAsia/cs) để Word không fallback font.
+> 3. **Chống mồ côi heading**: Mọi Heading đặt `keep_with_next = True` để tiêu đề không bị bỏ trơ ở đáy trang.
+
+Mẫu Python-docx khóa Heading 1 + ép Times New Roman:
+```python
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Pt, RGBColor
+
+def format_heading_styles(doc, font_name="Times New Roman", sizes_pt=(16, 14, 13, 12)):
+    for level in range(1, 5):
+        st = doc.styles[f"Heading {level}"]
+        st.font.name = font_name          # Times New Roman, KHÔNG Calibri Light
+        st.font.bold = True
+        st.font.italic = False
+        st.font.color.rgb = RGBColor(0, 0, 0)   # màu ĐEN, không màu xanh theme
+        st.font.size = Pt(sizes_pt[level - 1])
+        # Ép w:rFonts đủ 4 khe để không fallback font khi render
+        rpr = st.element.get_or_add_rPr()
+        rfonts = rpr.find(qn("w:rFonts")) or OxmlElement("w:rFonts")
+        rpr.insert(0, rfonts)
+        for attr in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"):
+            rfonts.set(qn(attr), font_name)
+        st.paragraph_format.keep_with_next = True
+        if level == 1:
+            st.paragraph_format.page_break_before = True  # KHÓA HEADING 1 LUÔN ĐẦU TRANG MỚI
+
+    # Áp cả cho run thực tế trong tài liệu (style có thể bị direct formatting phủ)
+    for p in doc.paragraphs:
+        name = (p.style.name or "").lower()
+        if "heading" not in name and "tiêu đề" not in name:
+            continue
+        lvl = next((int(c) for c in name if c.isdigit()), 1)
+        p.paragraph_format.keep_with_next = True
+        p.paragraph_format.page_break_before = (lvl == 1)
+        for r in p.runs:
+            r.font.name = font_name
+            r.font.italic = False
+            r.font.color.rgb = RGBColor(0, 0, 0)
+```
+
 - Không giả heading bằng chữ đậm + cỡ lớn.
 - Không tự gõ số `1.1.1.` nếu hệ thống numbering đã quản lý.
 - Không đổi numbering hiện có nếu chưa audit TOC.
@@ -168,6 +333,8 @@ Heading 4 = 1.1.1.
 > 3. **Tên gọi của bảng / Chú thích (Caption)**: **ĐẶT Ở CUỐI BẢNG (ngay dưới bảng)**. **CHỮ THƯỜNG IN NGHIÊNG, CĂN GIỮA** (`italic=True`, `bold=False`, `alignment=CENTER`). Cỡ chữ 12–13pt. Sử dụng paragraph style riêng tên là `bảng` (hoặc `Table Caption`).
 > 4. **Khóa chống gãy hàng**: Mọi hàng (`trPr`) bắt buộc có `<w:cantSplit/>`.
 > 5. **Khóa cứng độ rộng cột (OOXML Table Grid)**: Tránh lỗi Word tự co dãn gây vỡ chữ, bắt buộc tái tạo `<w:tblGrid>` chứa `<w:gridCol w:w="..."/>` và dọn sạch `<w:tcW>` cũ trước khi gán mới.
+
+> **Lưu ý quy ước caption:** Vị trí caption **dưới bảng** là quy ước của skill này (khớp mẫu tham khảo TNUT). Nhiều trường yêu cầu **tên bảng ghi TRÊN bảng** — hãy kiểm tra quy định của trường trước; nếu vậy thì **bỏ qua** bước chuyển caption, chỉ giữ định dạng chữ nghiêng/căn giữa. `edit_docx.py --style-captions` **tự chuyển** caption đang nằm trên bảng/hình xuống dưới; nếu trường yêu cầu caption trên bảng thì **không** dùng cờ này cho caption bảng.
 
 Mẫu Python-docx chuẩn hóa bảng học thuật:
 ```python
@@ -234,8 +401,9 @@ def format_academic_table(table, col_widths, font_size_pt=11):
 
 def add_table_caption(doc, text):
     """Caption ở CUỐI BẢNG: chữ thường in nghiêng, căn giữa, style 'bảng'"""
+    from docx.enum.style import WD_STYLE_TYPE   # BẮT BUỘC import (không dùng docx.enum.style.*)
     try:
-        bang_style = doc.styles.add_style('bảng', docx.enum.style.WD_STYLE_TYPE.PARAGRAPH)
+        bang_style = doc.styles.add_style('bảng', WD_STYLE_TYPE.PARAGRAPH)
     except Exception:
         bang_style = doc.styles['bảng']
     bang_style.font.name = 'Times New Roman'
@@ -317,6 +485,22 @@ Insert caption → tạo field/sequence → bookmark (nếu cần)
 
 Không để `Hình 3.4` xuất hiện trước `Hình 3.2`; không tham chiếu tới số không tồn tại.
 
+### Ngôn từ caption / tên hình — MỀM HÓA (tránh cụm kỹ thuật cứng)
+
+Ưu tiên góc nhìn **vòng đời – hành trình – sự chuyển dịch** thay cho tên loại sơ đồ thuần kỹ thuật:
+
+- ✗ *"Biểu đồ máy trạng thái tài khoản" / "State Machine Diagram"* → ✓ **"Vòng đời tài khoản người dùng"**
+- Biến thể: *Hành trình trạng thái…*, *Các giai đoạn của…*, *Sơ đồ luân chuyển trạng thái…*, *Tiến trình quản lý…*, *Quy trình chuyển đổi trạng thái…*, *Sơ đồ vòng đời…*
+- Phiên bản ngắn cho slide: *"Trạng thái … & Sự chuyển dịch"*.
+
+Quy tắc mềm hóa:
+- **Subtitle nhẹ** dưới tiêu đề (đặt ở caption, không nhồi trong ảnh): *"Mô tả cách tài khoản chuyển đổi qua các giai đoạn: Hoạt động, Tạm khóa và Đã đóng."*
+- **Mềm hóa trạng thái**: *"Bị khóa"* → **"Tạm khóa / Gián đoạn"**; *"Đã xóa"* → **"Đã đóng / Ngừng kích hoạt"**; *"Hủy"* → *"Đã hủy"*.
+- Áp dụng cho **caption Hình/Bảng, tiêu đề mục, nhãn trong sơ đồ, tiêu đề slide**; giữ **nhất quán** toàn bài; tên chuẩn kỹ thuật chỉ nêu khi thật cần (phụ lục).
+- Mềm nhưng **không rỗng**: vẫn đúng bản chất nghiệp vụ (source truth).
+
+> Danh sách đầy đủ + bảng thay thế từ ngữ: `reference/caption-wording.md`.
+
 ## TOC & Navigation
 
 Điều kiện: TOC chỉ đúng khi heading hierarchy đúng.
@@ -336,7 +520,7 @@ Checklist chuẩn hóa Luận văn / Đồ án học thuật:
 [ ] Thụt đầu dòng đoạn văn: 1.0 cm – 1.27 cm (1 tab / 0.5 inch), cấm dùng phím cách.
 [ ] Giãn dòng: 1.3 – 1.5 lines (khuyến nghị 1.35x); Giãn đoạn Before 2pt / After 4pt.
 [ ] Chống dòng mồ côi (Widow/Orphan control) đã được bật.
-[ ] Heading 1 ngắt trang mới; Heading 2/3/4 không bị mồ côi (keep_with_next).
+[ ] HEADING: Times New Roman, màu đen, không nghiêng; Heading 1 BẮT BUỘC page_break_before=True (khóa đầu trang mới); Heading 2/3/4 keep_with_next (không mồ côi).
 [ ] BẢNG: Nền trắng 100% (không tô màu), Tiêu đề cột IN ĐẬM, KHÔNG căn giữa; lặp header (tblHeader); chống gãy hàng (cantSplit).
 [ ] CAPTION BẢNG: Đặt ở CUỐI BẢNG (ngay dưới bảng), cỡ 12–13pt, chữ thường in nghiêng, CĂN GIỮA (style 'bảng').
 [ ] HÌNH ẢNH: Căn giữa, keep_with_next = True; Caption đặt NGAY DƯỚI, chữ thường in nghiêng, CĂN GIỮA (style 'hình').
@@ -373,9 +557,12 @@ Kiểm tra: không mất nội dung, số trang thay đổi có lý do, hình/ca
 
 ### Pipeline Render Bắt buộc:
 ```bash
-# 1. Convert DOCX -> PDF -> PNG từng trang độ phân giải cao
-python scripts/render_docx.py report.docx --output_dir render --emit_pdf --dpi 150
+# 1. Convert DOCX -> PDF + PNG từng trang độ phân giải cao (LUÔN xuất cả hai)
+python scripts/render_docx.py report.docx --output_dir render --dpi 150
+#    (chỉ cần PDF: thêm --pdf_only)
 ```
+> Render bằng **Microsoft Word (COM)** sẽ tự `Fields.Update()` → TOC/TOF/TOT/PAGE đúng.
+> Nếu chỉ có **LibreOffice (soffice)**: field KHÔNG tự cập nhật → trong Word bấm `Ctrl+A` rồi `F9` (Update Field) **trước khi render**, hoặc chấp nhận TOC có thể trống/sai số trang.
 
 ### Visual Verification Loop (Soi từng trang PNG qua tool xem ảnh):
 Agent **BẮT BUỘC** phải gọi công cụ xem ảnh (`view_file` trên các file `render/page-N.png`) để kiểm tra bằng mắt từng trang theo Checklist:
@@ -389,7 +576,8 @@ Agent **BẮT BUỘC** phải gọi công cụ xem ảnh (`view_file` trên các
    - Đoạn ảnh có `keep_with_next = True` chống tách rời chú thích.
    - Caption hình nằm **NGAY DƯỚI HÌNH**, **CHỮ THƯỜNG IN NGHIÊNG, CĂN GIỮA** (style `hình`).
 5. **Kiểm tra co dãn cột**: Chữ trong bảng không bị ngắt từ dị hợm do cột quá hẹp (ví dụ: `VARCHAR(` / `8)` hay số hiệu bị tách đôi).
-6. **Kiểm tra Font & Lề**: Toàn bộ Times New Roman đồng nhất, thụt đầu dòng 1 tab (1.27 cm), căn đều 2 bên (Justify), lề gáy 3.5 cm không bị lẹm.
+6. **Kiểm tra Font & Lề**: Toàn bộ **kể cả Heading** là Times New Roman đồng nhất (không lộ Calibri Light ở tiêu đề), màu đen; thụt đầu dòng 1 tab (1.27 cm), căn đều 2 bên (Justify), lề gáy 3.5 cm không bị lẹm.
+7. **Kiểm tra ngắt trang Heading**: Mỗi **Heading 1** (CHƯƠNG / MỞ ĐẦU / KẾT LUẬN…) bắt đầu ở **đầu một trang mới** (page-break-before) và **không sinh trang trắng**; không có CHƯƠNG nằm lửng giữa trang.
 
 ```text
 [Code/Edit DOCX] ──> [Render PDF] ──> [Render PNG pages] ──> [View từng trang PNG]
