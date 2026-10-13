@@ -12,6 +12,8 @@ description: Plans, bootstraps, audits, and maintains a project's complete
 ---
 # Doc Architect
 
+> **Phạm vi & sở hữu (Scope/Owner):** `doc-architect` **sở hữu template README** và bộ tài liệu dự án. Các skill `documentation` / `documentation-and-adrs` chỉ nên **trỏ về** template này, không định nghĩa cấu trúc README riêng (tránh 3 template chồng chéo).
+
 Plan, bootstrap, and maintain the documentation a project needs for both **developers**
 and **AI agents** to grasp its architecture, features, and models — everything one must
 know before developing in it. Self-contained: all templates live in `references/`.

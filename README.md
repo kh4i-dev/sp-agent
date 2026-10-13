@@ -4,7 +4,7 @@ Bộ **agent skills** cho học tập/đồ án: viết tài liệu Word, làm s
 nghiên cứu có dẫn nguồn, xử lý PDF/Excel, viết tài liệu dự án.
 
 Mục tiêu: bạn ra lệnh tự nhiên ("viết báo cáo", "làm slide", "vẽ use case", "nghiên cứu X") —
-agent **tự nhận diện và nạp đúng skill** để làm đúng chuẩn. Hiện có **32 skill**.
+agent **tự nhận diện và nạp đúng skill** để làm đúng chuẩn. Hiện có **33 skill**.
 
 ## Cách agent nạp skill (quan trọng)
 
@@ -12,7 +12,7 @@ agent **tự nhận diện và nạp đúng skill** để làm đúng chuẩn. H
 mục **"Giao thức nạp skill (BẮT BUỘC)"** trong `AGENTS.md`. Tóm tắt:
 
 1. Khám phá cây skill (`.claude/skills/*/SKILL.md`).
-2. Chọn skill theo bảng **Routing** trong `AGENTS.md`.
+2. Chọn skill theo bảng **Routing** trong `AGENTS.md` (việc lớn → nạp `skill-coordinator` trước tiên).
 3. Nạp bằng công cụ `skill` (hoặc đọc thẳng `SKILL.md`).
 4. Đọc trọn `SKILL.md` → mở tiếp `reference/` → `scripts/` khi cần.
 5. Quy tắc bền vững phải ghi vào `AGENTS.md`/`CLAUDE.md` (file tự nạp mỗi phiên).
@@ -38,7 +38,13 @@ sp-agent/
     └── verify-skills.ps1     # kiểm tra frontmatter SKILL.md
 ```
 
-## Skill index (32)
+## Skill index (33)
+
+### Điều phối (meta)
+
+| Skill | Việc |
+|---|---|
+| `skill-coordinator` | **Nạp đầu tiên cho việc lớn**: bản đồ toàn bộ 33 skill + giao thức phối hợp + quy ước chung, chống dùng lẻ 1 skill |
 
 ### Tài liệu Word / báo cáo
 

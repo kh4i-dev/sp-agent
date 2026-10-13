@@ -5,6 +5,8 @@ description: Records decisions and documentation. Use when you need to document 
 
 # Documentation and ADRs
 
+> **Phạm vi & đồng bộ (Scope):** skill này là chuẩn ADR **dùng chung/độc lập** (mặc định `docs/decisions/`, `Status` là mục trong body). Nếu dự án đang dùng skill `living-docs`, thì **`living-docs` sở hữu** vị trí & định dạng ADR (`docs/adr/NNNN-slug.md`, `Status` nằm trong frontmatter) — theo `living-docs` thay vì template mặc định bên dưới, để tránh hai quy ước song song.
+
 ## Overview
 
 Document decisions, not just code. The most valuable documentation captures the *why* — the context, constraints, and trade-offs that led to a decision. Code shows *what* was built; documentation explains *why it was built this way* and *what alternatives were considered*. This context is essential for future humans and agents working in the codebase.

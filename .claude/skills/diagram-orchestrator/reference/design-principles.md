@@ -14,7 +14,7 @@ Mỗi sơ đồ phải có một **điểm vào tự nhiên (Entry Point)** cho 
 3. **Màu sắc có chủ đích (Academic Monochrome):**
    * Nền trắng `#FFFFFF` tinh khiết.
    * Viền và chữ đen `#000000` (độ tương phản 21:1 tối đa).
-   * **CẤM** dùng màu sắc tùy tiện để trang trí. Chỉ dùng màu khi có quy ước ngữ nghĩa cụ thể (ví dụ: viền nét đứt cho External Service, double-circle cho trạng thái kết thúc).
+   * **CẤM TUYỆT ĐỐI** dùng màu để trang trí hoặc mã hóa ngữ nghĩa (báo cáo học thuật = zero-color, kể cả khi ảnh mẫu có màu). Phân biệt ý nghĩa bằng **hình thức phi màu**: viền nét đứt (`dashed`) cho External Service, `doublecircle` cho trạng thái kết thúc, stereotype/`note` cho chú thích.
 
 ---
 

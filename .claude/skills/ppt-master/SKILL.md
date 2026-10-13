@@ -20,6 +20,14 @@ metadata:
 
 # PPT Master Skill
 
+> **Phạm vi & đồng bộ quy tắc với các skill slide khác (Scope):**
+> - **Accent line / dải màu / stripe dưới tiêu đề:** `pptx` & `anti-slop` **cấm mặc định**; trong ppt-master chúng **chỉ hợp lệ bên trong một style/brand template tường minh** (mbb-consulting, accenture…) — phải khai báo lý do, KHÔNG tự thêm vào deck học thuật/báo cáo.
+> - **Font:** danh sách "PPT-safe faces" của ppt-master nghĩa là *an toàn khi mở bằng PowerPoint thật*; khi QA bằng LibreOffice, các font Georgia/Trebuchet/Palatino/Garamond/Consolas bị thay thế → **không đáng tin** (khớp cảnh báo của `pptx`). Chọn font metric-safe (Arial, Calibri, Cambria, Times New Roman) nếu nghi ngờ.
+> - **Render gate:** khi dùng ppt-master cho đồ án/báo cáo trong repo này, **bắt buộc bật `visual-review`** (không để opt-in) — khớp nguyên tắc bất biến AGENTS #2.
+> - **Em dash (—):** luật raw-Unicode của ppt-master chỉ nói *hình thức ký tự trong SVG*; **không** tự sinh em dash trong văn xuôi nội dung (khớp `human-report-writing`).
+> - **Scenario data:** số liệu minh hoạ chỉ hợp lệ khi có nhãn hiển thị `Scenario data` (khớp `anti-slop` Hard Gate: không để số liệu bịa trông như thật).
+> - **Script nội bộ:** script/template đi kèm trong thư mục skill này là **package của skill**; mọi script *do agent sinh thêm* vẫn phải nằm trong `tools/` (AGENTS #8).
+
 PPT Master is a routed presentation workflow. This entry owns global execution discipline and route selection only; each selected route owns its procedure.
 
 ## Mandatory Load Order

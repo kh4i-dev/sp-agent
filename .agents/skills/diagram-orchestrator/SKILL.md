@@ -9,6 +9,17 @@ Mục tiêu: Đóng vai trò **nhạc trưởng điều phối (Orchestrator)** 
 
 Sơ đồ đẹp không cứu được mô hình sai; sơ đồ đúng nhưng khó đọc cũng chưa hoàn thành nhiệm vụ. Phải bảo đảm cả ba: **đúng nội dung, đúng cách biểu diễn và đúng chất lượng hình ảnh**.
 
+> **ĐỒNG BỘ QUY TẮC LIÊN SKILL (Single Source of Truth) — mọi skill sơ đồ defer về đây:**
+> - **Màu:** báo cáo/đồ án/luận văn học thuật = **zero-color tuyệt đối** (kể cả khi ảnh mẫu có màu). Chỉ branded/presentational mới được dùng màu (`diagram-design`, `theme-factory`).
+> - **Tiêu đề nhúng:** cấm banner tiêu đề trong `.puml/.dot/.svg/.png`; caption do `docx-report` sinh (`Hình X.Y: ...`).
+> - **Bước 0 (path canonical):** `docs/domain/step0-<du-an>.md` — mọi skill dùng đúng path này.
+> - **Tỷ lệ khung:** khuyến nghị **0.5–2.4**; **hard-fail** của `audit-diagrams.mjs` khi ratio `> 3.8` hoặc `< 0.28`.
+> - **Số node:** sơ đồ chi tiết (PlantUML/Graphviz) ≤ 15; sơ đồ trình chiếu/khái niệm ≤ 9; lõi khái niệm 7 ± 2.
+> - **Cỡ chữ:** ≥ 9pt khi in A4.
+> - **Độ phân giải:** PlantUML/Graphviz = 300 DPI; tldraw/diagram-design = scale 2×.
+> - **Xuất file:** pipeline học thuật xuất **đồng thời SVG (vector) + PNG (raster)**; `diagram-design` (branded HTML) là ngoại lệ thủ công.
+> - **Nơi lưu:** `docs/diagrams/` (nguồn `.puml/.dot/.tldr` + `.svg/.png`); `docs/screenshots/` chỉ chứa ảnh UI thật.
+
 ---
 
 ## 1. GIAO THỨC TƯ DUY & GIẢI QUYẾT VẤN ĐỀ (INTELLIGENT PROBLEM-SOLVING PROTOCOL)

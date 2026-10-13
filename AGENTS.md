@@ -18,7 +18,7 @@ Skill `ppt-master` (hugohe3/ppt-master, MIT) đã được cài sẵn như một
 ## Giao thức nạp skill (BẮT BUỘC — làm đúng thứ tự)
 
 1. **Mở / khám phá**: `AGENTS.md` này đã được tự nạp; liệt kê cây skill bằng `codegraph_files` hoặc glob `.claude/skills/*/SKILL.md`. Mỗi skill = 1 thư mục chứa `SKILL.md`.
-2. **Chọn skill**: tra bảng **Routing** (ý định → skill) bên dưới. Nhiều việc → nạp nhiều skill, phối hợp.
+2. **Chọn skill**: tra bảng **Routing** (ý định → skill) bên dưới. Nhiều việc → nạp nhiều skill, phối hợp. **Việc lớn** (đồ án/báo cáo, slide, sơ đồ, nghiên cứu, tài liệu) → nạp `skill-coordinator` **trước tiên** để có bản đồ + giao thức phối hợp (tránh dùng lẻ 1 skill).
 3. **Nạp**: gọi công cụ `skill` với đúng `name` (trùng tên thư mục). Nếu không có công cụ đó → `Read` thẳng `.claude/skills/<name>/SKILL.md`.
 4. **Đọc ĐẦY ĐỦ**: đọc trọn `SKILL.md`; cần chi tiết thì mở tiếp `reference/` rồi `scripts/` (progressive disclosure). **Không đoán**, không bỏ qua phần "bất biến / IRON RULE / GATE".
 5. **Thực thi theo skill** + tuân thủ "Nguyên tắc bất biến" (cuối file này).
@@ -49,6 +49,7 @@ Muốn biến một repo trong `vendor/` thành skill thật: copy vào `.claude
 
 | Skill | Dùng khi | Đầu ra chính |
 |---|---|---|
+| `skill-coordinator` | **Nạp ĐẦU TIÊN cho việc lớn** (đồ án/báo cáo, slide, sơ đồ, nghiên cứu, tài liệu): bản đồ toàn bộ skill + giao thức phối hợp, tránh dùng lẻ 1 skill (như chỉ `docx-report`) | Chuỗi skill phối hợp đúng + cổng kiểm (gate) |
 | `docx-report` | Viết/sửa/audit file Word, báo cáo, đồ án, luận văn | `.docx` đúng cấu trúc, đã render kiểm tra |
 | `safe-docx-modifier` | Chỉnh sửa an toàn file Word khi đã hoàn thiện (Zero Regeneration), thay ảnh in-place, sửa text bảo toàn Runs | `.docx` giữ 100% định dạng, ảnh và nội dung cập nhật |
 | `human-report-writing` | Biên tập văn phong báo cáo cho tự nhiên như người, bỏ dấu hiệu văn AI | Văn xuôi tự nhiên, có Tóm tắt chương |
@@ -86,6 +87,7 @@ Muốn biến một repo trong `vendor/` thành skill thật: copy vào `.claude
 ## Routing — ý định người dùng → skill
 
 ```text
+"điều phối skill / chọn skill / nạp skill / phối hợp skill / bắt đầu việc lớn / không biết dùng skill nào / quy trình đồ án" → skill-coordinator
 "điều phối sơ đồ / chọn công cụ vẽ sơ đồ / diagram orchestrator / sơ đồ cây / trie / bk-tree" → diagram-orchestrator
 "viết báo cáo / sửa file Word / đồ án / luận văn"        → docx-report
 "sửa docx an toàn / thay ảnh docx / sửa chữ docx ko gen lại / sửa file word hoàn thiện" → safe-docx-modifier
@@ -137,8 +139,8 @@ pptx-deck        → làm slide bảo vệ từ nội dung báo cáo
 5. **Minimal patch** — sửa tối thiểu, giữ nội dung & cấu trúc, có thể rollback.
 6. **Vietnamese output** — giữ thuật ngữ kỹ thuật tiếng Anh khi cần; kiểm tra hiển thị dấu tiếng Việt khi render.
 7. **Phân định rạch ròi Ảnh chụp (Screenshots) vs. Sơ đồ (Diagrams)**:
-   - `screenshots/`: 100% CHỈ chứa ảnh chụp màn hình UI thực tế của phần mềm (`01_*.png` ...). Tuyệt đối CẤM để sơ đồ hoặc file `.puml`/`.dot` vào đây.
-   - `diagrams/`: Chứa toàn bộ mã nguồn sơ đồ (`.puml`, `.dot`, `.tldr`) và file xuất vector/raster (`.svg`, `.png`).
+   - `docs/screenshots/` (hoặc `screenshots/` nếu repo không dùng `docs/`): 100% CHỈ chứa ảnh chụp màn hình UI thực tế của phần mềm (`01_*.png` ...). Tuyệt đối CẤM để sơ đồ hoặc file `.puml`/`.dot` vào đây.
+   - `docs/diagrams/` (hoặc `diagrams/`): Chứa toàn bộ mã nguồn sơ đồ (`.puml`, `.dot`, `.tldr`) và file xuất vector/raster (`.svg`, `.png`). Đây là **path canonical** cho mọi skill sơ đồ.
    - CẤM xả mã nguồn sơ đồ (`.puml`, `.dot`) ra chat làm tràn màn hình; chỉ lưu file trên đĩa, nhúng ảnh render và dẫn link.
 8. **Kỷ luật thư mục công cụ (Dedicated Tools Directory — Không giải rác)**:
    - Mọi script bổ trợ kiểm tra, sửa docx, hoán đổi ảnh, inspect hay render BẮT BUỘC phải nằm trong thư mục `tools/` (hoặc `docs/tools/`) của dự án.
@@ -148,7 +150,7 @@ pptx-deck        → làm slide bảo vệ từ nội dung báo cáo
      - **Tài liệu Báo cáo học thuật / BTL (`reports/` hoặc `docs/report/`)**: Phục vụ in ấn, nộp bài, chấm điểm đồ án (file `.docx`, slide bảo vệ, rubric).
      - **Tài liệu Dự án Mã nguồn mở (`docs/`)**: Phục vụ phát hành open-source lâu dài (Architecture, Developer Guide, API Reference, User Manual, Contributing Guide, Screenshots). Không để file nháp/báo cáo học thuật làm ô nhiễm tài liệu mã nguồn mở.
 10. **Verify trước khi báo xong (Evidence-before-Done)** — không tuyên bố hoàn thành chỉ vì "trông đã xong": phải **chạy thật + có bằng chứng** (build PASS, log, ảnh chụp thật). Khi nghi lỗi code, **kiểm tra server + DB đang chạy trước khi kết luận** (500 / `ERR_CONNECTION_REFUSED` thường do backend/DB tắt, không phải bug logic).
-11. **Không placeholder / không bịa số liệu** — không ship UI trống rỗng hay ảnh placeholder vô nghĩa; empty state phải là lời mời hành động; ảnh đưa vào báo cáo/slide phải là **ảnh thật**, khung **16:9** (không full-page dài).
+11. **Không placeholder / không bịa số liệu** — không ship UI trống rỗng hay ảnh placeholder vô nghĩa; empty state phải là lời mời hành động; ảnh đưa vào báo cáo/slide phải là **ảnh thật**, khung **16:9** (không full-page dài). Với tài liệu đang soạn, scaffold tạm (`TBD`, `[To be written]`) **được phép trong phiên** nhưng KHÔNG được ship; `living-docs check` chặn riêng cú pháp `{{PLACEHOLDER}}`.
 12. **An toàn khôi phục & hỏi trước khi phá** — tạo git tag/nhánh trước khi xoá/đổi lớn; **stash** thay vì xoá WIP; **hỏi trước** khi đổi schema/phá cấu trúc; **chỉ commit khi được yêu cầu**. Sau thay đổi lớn → **đồng bộ tài liệu** (CONTEXT / CHANGELOG / DOMAIN_INVARIANTS) để chống drift.
 13. **Sơ đồ — phân định phong cách & độ tất định** (các skill sơ đồ phải hỗ trợ nhau, không mâu thuẫn):
     - **Báo cáo/đồ án/luận văn học thuật → TRẮNG-ĐEN (zero-color)**: dùng `plantuml-diagrams`, `tldraw-diagrams`, `simplified-diagrams`, `diagram-orchestrator`. **Cấm sơ đồ màu** trong báo cáo học thuật.

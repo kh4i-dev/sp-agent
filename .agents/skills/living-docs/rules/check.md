@@ -12,6 +12,8 @@ the checkable invariants get a checker. Wire it into the project's quality gate 
 that fails it does not merge. It does **not** check docs-first mirroring or "one home per fact"
 semantics — those have no sound oracle and stay with the reviewer.
 
+> **Đồng bộ placeholder:** checker chỉ chặn cú pháp `{{PLACEHOLDER}}`. Các token scaffold khác (`TBD`, `[To be written]`) của `doc-architect`/`doc-coauthoring` là tạm thời trong phiên — vẫn phải điền trước khi ship, nhưng `check` không bắt.
+
 It also emits **advisories** — findings that never move the exit code, surfaced as work to
 schedule:
 

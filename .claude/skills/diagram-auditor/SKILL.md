@@ -7,6 +7,8 @@ description: Audit và kiểm định chất lượng sơ đồ kỹ thuật (Pl
 
 Mục tiêu: Đảm bảo **100% sơ đồ xuất bản** đạt chuẩn kỹ thuật và thẩm mỹ in ấn học thuật cao cấp. Chặn đứng tận gốc tình trạng **"Script báo PASS nhưng mắt nhìn thấy FAIL"** — tức là file render được không lỗi cú pháp nhưng bố cục chật chội, nhãn đè nhau, khoảng trắng bất hợp lý, hoặc nhầm lẫn hình ảnh trong tài liệu.
 
+> **Phạm vi & đồng bộ (Scope):** skill này áp cho **sơ đồ học thuật** (zero-color, in A4): PlantUML / Graphviz / tldraw / draw.io / SVG. Tỷ lệ khung *khuyến nghị* **0.5–2.4**, nhưng **hard-fail** khi `> 3.8` hoặc `< 0.28` (khớp `scripts/audit-diagrams.mjs`) — hai ngưỡng này là **cùng một luật**, không mâu thuẫn. Bắt buộc đủ **cặp SVG + PNG** cho sơ đồ học thuật. KHÔNG áp cho sơ đồ branded/HTML của `diagram-design`.
+
 ---
 
 ## 0. CỔNG TIỀN KIỂM ĐỊNH (GATE 0) — BẮT BUỘC CÓ FILE BƯỚC 0 TRƯỚC KHI AUDIT

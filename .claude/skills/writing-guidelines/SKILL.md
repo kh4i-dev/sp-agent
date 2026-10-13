@@ -12,6 +12,8 @@ metadata:
 
 Review files for compliance with Writing Guidelines.
 
+> **Phạm vi (Scope):** skill này kiểm văn phong **tài liệu kỹ thuật/sản phẩm (tiếng Anh, chuẩn Vercel)** — README, docs, hướng dẫn. **KHÔNG** áp cho văn xuôi **báo cáo/đồ án/luận văn học thuật tiếng Việt** (ngôi 3 trang trọng, cấm in đậm thân bài, cấm bullet tràn lan) — trường hợp đó dùng `human-report-writing`. Hai bộ luật loại trừ nhau theo ngữ cảnh, không phải mâu thuẫn.
+
 ## How It Works
 
 1. Fetch the latest guidelines from the source URL below

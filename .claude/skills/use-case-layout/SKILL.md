@@ -21,7 +21,7 @@ Skill này hướng dẫn Agent lập mô hình, chọn bố cục, vẽ bằng 
 
 > **Không xác định bài toán và tác nhân thì cấm vẽ.**
 
-Trước khi tạo `.puml`, XML draw.io, SVG hoặc sơ đồ ở bất kỳ định dạng nào, bắt buộc tạo và hoàn thiện `docs/diagrams/<ten-so-do>-step0.md` theo mẫu [step0-bai-toan-va-tac-nhan.md](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/use-case-layout/reference/step0-bai-toan-va-tac-nhan.md) (bài toán, quy mô, tác nhân + trách nhiệm **kèm nguồn bằng chứng / UNKNOWN**).
+Trước khi tạo `.puml`, XML draw.io, SVG hoặc sơ đồ ở bất kỳ định dạng nào, bắt buộc tạo và hoàn thiện `docs/domain/step0-<du-an>.md` (path canonical theo `diagram-orchestrator`) theo mẫu [step0-bai-toan-va-tac-nhan.md](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/use-case-layout/reference/step0-bai-toan-va-tac-nhan.md) (bài toán, quy mô, tác nhân + trách nhiệm **kèm nguồn bằng chứng / UNKNOWN**).
 
 Nếu chưa có file này hoặc thông tin cốt lõi chưa được xác minh:
 
@@ -185,10 +185,10 @@ Chỉ ghi `PASS` khi **cả hai** cổng Semantic Review và Visual Review đề
 
 Tùy cấu trúc repo, tạo/cập nhật tối thiểu:
 
-1. `docs/diagrams/<name>-step0.md` — bài toán, quy mô, actor, phạm vi, UNKNOWN và nguồn xác minh.
+1. `docs/domain/step0-<du-an>.md` — bài toán, quy mô, actor, phạm vi, UNKNOWN và nguồn xác minh.
 2. `docs/diagrams/<name>-model.md` — actor/use case/quan hệ + giải thích quyết định UML.
 3. Tệp nguồn chỉnh sửa được: `.puml`, `.drawio` hoặc tương đương.
-4. Bản render **PNG**; SVG/PDF nếu phù hợp.
+4. Bản render **cả `.svg` + `.png`** (pipeline học thuật đồng bộ theo `diagram-orchestrator`); PDF nếu cần.
 5. `docs/diagrams/<name>-audit.md` — kết quả Semantic + Visual Review, lệnh render/audit đã chạy, phát hiện còn tồn tại, trạng thái PASS/FAIL.
 
 Không ghi "đã chạy" cho lệnh chưa chạy, không ghi "đã nhìn ảnh" nếu chưa mở ảnh, không tự gắn PASS khi còn mục bắt buộc chưa xác minh.

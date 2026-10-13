@@ -11,6 +11,8 @@ license: Complete terms in LICENSE.txt
 
 This skill provides a curated collection of professional font and color themes themes, each with carefully selected color palettes and font pairings. Once a theme is chosen, it can be applied to any artifact.
 
+> **Phạm vi (Scope):** skill này dành cho **artifact branded / marketing / trình bày** (slide, landing page, báo cáo thương hiệu) — nơi **được dùng MÀU**. **CẤM** áp theme màu lên **báo cáo/đồ án/luận văn học thuật** và **sơ đồ học thuật** (bắt buộc TRẮNG-ĐEN, zero-color) — xem `AGENTS.md` §Nguyên tắc bất biến #13.
+
 ## Purpose
 
 To apply consistent, professional styling to presentation slide decks, use this skill. Each theme includes:

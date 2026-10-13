@@ -69,6 +69,11 @@ real, fails, writes `#NAME?`, and deletes every link. `recalc.py` refuses to run
 — copy those cells' values out of the original before you save over them (`--force` overrides,
 and accepts the loss).
 
+**Also do NOT recalc a workbook that uses Power Query or custom XML parts** (usually maintained
+by someone else): LibreOffice's round-trip can drop or corrupt them. Stop and ask the user
+instead of recalculating. This is an explicit exception to the "recalc mandatory" rule, and it
+matches `xlsx-sheet`.
+
 ## Choosing formulas that survive verification
 
 LibreOffice implements fewer functions than Excel, and one it cannot evaluate becomes a

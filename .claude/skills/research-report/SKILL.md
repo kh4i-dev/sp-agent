@@ -8,6 +8,8 @@ description: Quy trình nghiên cứu sâu (deep research) có kiểm chứng ng
 Mục tiêu: báo cáo nghiên cứu **có dẫn nguồn thật**, phân biệt rõ sự thật / suy luận / chưa xác minh.
 Nguyên tắc tối thượng: **KHÔNG bịa nguồn** — chỉ trích dẫn URL đã thực sự truy cập.
 
+> **Phạm vi & đồng bộ (Scope):** skill này tạo **báo cáo nghiên cứu học thuật** — dùng ngưỡng **≥ 3 nguồn độc lập** và trích dẫn **IEEE/APA** (khớp `docx-report`). Khi cần lưu thành **bundle OKF nội bộ** (`docs/research/NNNN-slug.md`, frontmatter `type`, chuẩn NBR 6023, ngưỡng ≥2), dùng `research-artifacts` — hai skill bổ trợ theo ngữ cảnh, không mâu thuẫn.
+
 ## Khi nào dùng
 
 - Nghiên cứu một chủ đề/công nghệ trước khi làm đồ án.

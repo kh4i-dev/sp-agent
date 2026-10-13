@@ -12,7 +12,7 @@ Mục tiêu: Tạo sơ đồ **thẩm mỹ cao, đường cong mềm mại (bezi
 | Tiêu chí | Mermaid mặc định | tldraw-diagrams |
 | :--- | :--- | :--- |
 | **Đường nối (Edges / Arrows)** | Thường gãy góc trực giao (orthogonal), zíc zắc hoặc cắt ngang node | **Đường cong mềm mại (`kind: "arc"`, `bend`), bo góc tự nhiên, có điểm neo chuẩn** |
-| **Hình khối (Nodes)** | Viền đen dày, màu cổ điển, phong cách kỹ thuật cũ | **Bo tròn hiện đại, phong cách Notion/Linear/Stripe, màu pastel hài hòa** |
+| **Hình khối (Nodes)** | Viền đen dày, màu cổ điển, phong cách kỹ thuật cũ | **Bo tròn hiện đại, phong cách Notion/Linear/Stripe, giữ trắng-đen học thuật (zero-color)** |
 | **Độ linh hoạt & Tương tác** | Tĩnh, chỉ sửa bằng text | **Sinh ra file `.tldr` mở trực tiếp trong VS Code hoặc tldraw.com để kéo thả, tinh chỉnh** |
 | **Chất lượng xuất file** | SVG chuẩn | **Cả SVG vector (cho Word/PDF) lẫn PNG 2x/3x (cho PowerPoint)** |
 
@@ -44,22 +44,21 @@ Agent sinh một file `diagram.json` với cấu trúc rõ ràng (không cần t
 
 ```json
 {
-  "title": "Kiến trúc Hệ thống Bán hàng & Dịch vụ Đặt hàng",
   "direction": "LR",
   "groups": [
-    { "id": "client", "title": "Khách hàng & Giao diện", "color": "blue" },
-    { "id": "gateway", "title": "API Gateway & Auth", "color": "violet" },
-    { "id": "services", "title": "Dịch vụ Nghiệp vụ", "color": "green" },
-    { "id": "data", "title": "Cơ sở Dữ liệu & Cache", "color": "orange" }
+    { "id": "client", "title": "Khách hàng & Giao diện" },
+    { "id": "gateway", "title": "API Gateway & Auth" },
+    { "id": "services", "title": "Dịch vụ Nghiệp vụ" },
+    { "id": "data", "title": "Cơ sở Dữ liệu & Cache" }
   ],
   "nodes": [
-    { "id": "web", "label": "Web App (Next.js)\nClient Web UI", "group": "client", "color": "blue", "fill": "semi" },
-    { "id": "mobile", "label": "Mobile App (Flutter)\nAndroid & iOS", "group": "client", "color": "blue", "fill": "semi" },
-    { "id": "gw", "label": "Kong Gateway\nRate limit & JWT Auth", "group": "gateway", "color": "violet", "fill": "semi" },
-    { "id": "order_svc", "label": "Order Service\nXử lý giỏ hàng & đơn", "group": "services", "color": "green", "fill": "semi" },
-    { "id": "payment_svc", "label": "Payment Service\nCổng VNPAY / Momo", "group": "services", "color": "green", "fill": "semi" },
-    { "id": "postgres", "label": "PostgreSQL Primary\nĐơn hàng & Giao dịch", "group": "data", "color": "orange", "fill": "semi" },
-    { "id": "redis", "label": "Redis Cache\nSession & Rate Limit", "group": "data", "color": "red", "fill": "semi" }
+    { "id": "web", "label": "Web App (Next.js)\nClient Web UI", "group": "client", "fill": "semi" },
+    { "id": "mobile", "label": "Mobile App (Flutter)\nAndroid & iOS", "group": "client", "fill": "semi" },
+    { "id": "gw", "label": "Kong Gateway\nRate limit & JWT Auth", "group": "gateway", "fill": "semi" },
+    { "id": "order_svc", "label": "Order Service\nXử lý giỏ hàng & đơn", "group": "services", "fill": "semi" },
+    { "id": "payment_svc", "label": "Payment Service\nCổng VNPAY / Momo", "group": "services", "fill": "semi" },
+    { "id": "postgres", "label": "PostgreSQL Primary\nĐơn hàng & Giao dịch", "group": "data", "fill": "semi" },
+    { "id": "redis", "label": "Redis Cache\nSession & Rate Limit", "group": "data", "fill": "semi" }
   ],
   "edges": [
     { "from": "web", "to": "gw", "label": "HTTPS", "bend": 0 },
@@ -107,6 +106,7 @@ Mọi sơ đồ dùng cho báo cáo, đồ án, luận văn và slide kỹ thu�
 - **Màu khối (Nodes):** Viền đen, nền trắng (`fill: "none"` hoặc `"semi"` để phân cấp nhẹ). Tuyệt đối **không** dùng khối xanh, đỏ, vàng, cam sặc sỡ.
 - **Mũi tên (Arrows):** Màu đen (`color: "black"`), đầu mũi tên `arrow`, nhãn đen rõ nét.
 - **Khung phân tầng (Groups/Frames):** Viền đen mảnh, nền trong suốt (`fill: "none"`), tiêu đề đen in đậm.
+- **Không nhúng tiêu đề vào ảnh (Zero-Title in Canvas):** caption do `docx-report` sinh (`Hình X.Y: ...`), **KHÔNG** vẽ banner tiêu đề trong sơ đồ. Trường `title` (nếu có) chỉ là metadata của file `.tldr`, **không** được render vào `.svg`/`.png`.
 
 ### Các thuộc tính điều khiển hình thức:
 - **Kiểu nét vẽ (`dash`):**
@@ -133,5 +133,5 @@ Mọi sơ đồ dùng cho báo cáo, đồ án, luận văn và slide kỹ thu�
 3. **Kiểm tra tỷ lệ hình (Aspect Ratio):**
    - Sơ đồ chèn Word/Slide nên có tỷ lệ ngang từ `16:9` đến `4:3`. Tránh sơ đồ quá dài một chiều (dọc quá mức hoặc ngang quá mức).
 4. **Nhúng vào tài liệu:**
-   - Trong `docx-report`: Dùng file `.svg` hoặc `.png`, luôn có caption bên dưới: `Hình X.Y. Sơ đồ kiến trúc hệ thống`.
+   - Trong `docx-report`: Dùng file `.svg` hoặc `.png`, luôn có caption bên dưới: `Hình X.Y: Sơ đồ kiến trúc hệ thống`.
    - Trong `pptx-deck`: Dùng file `.png` (scale 2x) căn giữa slide.

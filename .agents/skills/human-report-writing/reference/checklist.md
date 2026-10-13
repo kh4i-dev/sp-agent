@@ -71,7 +71,7 @@ Chi tiết hỗ trợ cho skill `human-report-writing`. Đọc khi cần checkli
 - **Bố cục:** Trang bìa → Lời cảm ơn → Tóm tắt (100–300 từ) → Mục lục → Danh mục bảng/hình → Nội dung chính (Mở đầu, Tổng quan, Phân tích/Thiết kế, Triển khai & Đánh giá, Kết luận) → Tài liệu tham khảo → Phụ lục.
 - **Quy chuẩn hiển thị:** Times New Roman cỡ 13, giãn dòng 1.3–1.5; lề trái 3–3.5 cm, lề phải 2 cm, trên/dưới 2–2.5 cm.
 - **Tiêu đề & Đánh số:** Tối đa 4 cấp (Chương 1, 1.1, 1.1.1, 1.1.1.1); mỗi nhóm tiểu mục phải có từ 2 mục trở lên.
-- **Bảng & Hình:** Tên bảng đặt phía trên (`Bảng X.Y`), tên hình đặt phía dưới (`Hình X.Y`). Phải có câu tham chiếu rõ ràng trong bài ("xem Hình 3.2"), không dùng "hình dưới đây".
+- **Bảng & Hình:** Vị trí caption **tuỳ quy định từng trường** — nhiều trường đặt **tên bảng TRÊN bảng**, và mặc định của `docx-report` là **caption DƯỚI bảng** (có cờ đổi; xem `docx-report/reference/rules.md`). Bất biến: **hình luôn có caption ở DƯỚI**, dùng dạng `Hình X.Y: <Tên>`, và **phải có câu tham chiếu** rõ ràng trong bài ("xem Hình 3.2"), không dùng "hình dưới đây".
 
 ---
 
