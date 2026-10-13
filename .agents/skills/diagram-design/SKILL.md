@@ -10,6 +10,10 @@ metadata:
 
 Create diagrams as self-contained HTML files with inline SVG and an editorial design system.
 
+> **Phạm vi (đọc trước khi dùng cho đồ án):** skill này tạo sơ đồ **branded / presentational (được dùng MÀU)**.
+> Với **báo cáo/đồ án/luận văn học thuật** — nơi bắt buộc **TRẮNG-ĐEN (zero-color)** — hãy dùng
+> `plantuml-diagrams` / `tldraw-diagrams` / `simplified-diagrams` / `diagram-orchestrator` (xem `AGENTS.md` §Nguyên tắc bất biến #13).
+
 Forty-four visual types. Semantic patterns describe behavior; type references describe layout.
 
 ---

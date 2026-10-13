@@ -168,6 +168,18 @@ Trước khi viết, **xác nhận mục tiêu số trang** với người dùng
 
 > Bảng độ sâu theo từng chương + checklist "báo cáo mỏng" + bộ skill phối hợp: `reference/report-scope.md`.
 
+## Văn phong thân bài — BẮT BUỘC (đồng bộ với `human-report-writing`)
+
+Khi viết/sửa **văn xuôi thân bài** trong `.docx`, bắt buộc áp nguyên văn bộ luật định dạng của skill `human-report-writing`:
+
+- **CẤM dấu gạch dài em dash (`—`) trong câu văn.** Dùng dấu phẩy, dấu chấm hoặc tách câu. Gạch nối `-` trong từ ghép và gạch đầu dòng vẫn dùng bình thường.
+- **CẤM in đậm/bôi đậm chữ trong thân bài** (ngoại lệ: tiêu đề Heading, và ô tiêu đề bảng theo quy tắc bảng ở trên).
+- **CẤM tô nền / highlight màu** (đặc biệt nền vàng).
+- **CẤM bullet tràn lan**: ưu tiên đoạn văn xuôi; chỉ dùng bullet cho danh mục/bước tuần tự thật sự.
+- Loại bỏ từ sáo rỗng AI theo **Fluff Blacklist** của `human-report-writing`.
+
+> **Chống hiểu nhầm (root cause):** các ký tự `—` xuất hiện trong CHÍNH file hướng dẫn này chỉ để trình bày, **KHÔNG** phải kiểu chữ để chép vào báo cáo. Nội dung `.docx` giao cho người dùng **tuyệt đối không chứa em dash**. Khi nhận yêu cầu "viết/sửa báo cáo", hãy **nạp thêm skill `human-report-writing`** để lấy đầy đủ luật văn phong.
+
 ## Quy trình 3 nhánh
 
 ### A. Đọc & Audit (read-only)
@@ -425,7 +437,7 @@ def add_table_caption(doc, text):
 > 1. **Căn lề**: Hình ảnh **CĂN GIỮA (Center)**.
 > 2. **Khóa hình với chú thích (`keep_with_next`)**: Paragraph chứa hình BẮT BUỘC phải bật `p.paragraph_format.keep_with_next = True` để Word không bao giờ tách hình ở trang trước còn chú thích rơi xuống trang sau.
 > 3. **Tên gọi / Chú thích hình (Figure Caption)**: Đặt ở **DƯỚI HÌNH**, **CHỮ THƯỜNG IN NGHIÊNG, CĂN GIỮA** (`italic=True`, `bold=False`, `alignment=CENTER`), cỡ chữ 11–12pt. Dùng paragraph style riêng tên là `hình` (hoặc `Figure Caption`).
-> 4. **Giữ nguyên tỷ lệ (Aspect Ratio)**: Không bóp méo hình ngang/dọc; screenshot phải chụp từ sản phẩm thật, sơ đồ xuất từ Mermaid/PlantUML (xem skill `mermaid-diagrams`).
+> 4. **Giữ nguyên tỷ lệ (Aspect Ratio)**: Không bóp méo hình ngang/dọc; screenshot phải chụp từ sản phẩm thật. Sơ đồ: **ưu tiên sinh bằng công cụ** (`plantuml-diagrams` / `tldraw-diagrams` / `diagram-orchestrator`); **được phép vẽ tay / draw.io / tldraw / SVG** khi công cụ không cho bố cục sạch (VD Use Case nhiều actor — xem `use-case-layout`) miễn đúng chuẩn UML và **có file nguồn** (`.puml`/`.dot`/`.tldr`/`.drawio`/`.svg`). **Cấm ảnh AI ảo/bịa không đúng sự thật**.
 
 Mẫu Python-docx chuẩn hóa hình ảnh & caption:
 ```python

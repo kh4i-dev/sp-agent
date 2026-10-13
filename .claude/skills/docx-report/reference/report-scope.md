@@ -61,3 +61,5 @@ plantuml-diagrams / diagram-orchestrator → vẽ đủ sơ đồ (use case, l�
 docx-report                      → dựng cấu trúc, bảng, hình, caption, mục lục
 human-report-writing             → biên tập văn phong cho tự nhiên, đủ sâu
 ```
+
+> **BẮT BUỘC khi viết văn xuôi:** áp bộ luật định dạng của `human-report-writing` — cấm dấu em dash (`—`) trong câu, cấm in đậm thân bài, cấm highlight, không bullet tràn lan.

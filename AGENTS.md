@@ -150,6 +150,10 @@ pptx-deck        → làm slide bảo vệ từ nội dung báo cáo
 10. **Verify trước khi báo xong (Evidence-before-Done)** — không tuyên bố hoàn thành chỉ vì "trông đã xong": phải **chạy thật + có bằng chứng** (build PASS, log, ảnh chụp thật). Khi nghi lỗi code, **kiểm tra server + DB đang chạy trước khi kết luận** (500 / `ERR_CONNECTION_REFUSED` thường do backend/DB tắt, không phải bug logic).
 11. **Không placeholder / không bịa số liệu** — không ship UI trống rỗng hay ảnh placeholder vô nghĩa; empty state phải là lời mời hành động; ảnh đưa vào báo cáo/slide phải là **ảnh thật**, khung **16:9** (không full-page dài).
 12. **An toàn khôi phục & hỏi trước khi phá** — tạo git tag/nhánh trước khi xoá/đổi lớn; **stash** thay vì xoá WIP; **hỏi trước** khi đổi schema/phá cấu trúc; **chỉ commit khi được yêu cầu**. Sau thay đổi lớn → **đồng bộ tài liệu** (CONTEXT / CHANGELOG / DOMAIN_INVARIANTS) để chống drift.
+13. **Sơ đồ — phân định phong cách & độ tất định** (các skill sơ đồ phải hỗ trợ nhau, không mâu thuẫn):
+    - **Báo cáo/đồ án/luận văn học thuật → TRẮNG-ĐEN (zero-color)**: dùng `plantuml-diagrams`, `tldraw-diagrams`, `simplified-diagrams`, `diagram-orchestrator`. **Cấm sơ đồ màu** trong báo cáo học thuật.
+    - **Bản branded/marketing/presentational → được dùng MÀU**: `diagram-design`, `theme-factory`.
+    - **Ưu tiên sinh bằng công cụ**; **được phép vẽ tay / draw.io / tldraw / SVG** khi công cụ không cho bố cục sạch (VD Use Case nhiều actor), miễn đúng chuẩn UML/Use Case và **có file nguồn** (`.puml`/`.dot`/`.tldr`/`.drawio`/`.svg`). Cấm ảnh AI ảo/bịa.
 
 ## Toolchain & cài đặt
 

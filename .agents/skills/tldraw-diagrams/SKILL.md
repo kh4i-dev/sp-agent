@@ -1,11 +1,11 @@
 ---
 name: tldraw-diagrams
-description: Vẽ sơ đồ kiến trúc, flowchart, luồng dữ liệu, phân tầng, whiteboard đẹp và thẩm mỹ cao bằng tldraw; xuất ra SVG (vector sắc nét) và PNG 2x cho báo cáo DOCX, slide PPTX, README. Khắc phục nhược điểm đường vẽ cứng nhắc, gãy góc của Mermaid bằng đường cong mềm mại (bezier arc), bo tròn, màu sắc hiện đại và hỗ trợ file .tldr mở chỉnh sửa trực tiếp trên VS Code / tldraw.com. Dùng khi người dùng cần vẽ sơ đồ đẹp, sơ đồ hiện đại, tldraw, kiến trúc hệ thống, flowchart, nâng cấp/thay thế Mermaid.
+description: Vẽ sơ đồ kiến trúc, flowchart, luồng dữ liệu, phân tầng, whiteboard đẹp và thẩm mỹ cao bằng tldraw; xuất ra SVG (vector sắc nét) và PNG 2x cho báo cáo DOCX, slide PPTX, README. Khắc phục nhược điểm đường vẽ cứng nhắc, gãy góc của Mermaid bằng đường cong mềm mại (bezier arc), bo tròn, bố cục hiện đại (giữ phong cách trắng-đen học thuật) và hỗ trợ file .tldr mở chỉnh sửa trực tiếp trên VS Code / tldraw.com. Dùng khi người dùng cần vẽ sơ đồ đẹp, sơ đồ nét mềm mại, tldraw, kiến trúc hệ thống, flowchart, nâng cấp/thay thế Mermaid.
 ---
 
 # tldraw Diagrams Skill — Sơ đồ Thẩm mỹ cao cho Báo cáo & Slide
 
-Mục tiêu: Tạo sơ đồ **thẩm mỹ cao, đường cong mềm mại (bezier arc), bố cục rõ ràng, màu sắc hiện đại** cho báo cáo Word (`docx-report`), slide thuyết trình (`pptx-deck`), và tài liệu kỹ thuật. Khắc phục triệt để nhược điểm đường nối gãy khúc, thô ráp của Mermaid mặc định.
+Mục tiêu: Tạo sơ đồ **thẩm mỹ cao, đường cong mềm mại (bezier arc), bố cục rõ ràng, giữ phong cách trắng-đen học thuật** cho báo cáo Word (`docx-report`), slide thuyết trình (`pptx-deck`), và tài liệu kỹ thuật. Khắc phục triệt để nhược điểm đường nối gãy khúc, thô ráp của Mermaid mặc định.
 
 ## Vì sao dùng tldraw thay cho Mermaid?
 

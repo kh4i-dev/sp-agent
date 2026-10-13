@@ -233,7 +233,7 @@ QA Checklist cho Bảng:
 >    - Cỡ chữ: 11 – 12pt.
 >    - Áp dụng Paragraph Style trong Word tên là `hình` (hoặc `Figure Caption`).
 >    - Định dạng: `Hình 3.1: <Tên gọi mô tả nội dung hình>`.
-> 4. **Nguồn gốc hình ảnh**: Screenshot phải chụp trực tiếp từ sản phẩm/phần mềm thực tế; Sơ đồ kiến trúc/UML phải sinh từ Mermaid/PlantUML (xem skill `mermaid-diagrams`), tuyệt đối không dùng ảnh AI ảo không đúng sự thật.
+> 4. **Nguồn gốc hình ảnh**: Screenshot phải chụp trực tiếp từ sản phẩm/phần mềm thực tế. Sơ đồ phải **có cấu trúc và có file nguồn** (`.puml`, `.dot`, `.tldr`, `.drawio`, `.svg`): ưu tiên sinh bằng công cụ (`plantuml-diagrams`, `tldraw-diagrams`, `diagram-orchestrator`); **được phép vẽ tay / draw.io / tldraw / SVG** khi công cụ không tạo được bố cục sạch (VD Use Case nhiều actor — xem `use-case-layout`), nhưng phải theo đúng chuẩn UML/Use Case. **Tuyệt đối không dùng ảnh AI ảo không đúng sự thật**, và không dùng công cụ tạo ảnh thay cho sơ đồ UML có cấu trúc.
 
 QA Checklist cho Hình ảnh:
 ```text

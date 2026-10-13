@@ -94,7 +94,7 @@ Mỗi quyết định phải vượt **Purpose Test** (R-01): nêu được nó 
 
 - Văn xuôi báo cáo (chống giọng văn AI): skill `human-report-writing`.
 - Trình bày slide/deck: skill `pptx-deck` (áp các tell ở đây cho bố cục slide).
-- Sơ đồ: skill `mermaid-diagrams` (tránh màu mè, "hộp neo" nổi).
+- Sơ đồ: skill `plantuml-diagrams` / `diagram-orchestrator` (chuẩn trắng-đen học thuật, tránh màu mè, "hộp neo" nổi).
 
 ## DELIVERY GATE — bắt buộc trước khi ship
 

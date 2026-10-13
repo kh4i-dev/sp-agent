@@ -79,5 +79,5 @@ Chi tiết hỗ trợ cho skill `human-report-writing`. Đọc khi cần checkli
 
 - **`human-report-writing`:** Văn phong, nhịp điệu, tư duy kỹ sư thực tế, loại bỏ AI slop và tính khô cứng hành chính.
 - **`docx-report`:** Dựng cấu trúc OOXML/python-docx, heading styles, captions, cross-references, TOC, visual render QA.
-- **`mermaid-diagrams`:** Vẽ sơ đồ UML, ERD, Sequence, Flowchart chuẩn kỹ thuật.
+- **`plantuml-diagrams`:** Vẽ sơ đồ UML, ERD, Sequence, Flowchart, Use Case chuẩn kỹ thuật (trắng-đen học thuật).
 - **`research-report`:** Thu thập, kiểm chứng số liệu và nguồn trích dẫn đáng tin cậy.
