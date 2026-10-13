@@ -51,7 +51,7 @@ Khi việc thuộc một khối rõ ràng, **nạp coordinator của khối đó
 
 | Khối | Coordinator | Thành viên chính |
 |---|---|---|
-| Báo cáo/đồ án Word (.docx) | `coord-report` | docx-report, human-report-writing, safe-docx-modifier, docx |
+| Báo cáo/đồ án Word (.docx) | `coord-report` | docx-report, human-report-writing, safe-docx-modifier, docx, human-md-audit |
 | Tài liệu dự án & viết/sửa docs | `coord-docs` | doc-architect, living-docs, okf-knowledge-format, documentation, documentation-and-adrs, doc-coauthoring, writing-guidelines |
 | Sơ đồ kỹ thuật | `coord-diagrams` | diagram-orchestrator, plantuml-diagrams, tldraw-diagrams, simplified-diagrams, use-case-layout, diagram-design, diagram-auditor |
 | Slide / thuyết trình | `coord-slides` | pptx-deck, pptx, ppt-master, theme-factory, anti-slop |
@@ -66,6 +66,7 @@ Khi việc thuộc một khối rõ ràng, **nạp coordinator của khối đó
 | `docx-report` | Viết/sửa/audit file Word, báo cáo, đồ án, luận văn | `.docx` đúng cấu trúc, đã render kiểm tra |
 | `safe-docx-modifier` | Chỉnh sửa an toàn file Word khi đã hoàn thiện (Zero Regeneration), thay ảnh in-place, sửa text bảo toàn Runs | `.docx` giữ 100% định dạng, ảnh và nội dung cập nhật |
 | `human-report-writing` | Biên tập văn phong báo cáo cho tự nhiên như người, bỏ dấu hiệu văn AI | Văn xuôi tự nhiên, có Tóm tắt chương |
+| `human-md-audit` | Vòng lặp nhanh: humanize văn xuôi, xuất Markdown review, audit cấu trúc Word bằng XML/text | Markdown review + FAST-CHECK PASS/FAIL, render ảnh chỉ ở gate cuối |
 | `pptx-deck` | Làm slide, thuyết trình, PowerPoint cơ bản | `.pptx` biên tập được, chart native |
 | `ppt-master` | Chuyển tài liệu (PDF, Word, Markdown) thành slide PowerPoint native đẳng cấp, tái tạo slide từ ảnh, làm đẹp (beautify) deck, animation/transition native, audio narration TTS | `.pptx` native shapes/connectors, slide masters, audio narration |
 | `diagram-orchestrator` | Điều phối sơ đồ theo giao thức tư duy thông minh (Intelligent Problem-Solving Protocol), chọn đúng công cụ theo ngữ nghĩa | Sơ đồ chuẩn xác theo công cụ tối ưu, có bằng chứng nghiệm thu |
@@ -111,6 +112,7 @@ Khi việc thuộc một khối rõ ràng, **nạp coordinator của khối đó
 "viết báo cáo / sửa file Word / đồ án / luận văn"        → docx-report
 "sửa docx an toàn / thay ảnh docx / sửa chữ docx ko gen lại / sửa file word hoàn thiện" → safe-docx-modifier
 "viết như người / tự nhiên hơn / đỡ giống AI / đổi văn phong" → human-report-writing
+"sửa văn giống người / xuất markdown review / audit word nhanh / kiểm docx nhanh không ảnh / fast audit" → human-md-audit
 "làm slide / thuyết trình / PowerPoint / bảo vệ"          → pptx-deck
 "tạo slide từ tài liệu / PDF sang PPT / làm đẹp slide / beautify PPTX / tái tạo slide từ ảnh / ppt-master" → ppt-master
 "sơ đồ đẹp / kiến trúc hiện đại / tldraw / đường cong mượt" → tldraw-diagrams
@@ -195,7 +197,7 @@ winget install Graphviz.Graphviz
 winget install JohnMacFarlane.Pandoc
 ```
 
-Kiểm tra nhanh: `powershell -File tools/check-tools.ps1`.
+Kiểm tra nhanh: `powershell -File tools/check-tools.ps1`. Kiểm định toàn bộ skill (frontmatter + audit tự động theo khối): `powershell -ExecutionPolicy Bypass -File tools/check-all.ps1` (chi tiết: `docs/workflow-audit-skills.md`).
 
 ## Thêm skill mới
 

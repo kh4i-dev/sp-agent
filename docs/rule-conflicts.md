@@ -51,3 +51,8 @@ Trạng thái: **FIXED** = đã đồng bộ; **BY-DESIGN** = khác ngữ cảnh
 - Trước khi thêm/sửa skill có chủ đề trùng với skill khác: kiểm tra bảng trên, chọn **scope** hoặc **owner**, không tạo luật đối nghịch.
 - Chủ đề đã có SSOT (hệ sơ đồ): cập nhật tại `diagram-orchestrator` rồi để các skill khác defer, KHÔNG sửa rải rác.
 - Mục còn **MỞ**: chốt khi có ngữ cảnh thực tế (mẫu trường/quy định cụ thể của người dùng).
+
+## D. Debt đang theo dõi (phát hiện bởi audit tự động)
+
+- `docx-report/SKILL.md` 625 dòng (>500 theo chuẩn AGENTS.md): cần tách phần mẫu Python / bảng cờ
+  sang `reference/`. Chưa tách vì rủi ro vỡ tham chiếu; `tools/audit-skills.ps1` đang giám sát (WARN).

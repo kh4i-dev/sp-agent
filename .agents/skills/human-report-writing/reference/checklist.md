@@ -32,6 +32,10 @@ Chi tiết hỗ trợ cho skill `human-report-writing`. Đọc khi cần checkli
 - [ ] **Không có highlight màu hay nền vàng.**
 - [ ] **Hạn chế gạch đầu dòng:** Ưu tiên văn xuôi; chỉ dùng bullet khi liệt kê thật sự.
 
+### E. Bắt buộc đọc lại (self-review pass)
+- [ ] **Đã đọc lại TOÀN BỘ** bản thảo đã viết (không chỉ đoạn vừa gõ) và sửa hết lỗi mục A–D **trước khi giao**.
+- [ ] Viết nhiều chương → đã đọc lại **cả cụm** để bắt trùng ý giữa các mục.
+
 ---
 
 ## 2. Các ví dụ Before → After theo chuyên đề kỹ thuật

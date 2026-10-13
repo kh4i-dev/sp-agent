@@ -55,7 +55,7 @@ grill-me (hỏi thông tin: loại bìa, đề tài, GVHD, SV, lớp, MSSV, mụ
  → diagram-orchestrator → plantuml-diagrams/tldraw-diagrams/simplified-diagrams (TRẮNG-ĐEN)
  → diagram-auditor (GATE: phải PASS trước khi chèn)
  → make_cover.py (bìa 2 định dạng) + edit_docx.py (format, TOC, số trang, caption SEQ/REF)
- → human-report-writing + caption-wording (văn phong tự nhiên, nghiêm túc, không jargon thừa)
+ → human-report-writing + caption-wording (văn phong tự nhiên, nghiêm túc, không jargon thừa; **có lượt đọc lại bản thảo**)
  → render_docx.py (PDF→PNG) → soi từng trang (Visual QA)
 ```
 Chỉ `docx-report` mà bỏ các khâu còn lại ⇒ **đọc là thấy thiếu**.

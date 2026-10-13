@@ -7,7 +7,7 @@ description: "Thiết kế Use Case Diagram UML vừa ĐÚNG nghiệp vụ vừa
 
 ## 1. Mục tiêu
 
-Tạo sơ đồ Use Case UML vừa **đúng mô hình nghiệp vụ**, vừa **dễ đọc khi in A4 hoặc chèn vào Word**. Ưu tiên bố trí có chủ đích và kiểm chứng hình render, không chấp nhận sơ đồ tự động sinh ra rồi mặc định là đạt.
+Tạo sơ đồ Use Case UML vừa **đúng mô hình nghiệp vụ**, vừa **dễ đọc khi in A4 hoặc chèn vào Word**. Ưu tiên bố trí có chủ đích và kiểm chứng hình render, không chấp nhận sơ đồ tự động sinh ra rồi mặc định là đạt. Mọi sơ đồ cho báo cáo/đồ án/luận văn học thuật tuân thủ phong cách **trắng-đen (zero-color)**, KHÔNG dùng màu (xem `AGENTS.md` §Nguyên tắc bất biến #13 và SSOT tại `diagram-orchestrator`).
 
 Skill này hướng dẫn Agent lập mô hình, chọn bố cục, vẽ bằng công cụ hoặc vẽ tay/draw.io, render và audit. **Không dùng công cụ tạo ảnh để thay cho sơ đồ UML có cấu trúc**: sơ đồ phải sửa được, quan hệ phải kiểm tra được và phải có mã nguồn/tệp gốc.
 

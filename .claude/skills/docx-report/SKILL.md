@@ -40,6 +40,7 @@ Bạn KHÔNG chỉ viết văn xuôi. Bạn phải tạo ra một file `.docx` �
 | Việc | Công cụ | Ghi chú |
 |---|---|---|
 | Đọc & Audit cấu trúc | `scripts/inspect_docx.py` | Đếm từ, thống kê bảng, hình, liệt kê cây Heading |
+| Audit nhanh không ảnh + review Markdown | `.claude/skills/human-md-audit/scripts/fast_audit_docx.py` + `export_review_md.py` | Vòng lặp nhanh trước render; FAST-CHECK PASS **không** thay VISUAL PASS |
 | Chuẩn hóa học thuật & Style | `scripts/edit_docx.py` | `--academic-format`: lề giấy 3.5/2/3/3cm, thụt lề 1 tab, Justify, giãn dòng 1.35, **Heading Times New Roman + Heading 1 khóa đầu trang**, style bảng (11pt), **caption bảng tự chuyển xuống dưới bảng** |
 | Chèn trường tự động | `scripts/edit_docx.py` | `--add-toc --add-tof --add-tot` (Mục lục/Danh mục hình/Danh mục bảng), `--add-page-numbers` (số trang) |
 | **Sinh bìa / phần đầu** | `scripts/make_cover.py` | `--kind doan\|btl`: Bìa chính, Bìa lót, Nhiệm vụ; `--full` thêm Phiếu thông qua/Ghi điểm/Lời cam đoan; viền hoa văn chừa gáy + logo; `--prepend-to` ghép lên đầu báo cáo |

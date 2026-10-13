@@ -151,6 +151,23 @@ Hãy mở đầu đoạn văn đa dạng:
 
 ---
 
+## 9bis. Bắt buộc: Đọc lại bản thảo (Self-review pass)
+
+Viết xong **chưa phải là xong**. Trước khi giao, **bắt buộc đọc lại toàn bộ** phần văn xuôi đã viết/sửa và tự soát theo checklist §10, **không chỉ** đọc lại đoạn vừa gõ.
+
+Quy trình 2 lượt:
+
+1. **Lượt 1 — Viết:** tạo nội dung theo 4 trụ cột (§3) và nhịp điệu (§5).
+2. **Lượt 2 — Đọc lại & sửa:** đọc như một người phản biện độc lập, gạch lỗi rồi sửa:
+   - **Dấu hiệu máy:** em dash, in đậm thân bài, highlight, bullet tràn lan, câu rào đón, từ sáo rỗng (Fluff Blacklist §6.B).
+   - **Nhịp điệu:** có câu nào "đều đều ~20 từ" không; có lặp khuôn ("Bên cạnh đó / Ngoài ra / Hơn nữa") không.
+   - **Nhất quán:** ngôi kể, thuật ngữ (không chồng chất, viết tắt sau lần đầu).
+   - **Đọc to** (hoặc đọc trên bản render) để bắt câu nghe khẩu ngữ hoặc hành chính.
+
+> **Không trả bản thảo nếu chưa qua Lượt 2.** Viết nhiều chương thì đọc lại **cả cụm** để bắt trùng ý giữa các mục, không soát rời từng đoạn.
+
+---
+
 ## 10. Checklist trước khi giao
 
 ```text
