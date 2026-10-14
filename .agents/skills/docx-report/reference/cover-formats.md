@@ -14,6 +14,12 @@ Trước khi sinh bìa, **BẮT BUỘC hỏi người dùng chọn loại nào**
 
 > Cả hai đều dùng **Times New Roman**, khung viền `thinThickSmallGap`/`thickThinSmallGap`, logo TNUT.
 
+## Chi tiết bìa chính (khớp mẫu TNUT)
+
+- `KHOA ...`: in đậm, căn giữa, **gạch chân kép** (`WD_UNDERLINE.DOUBLE`).
+- Tiêu đề bìa lớn: **28 pt**, in hoa, đậm, căn giữa (theo `tnut-thesis-template-guide.md` §2.3: 28–29 pt).
+- Khối `NGÀNH`/`HỆ`: **bảng ẩn viền 3 cột** (nhãn `:` giá trị), khóa `tblGrid` + `tcW`, thụt bảng `tblInd` — **không dùng tab** để canh dấu `:`.
+
 ## Sinh phần đầu
 
 ```bash

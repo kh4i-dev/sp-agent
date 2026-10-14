@@ -26,6 +26,25 @@ NS = {
 }
 
 
+def _preserve_namespaces(xml_path):
+    """Đăng ký lại toàn bộ prefix namespace đúng như file gốc.
+
+    BẮT BUỘC trước mọi tree.write(): nếu không, ElementTree sẽ đổi prefix
+    (w: -> ns0:, mc: -> ns1:, ...) và Word báo "file appears to be corrupted"
+    vì các giá trị như mc:Ignorable="w14 w15" không còn khớp prefix nào.
+    """
+    raw = Path(xml_path).read_bytes()
+    for m in re.finditer(rb'\bxmlns:([A-Za-z_][\w.\-]*)\s*=\s*"([^"]+)"', raw):
+        prefix = m.group(1).decode('ascii', 'ignore')
+        uri = m.group(2).decode('utf-8', 'ignore')
+        if prefix.lower() == 'xml':
+            continue
+        try:
+            ET.register_namespace(prefix, uri)
+        except ValueError:
+            pass
+
+
 def replace_in_element_runs(root, old_text, new_text, use_regex=False):
     """
     Tìm và thay thế old_text bằng new_text trong các đoạn w:p,
@@ -168,6 +187,7 @@ def safe_replace_text_in_docx(
                     file_changed = True
 
             if file_changed and not dry_run:
+                _preserve_namespaces(xml_full_path)
                 tree.write(str(xml_full_path), encoding='utf-8', xml_declaration=True)
 
         print(f"\n📊 Báo cáo thay thế văn bản an toàn ({len(report)} mục khớp, tổng {total_changes} lượt):")

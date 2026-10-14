@@ -106,8 +106,8 @@ def _set_page_border(section):
         sectPr.append(el)
 
 
-def _line(doc, text="", size=13, bold=False, italic=False, align=None, before=0, after=0):
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
+def _line(doc, text="", size=13, bold=False, italic=False, align=None, before=0, after=0, underline=None):
+    from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_UNDERLINE
     from docx.shared import Pt
 
     p = doc.add_paragraph()
@@ -125,6 +125,10 @@ def _line(doc, text="", size=13, bold=False, italic=False, align=None, before=0,
         r.font.size = Pt(size)
         r.bold = bold
         r.italic = italic
+        if underline == "double":
+            r.underline = WD_UNDERLINE.DOUBLE
+        elif underline == "single":
+            r.underline = True
     return p
 
 
@@ -142,7 +146,7 @@ def _logo(doc, logo_path, width_in=1.3):
 
 def _header_block(doc, d):
     _line(doc, d["truong"], 13, bold=True, align="center")
-    _line(doc, d["khoa"], 13, bold=True, align="center")
+    _line(doc, d["khoa"], 13, bold=True, align="center", underline="double")
     _logo(doc, d.get("logo"))
 
 
@@ -168,7 +172,51 @@ def _fix_table_widths(table, col_cm):
                 cell.width = Cm(col_cm[i])
 
 
-def _info_table(doc, rows, col_cm=(6.4, 0.5, 6.0), font_size=13):
+def _set_table_indent(table, indent_cm):
+    """Thụt cả bảng vào trong (giữ khối nhãn/giá trị giống mẫu bìa)."""
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+    from docx.shared import Cm
+
+    tblPr = table._tbl.tblPr
+    for old in tblPr.findall(qn("w:tblInd")):
+        tblPr.remove(old)
+    ind = OxmlElement("w:tblInd")
+    ind.set(qn("w:w"), str(int(Cm(indent_cm).twips)))
+    ind.set(qn("w:type"), "dxa")
+    tblW = tblPr.find(qn("w:tblW"))
+    if tblW is not None:
+        tblW.addnext(ind)
+    else:
+        tblPr.insert(0, ind)
+
+
+def _label_value_block(doc, rows, col_cm=(2.7, 0.6, 9.0), font_size=16, indent_cm=1.0):
+    """Khối nhãn : giá trị (NGÀNH/HỆ) dạng bảng ẩn viền, cố định độ rộng thay cho tab."""
+    from docx.enum.table import WD_TABLE_ALIGNMENT
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Pt
+
+    t = doc.add_table(rows=0, cols=3)
+    t.alignment = WD_TABLE_ALIGNMENT.LEFT
+    t.autofit = False
+    t.allow_autofit = False
+    for label, value in rows:
+        cells = t.add_row().cells
+        for i, txt in enumerate((label, ":", value)):
+            p = cells[i].paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            p.paragraph_format.space_after = Pt(2)
+            r = p.add_run(txt)
+            r.font.name = FONT
+            r.font.size = Pt(font_size)
+            r.bold = True
+    _fix_table_widths(t, col_cm)
+    _set_table_indent(t, indent_cm)
+    return t
+
+
+def _info_table(doc, rows, col_cm=(6.4, 0.5, 6.0), font_size=14):
     """Bảng thông tin SV/GV: nhãn | ':' | giá trị, bề rộng cố định, căn trái."""
     from docx.enum.table import WD_TABLE_ALIGNMENT
     from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -362,13 +410,12 @@ def build_front_matter(d):
     _header_block(doc, d)
     for _ in range(2):
         _line(doc)
-    _line(doc, tieu_de, 26, bold=True, align="center", after=6)
+    _line(doc, tieu_de, 28, bold=True, align="center", after=6)
     for sl in subject_lines():
         _line(doc, sl, 14, bold=True, align="center")
     for _ in range(3):
         _line(doc)
-    _line(doc, f"NGÀNH\t:  {d['nganh']}", 16, bold=True)
-    _line(doc, f"HỆ\t\t:  {d['he']}", 16, bold=True)
+    _label_value_block(doc, [("NGÀNH", d["nganh"]), ("HỆ", d["he"])])
     for _ in range(4):
         _line(doc)
     _line(doc, f"ĐỀ TÀI:  {d['de_tai']}", 16, bold=True, align="center")
@@ -381,7 +428,7 @@ def build_front_matter(d):
     _header_block(doc, d)
     for _ in range(2):
         _line(doc)
-    _line(doc, tieu_de, 26, bold=True, align="center", after=6)
+    _line(doc, tieu_de, 28, bold=True, align="center", after=6)
     for sl in subject_lines():
         _line(doc, sl, 14, bold=True, align="center")
     _line(doc, f"BỘ MÔN : {d['bo_mon']}", 16, bold=True, align="center")
