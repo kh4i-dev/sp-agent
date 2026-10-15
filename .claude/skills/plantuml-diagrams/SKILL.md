@@ -112,6 +112,18 @@ skinparam ranksep 70                  ' Giãn cách dọc thoáng đãng
 
 ---
 
+### 1.1.1. CLASS DIAGRAM: KHÔNG NHẦM “RENDER ĐƯỢC” VỚI “BỐ CỤC ĐẸP”
+
+Với Class Diagram có từ 6 lớp trở lên, lớp trung tâm bậc cao, nhiều association cùng cặp lớp hoặc nhiều hidden links, đọc SSOT [class-diagram-layout.md](../diagram-orchestrator/reference/class-diagram-layout.md) trước khi bố trí.
+
+- Đếm lớp thực từ source; không tin comment hoặc tên file nếu số lớp trong render không khớp.
+- Phân tích domain group, bậc từng lớp, association song song, mật độ quan hệ và số hidden constraints trước khi vẽ.
+- Không dùng “class User ở đầu hàng” làm mặc định nếu nhiều liên kết buộc đi xuyên qua toàn hình. Bố trí hub gần vùng liên quan hoặc tách góc nhìn.
+- Các association cùng cặp lớp nhưng khác vai trò (ví dụ reviewer/reviewee, files/resolves) có thể hợp lệ; **không tự xóa/gộp** để chữa giao cắt. Xác minh role ở đầu mút và multiplicity.
+- Cấu hình linetype ortho, nodesep, ranksep, together và hidden links không bảo đảm hết giao cắt. So sánh ảnh render; thử một biến mỗi vòng.
+- Nếu đường song song chụm thành “bó”, có cạnh vòng xa, vùng trắng lệch hoặc nhãn không thể gán đúng cạnh sau các thử nghiệm hợp lý, chuyển draw.io hoặc phân rã theo [manual-fallback.md](../diagram-orchestrator/reference/manual-fallback.md).
+- Audit tĩnh chỉ cảnh báo hub/độ dày đồ thị; Visual Review phải kiểm tra ảnh render thực tế. Không được ghi PASS chỉ vì renderer trả exit code 0.
+
 ## 1.2. PLAYBOOK VẼ USE CASE (BƯỚC 0 → BƯỚC 4) & KỶ LUẬT THÉP
 
 > [!CAUTION]
