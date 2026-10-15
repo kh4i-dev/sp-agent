@@ -1,0 +1,57 @@
+@startuml
+' Regression fixture: comment count intentionally stale (11 vs 12 class declarations).
+' Hinh 3.4: Class rutgon - 11 lop nghiep vu (methods theo backend/src/modules)
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 60
+
+class User
+class Profile
+class TutorProfile
+class TutorVerificationDocument
+class ConnectionRequest
+class Conversation
+class ConversationParticipant
+class Message
+class Review
+class Report
+class TutorPost
+class Favorite
+
+' Layout constraints: intentional fixture to ensure auditor warns about over-constraint.
+User -[hidden]right- Profile
+Profile -[hidden]right- TutorProfile
+TutorVerificationDocument -[hidden]right- TutorPost
+TutorPost -[hidden]right- Favorite
+ConnectionRequest -[hidden]right- Conversation
+Conversation -[hidden]right- ConversationParticipant
+Message -[hidden]right- Review
+Review -[hidden]right- Report
+User -[hidden]down- TutorVerificationDocument
+TutorVerificationDocument -[hidden]down- ConnectionRequest
+ConnectionRequest -[hidden]down- Message
+
+User "1" -- "0..1" Profile : owns
+User "1" -- "0..1" TutorProfile : owns
+TutorProfile "1" -- "0..*" TutorVerificationDocument : submits
+User "1" -- "0..*" ConnectionRequest : sends
+TutorProfile "1" -- "0..*" ConnectionRequest : receives
+ConnectionRequest "1" -- "0..1" Conversation : opens
+Conversation "1" -- "2..*" ConversationParticipant : includes
+ConversationParticipant "*" -- "1" User : participant
+Conversation "1" -- "0..*" Message : contains
+User "1" -- "0..*" Message : sends
+ConnectionRequest "1" -- "0..2" Review : ratedBy
+Review "0..*" -- "1" User : reviewer
+Review "0..*" -- "1" User : reviewee
+User "1" -- "0..*" Report : files
+User "1" -- "0..*" Report : resolves
+TutorProfile "1" -- "0..*" TutorPost : publishes
+User "1" -- "0..*" Favorite : saves
+TutorProfile "1" -- "0..*" Favorite : savedBy
+@enduml
