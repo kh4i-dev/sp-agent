@@ -128,14 +128,16 @@ function buildTldr(diagram) {
   const definedGroups = Array.isArray(diagram.groups) ? diagram.groups : [];
   const groupMap = new Map();
   const groupOrder = [];
+  const seenGroupIds = new Set();
   for (const group of definedGroups) {
     const groupId = group?.id || group?.title;
     if (!groupId || typeof groupId !== "string") {
       throw new Error("Every group must have a non-empty string id or title.");
     }
-    if (groupMap.has(groupId)) {
+    if (seenGroupIds.has(groupId)) {
       throw new Error(`Duplicate group id: ${groupId}`);
     }
+    seenGroupIds.add(groupId);
   }
 
   definedGroups.forEach((g) => {
