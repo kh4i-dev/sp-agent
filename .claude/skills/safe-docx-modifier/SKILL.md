@@ -78,6 +78,20 @@ Mọi công cụ/script bổ trợ sửa DOCX, inspect XML, hoán đổi ảnh h
 - `docs/screenshots/`: 100% CHỈ chứa ảnh chụp màn hình UI thực tế của phần mềm (`01_*.png` -> `09_*.png`). Tuyệt đối CẤM để sơ đồ hoặc file `.puml`/`.dot` vào đây.
 - `docs/diagrams/`: Chứa mã nguồn sơ đồ (`.puml`, `.dot`, `.tldr`) và file xuất vector/raster (`.svg`, `.png`). CẤM xả code sơ đồ ra chat, chỉ đưa ảnh render preview và link file.
 
+### Bài học 10: Chỉ dùng `lxml`, CẤM `xml.etree` để ghi XML của Word
+`xml.etree.ElementTree` serialize lại toàn bộ (đổi prefix namespace, đảo thứ tự attribute)
+khiến Word báo "file appears to be corrupted" — **đã chứng minh**: round-trip ET trắng
+(không đổi một chữ) vẫn gãy, cùng thao tác bằng `lxml` thì mở bình thường.
+Mọi script đọc/ghi XML `.docx` trong skill này BẮT BUỘC `from lxml import etree`
+(`lxml` đi kèm `python-docx`, không cần cài thêm). Chỉ đọc-parse thì ET vẫn dùng được.
+
+### Bài học 11: Hỏng file thì cô lập từng bước, test bằng khả năng thật
+Khi file lỗi sau nhiều bước sửa: test từng bước riêng trên bản sao
+(`safe_replace` đơn lẻ → gãy / `number_captions` đơn lẻ → OK) thay vì đoán mò.
+Và kiểm tra môi trường bằng **khả năng thật**, không qua trung gian:
+tìm Word bằng đường dẫn chuẩn + tạo COM object thật, đừng tìm trong PATH
+(Office không tự thêm vào PATH nên check PATH luôn báo sai).
+
 ---
 
 ## 3. Mẫu Code Python Chuẩn tắc (Safe In-Place Script Pattern)

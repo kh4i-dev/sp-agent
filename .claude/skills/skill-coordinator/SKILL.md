@@ -41,6 +41,8 @@ thật cần **nhiều skill phối hợp** (nội dung → sơ đồ → văn p
 1. **Đọc `AGENTS.md`** (đã tự nạp) — bảng Routing + "Nguyên tắc bất biến" là luật cao nhất.
 2. **Nạp skill này** để có bản đồ, rồi **nạp các skill chủ/phụ** bằng công cụ `skill` (đúng `name`).
 3. **Đọc trọn `SKILL.md`** của từng skill liên quan (đừng đoán); mở `reference/` → `scripts/` khi cần.
+   Khi **sửa skill hoặc debug lỗi khó**, đọc thêm `docs/lessons-learned.md` (kho bài học xương máu:
+   bẫy ET/lxml, substring-XML, regex raw-string, quét field, cô lập từng bước, test khả năng thật).
 4. **Chạy đủ chuỗi** theo mục 3–4 bên dưới; có **bằng chứng** (render/ảnh/log) trước khi báo xong.
 5. **Nhớ & đồng bộ:** quy tắc bền vững ghi vào `AGENTS.md`; sửa skill xong chạy `tools/sync-skills.ps1`.
 

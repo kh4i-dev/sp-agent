@@ -11,8 +11,15 @@ import shutil
 import sys
 import tempfile
 import zipfile
-import xml.etree.ElementTree as ET
 from pathlib import Path
+
+try:
+    # BẮT BUỘC dùng lxml thay vì xml.etree: ElementTree serialize lại
+    # (đổi prefix namespace, đảo thứ tự attribute) khiến Word báo
+    # "file appears to be corrupted" dù nội dung không đổi.
+    from lxml import etree as ET
+except ImportError:
+    sys.exit("Cần lxml (đi kèm python-docx): pip install python-docx")
 from PIL import Image
 
 if hasattr(sys.stdout, "reconfigure"):

@@ -54,6 +54,15 @@ py -V:3.14 .claude/skills/human-md-audit/scripts/fast_audit_docx.py reports/chuo
 - `VISUAL PASS` = đã render + soi từng ảnh PNG.
 - CẤM ghi “hoàn thiện” khi mới chỉ qua fast audit.
 
+## Bẫy đã biết (từ thực chiến, đừng lặp lại)
+
+- Regex caption viết `r"^(H\u00ecnh|B\u1ea3ng)..."` **không bao giờ khớp** vì raw-string
+  giữ nguyên ký tự `\u` — phải viết trực tiếp ký tự Unicode (`Hình|Bảng`).
+- Quét field (`TOC`/`SEQ`/`PAGE`) phải đọc **`w:instrText` trong `document.xml` +
+  header/footer**; quét toàn bộ `word/*.xml` sẽ dính false positive từ `styles.xml`.
+- Caption số tay khiến Danh mục (TOF/TOT) mãi trống — chuyển sang SEQ một lần
+  (`--number-captions`) thì hết cả hai bệnh, nhưng số chỉ đúng sau Word F9.
+
 ## Definition of Done
 
 ```text

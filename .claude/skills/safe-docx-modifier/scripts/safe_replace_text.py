@@ -12,8 +12,15 @@ import shutil
 import sys
 import tempfile
 import zipfile
-import xml.etree.ElementTree as ET
 from pathlib import Path
+
+try:
+    # BẮT BUỘC dùng lxml thay vì xml.etree: ElementTree serialize lại
+    # (đổi prefix namespace, đảo thứ tự attribute) khiến Word báo
+    # "file appears to be corrupted" dù nội dung không đổi.
+    from lxml import etree as ET
+except ImportError:
+    sys.exit("Cần lxml (đi kèm python-docx): pip install python-docx")
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -24,25 +31,6 @@ NS = {
     'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main',
     'xml': 'http://www.w3.org/XML/1998/namespace'
 }
-
-
-def _preserve_namespaces(xml_path):
-    """Đăng ký lại toàn bộ prefix namespace đúng như file gốc.
-
-    BẮT BUỘC trước mọi tree.write(): nếu không, ElementTree sẽ đổi prefix
-    (w: -> ns0:, mc: -> ns1:, ...) và Word báo "file appears to be corrupted"
-    vì các giá trị như mc:Ignorable="w14 w15" không còn khớp prefix nào.
-    """
-    raw = Path(xml_path).read_bytes()
-    for m in re.finditer(rb'\bxmlns:([A-Za-z_][\w.\-]*)\s*=\s*"([^"]+)"', raw):
-        prefix = m.group(1).decode('ascii', 'ignore')
-        uri = m.group(2).decode('utf-8', 'ignore')
-        if prefix.lower() == 'xml':
-            continue
-        try:
-            ET.register_namespace(prefix, uri)
-        except ValueError:
-            pass
 
 
 def replace_in_element_runs(root, old_text, new_text, use_regex=False):
@@ -187,7 +175,6 @@ def safe_replace_text_in_docx(
                     file_changed = True
 
             if file_changed and not dry_run:
-                _preserve_namespaces(xml_full_path)
                 tree.write(str(xml_full_path), encoding='utf-8', xml_declaration=True)
 
         print(f"\n📊 Báo cáo thay thế văn bản an toàn ({len(report)} mục khớp, tổng {total_changes} lượt):")

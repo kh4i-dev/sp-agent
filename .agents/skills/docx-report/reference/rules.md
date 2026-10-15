@@ -49,6 +49,9 @@ Kinh nghiệm thực chiến chứng minh rằng AI agent dù có được nạp
 | **5. Caption mồ côi & Hàng bị xẻ đôi** | Đặt bảng/hình sát đáy trang mà không lường trước ngắt trang. | Thân bảng ở trang trước, dòng caption rơi trơ trọi sang đầu trang sau; hàng bảng bị cắt đôi ngang lưng. | Luôn bật `<w:cantSplit/>` cho mọi hàng; bật `keep_with_next = True` cho ảnh; chủ động ngắt trang (`add_page_break`) trước bảng nếu ở đáy trang. |
 | **6. Ảo tưởng qua text console log** | Thấy Python chạy `exit code 0` là vội vã báo cáo người dùng xong việc. | 90% lỗi vỡ layout, tràn lề, sai font bị bỏ lọt vì terminal không bao giờ báo lỗi dàn trang. | **Bắt buộc Render PDF $\rightarrow$ PNG** và dùng tool xem ảnh soi bằng mắt từng trang trước khi báo cáo. |
 | **7. Giả lập Heading thủ công** | Dùng paragraph thường rồi bôi đậm và tăng cỡ chữ Pt(14) để làm tiêu đề. | Word Navigation Pane không nhận diện được mục, Mục lục tự động (TOC) bị trống hoặc nhảy sai trang. | Dùng `doc.add_heading(text, level=N)` và quản lý chuẩn qua Word Styles Gallery. |
+| **8. Serialize XML bằng `xml.etree`** | Dùng `xml.etree.ElementTree` để parse + ghi lại `document.xml`. | Word báo "file appears to be corrupted" dù nội dung không đổi một chữ (đã chứng minh bằng round-trip trắng). | Mọi script ghi XML `.docx` BẮT BUỘC dùng `lxml` (đi kèm `python-docx`). |
+| **9. Substring-match trên XML đã serialize** | Kiểm tra ảnh bằng `"drawing" in p._p.xml`. | Luôn đúng với MỌI paragraph vì namespace `.../drawingml/...` có mặt khắp nơi → toàn bộ tài liệu bị căn giữa oan. | Phát hiện ảnh bằng element search (`findall w:drawing` / `w:pict`), không bao giờ `in` trên chuỗi XML. |
+| **10. Dựng field bằng f-string XML** | Nối chuỗi `<w:fldSimple ... w:instr="{instr}"/>` khi `instr` chứa dấu ngoặc kép (`TOC \o "1-3"`). | `XMLSyntaxError`, crash `--add-toc/--add-tof/--add-tot`. | Tạo field bằng `OxmlElement` + `set attribute`, không nối chuỗi XML. |
 
 ## 2. Create & Edit
 
@@ -269,7 +272,11 @@ Khi thêm/xóa hình: cập nhật field, kiểm tra numbering, kiểm tra các 
 
 Không được: để `Hình 3.4` xuất hiện trước `Hình 3.2`; tham chiếu tới số không tồn tại; caption và hình cách xa nhau.
 
-> **Đã tự động hóa:** `edit_docx.py --number-captions` chuyển caption text `Hình X.Y:` / `Bảng X.Y:` thành **field SEQ** (tự tăng, reset theo chương; số chương lấy từ Heading 1 dạng "CHƯƠNG N") + **bookmark**, đồng thời biến các tham chiếu text ("Hình 3.2", "Bảng 3.2") trong thân bài thành **field REF** (cross-reference tự cập nhật khi chèn/xóa). Dùng `--caption-plain` để đánh số đơn giản (Hình 1, 2, 3…). Numbering chỉ hiển thị đúng sau khi cập nhật field (render Word COM tự update).
+> **Đã tự động hóa:** `edit_docx.py --number-captions` chuyển caption text `Hình X.Y:` / `Bảng X.Y:` thành **field SEQ** (tự tăng, reset theo chương; số chương lấy từ Heading 1 dạng "CHƯƠNG N") + **bookmark**, đồng thời biến các tham chiếu text ("Hình 3.2", "Bảng 3.2") trong thân bài thành
+**field REF** (cross-reference tự cập nhật khi chèn/xóa). Dùng `--caption-plain` để đánh số đơn giản (Hình 1, 2, 3…).
+Numbering chỉ hiển thị đúng sau khi cập nhật field (render Word COM tự update).
+> Lý do lấy số chương từ text Heading thay vì `STYLEREF`: Heading text thường (không autonumbering)
+> khiến `STYLEREF 1 \s` trả 0 → caption thành "Hình 0.1" (đã chứng minh bằng render).
 
 ## 7. TOC & Navigation
 
@@ -291,6 +298,8 @@ Audit headings → fix styles → chèn field codes → render (Word COM / soffi
 
 Kiểm tra: tên chương đúng; cấp mục đúng; số trang đúng sau render; không xuất hiện đoạn văn body trong TOC;
 không mất mục con; không có tiêu đề nằm ngoài TOC do dùng sai style.
+> Mỗi lần chèn/xóa nội dung làm đổi phân trang → TOC/TOF/TOT stale cho tới khi Word `Ctrl+A` → `F9`.
+> LibreOffice không tự update field nên render soffice không dùng để kết luận số trang/mục lục.
 
 
 ## 8. Render & Visual Verification (Bắt buộc kiểm tra trực quan bằng ảnh)
