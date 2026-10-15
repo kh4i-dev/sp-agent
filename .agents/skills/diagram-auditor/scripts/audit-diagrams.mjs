@@ -22,6 +22,7 @@ import path from 'node:path';
 const cliArgs = process.argv.slice(2);
 const targetDir = cliArgs.find((a) => !a.startsWith('--')) || process.cwd();
 const allowColor = cliArgs.includes('--allow-color');
+const recursive = cliArgs.includes('--recursive');
 
 function isGrayscaleHex(hex) {
   let h = hex.replace('#', '').toLowerCase();
@@ -49,11 +50,30 @@ if (!fs.existsSync(targetDir)) {
   process.exit(1);
 }
 
-const files = fs.readdirSync(targetDir).filter((f) => f.endsWith('.svg'));
+function collectSvgFiles(dir, recurse = false) {
+  const found = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isFile() && entry.name.toLowerCase().endsWith('.svg')) {
+      found.push(path.relative(targetDir, fullPath));
+    } else if (
+      recurse &&
+      entry.isDirectory() &&
+      !['.git', 'node_modules', '.next', 'dist', 'build'].includes(entry.name)
+    ) {
+      found.push(...collectSvgFiles(fullPath, true));
+    }
+  }
+  return found.sort();
+}
+
+const files = collectSvgFiles(targetDir, recursive);
 
 if (files.length === 0) {
-  console.log('[diagram-auditor] Không tìm thấy file .svg nào để kiểm tra.');
-  process.exit(0);
+  console.error(
+    `[diagram-auditor] FAIL: Không tìm thấy file .svg trong scope: ${targetDir}${recursive ? ' (recursive)' : ''}. Không được coi thư mục rỗng là PASS.`
+  );
+  process.exit(1);
 }
 
 let totalErrors = 0;
@@ -96,6 +116,11 @@ for (const file of files) {
   // Check 3: Corresponding PNG exists
   if (!fs.existsSync(pngPath)) {
     issues.push('Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)');
+  } else {
+    const pngStat = fs.statSync(pngPath);
+    if (!pngStat.isFile() || pngStat.size < 500) {
+      issues.push(`File PNG tương ứng không hợp lệ hoặc quá nhỏ (${pngStat.size} bytes; yêu cầu tối thiểu 500 bytes)`);
+    }
   }
 
   // Check 4: Check if corresponding .puml has hardcoded title
@@ -115,7 +140,7 @@ for (const file of files) {
 
       // Check 4c: Duplicate reciprocal lines between same entities
       const relPairs = [];
-      const relRegex = /([A-Z_]+)\s+[|o}{]+--+[|o}{]+\s+([A-Z_]+)/g;
+      const relRegex = /([A-Za-z_][A-Za-z0-9_]*)\s+[|o}{]+--+[|o}{]+\s+([A-Za-z_][A-Za-z0-9_]*)/g;
       let rMatch;
       while ((rMatch = relRegex.exec(pumlContent)) !== null) {
         const e1 = rMatch[1];
@@ -344,7 +369,8 @@ if (totalErrors > 0) {
   console.error(`[diagram-auditor] KẾT QUẢ: ${totalErrors} LỖI ĐỎ nghiêm trọng phát hiện (+ ${totalWarnings} cảnh báo vàng). Vui lòng sửa triệt để!`);
   process.exit(1);
 } else {
-  console.log(`[diagram-auditor] KẾT QUẢ TỰ ĐỘNG: 100% sơ đồ ĐẠT lỗi chặn cứng (${files.length}/${files.length} files).`);
+  console.log(`[diagram-auditor] KẾT QUẢ STATIC: ${files.length} SVG đã qua các kiểm tra chặn cứng được triển khai trong script.`);
+  console.log('[diagram-auditor] LƯU Ý: Kết quả static không chứng minh sơ đồ đúng ngữ nghĩa hoặc không có mọi giao cắt đường nối; vẫn bắt buộc Visual Review/Proof-of-View.');
   if (totalWarnings > 0) {
     console.log(`[diagram-auditor] Còn ${totalWarnings} cảnh báo VÀNG cần Agent soi mắt phân xử trước khi PASS (không được bỏ qua).`);
   }
