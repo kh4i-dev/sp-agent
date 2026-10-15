@@ -44,6 +44,28 @@ const GRAY_NAMES = new Set([
 
 
 
+
+function analyzeUseCaseGraph(source) {
+  const actors = [...source.matchAll(/^\s*actor\s+(?:"[^"]+"\s+as\s+)?([A-Za-z_][A-Za-z0-9_]*)/gm)].map((m) => m[1]);
+  const useCases = [...source.matchAll(/^\s*usecase\s+(?:"[^"]+"\s+as\s+)?([A-Za-z_][A-Za-z0-9_]*)/gm)].map((m) => m[1]);
+  if (actors.length === 0 || useCases.length === 0) return [];
+
+  const out = [];
+  const hiddenConstraints = source.split(/\r?\n/).filter((line) => !line.trim().startsWith("'") && /\[hidden\]/i.test(line)).length;
+  if (actors.length >= 3 && useCases.length > 12) {
+    out.push("Use Case complexity warning: " + actors.length + " actors and " + useCases.length +
+      " use cases. Confirm a lane/layout plan; consider manual placement or decomposition when actor positions and connector paths matter.");
+  } else if (actors.length >= 3 || useCases.length > 12) {
+    out.push("Use Case layout planning warning: " + actors.length + " actors and " + useCases.length +
+      " use cases. Check actor distribution, system-boundary crossings and connector routes in the rendered image.");
+  }
+  if (hiddenConstraints > 3) {
+    out.push("Use Case hidden-layout constraint warning: " + hiddenConstraints +
+      " hidden links. Hidden constraints do not pin absolute positions and can make real associations take long routes; review one change at a time.");
+  }
+  return out;
+}
+
 function analyzeClassGraph(source) {
   const classDecl = /^\s*(?:(?:abstract|static|final)\s+)*(?:class|interface|entity|enum|object)\s+(?:"[^"]+"\s+as\s+)?([A-Za-z_][A-Za-z0-9_]*)/gm;
   const classes = [...source.matchAll(classDecl)].map((m) => m[1]);
@@ -212,6 +234,7 @@ for (const file of files) {
   if (sourcePath && sourcePath.endsWith('.puml')) {
     const pumlContent = fs.readFileSync(sourcePath, 'utf8');
     warnings.push(...analyzeClassGraph(pumlContent));
+    warnings.push(...analyzeUseCaseGraph(pumlContent));
     if (/^\s*title\s+(?![:=])/im.test(pumlContent)) {
       issues.push("Phát hiện từ khóa 'title' trong file .puml — tiêu đề phải để ở caption báo cáo (Hình X.Y), KHÔNG nhúng cứng vào khung ảnh");
     }
