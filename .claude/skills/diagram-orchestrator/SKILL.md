@@ -149,6 +149,20 @@ Before declaring a task complete, report:
 
 ---
 
+### 3.6. CLASS DIAGRAM NHIỀU QUAN HỆ — HUB, DENSITY, PARALLEL ROLES
+
+**SSOT bắt buộc:** đọc [reference/class-diagram-layout.md](reference/class-diagram-layout.md) trước khi tạo/sửa Class Diagram có từ 6 lớp trở lên, có lớp bậc cao, hoặc có nhiều association giữa cùng một cặp lớp.
+
+Trước khi viết PlantUML, lập bảng lớp/nhóm/bậc (degree)/các association song song. Sau khi render, bắt buộc xem:
+- Lớp hub (degree >= 5) có bị đẩy ra rìa khiến các cạnh kéo qua toàn hình không.
+- Các association cùng cặp lớp có vai trò khác nhau (ví dụ Review–User reviewer/reviewee) có bị đè hoặc gây nhầm cạnh không.
+- Số lớp/quan hệ trong source có khớp với comment, model và render không.
+- Các hidden links có đang ép thứ tự khai báo thành bố cục xấu không.
+- Vùng trắng có cân đối; không chỉ nhìn tỷ lệ khung tổng thể.
+- Đường nối có giao cắt, chạy sát song song hoặc vòng xa dù syntax/render thành công hay không.
+
+**Không coi cấu hình là nghiệm thu:** linetype ortho, nodesep, ranksep, package, together và hidden links không chứng minh không giao cắt. Thử một thay đổi mỗi vòng; nếu hai vòng hữu ích vẫn thất bại về hình học, dùng manual-fallback hoặc phân rã theo domain. Không tự động xóa/gộp association khác vai trò. Tách rõ Semantic Review và Visual Review.
+
 ## 4. BẢNG ĐỊNH TUYẾN: LOẠI SƠ ĐỒ NÀO CHO CÂU HỎI NÀO?
 
 | Khi cần trả lời câu hỏi... | Loại sơ đồ | Công cụ tối ưu | Định dạng & Renderer |
