@@ -90,7 +90,7 @@ When image inspection is required, use a tool that actually exposes the rendered
 
 ### 1.7. Apply the protocol to diagrams
 For every diagram, complete these stages:
-A0. **(Use Case / mô hình miền) BẮT BUỘC làm Bước 0 trước:** tạo file `docs/domain/step0-<du-an>.md` theo template [`reference/step0-bai-toan-va-tac-nhan.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md) — xác định bài toán, quy mô, số người vận hành, **trách nhiệm từng tác nhân** (phân biệt ai sửa lỗi IT vs ai không sửa lỗi IT nhưng chịu trách nhiệm nghiệp vụ), ranh giới hệ thống, quan hệ thật sự cần. **Không có file Bước 0 → CẤM vẽ** (vi phạm kỷ luật, sản phẩm bị bác bỏ).  
+A0. **(Use Case / mô hình miền) BẮT BUỘC làm Bước 0 trước:** tạo file `docs/domain/step0-<du-an>.md` theo template [`reference/step0-bai-toan-va-tac-nhan.md`](reference/step0-bai-toan-va-tac-nhan.md) — xác định bài toán, quy mô, số người vận hành, **trách nhiệm từng tác nhân** (phân biệt ai sửa lỗi IT vs ai không sửa lỗi IT nhưng chịu trách nhiệm nghiệp vụ), ranh giới hệ thống, quan hệ thật sự cần. **Không có file Bước 0 → CẤM vẽ** (vi phạm kỷ luật, sản phẩm bị bác bỏ).  
 A. Define purpose, notation, audience, abstraction level, and source of truth.  
 B. Validate semantics before choosing layout.  
 C. Select the appropriate rendering tool.  
@@ -181,7 +181,7 @@ Trước khi viết PlantUML, lập bảng lớp/nhóm/bậc (degree)/các assoc
 
 > [!NOTE]
 > **Bẫy kiểm soát vị trí:** PlantUML/Graphviz **KHÔNG cho ghim vị trí tuyệt đối** từng phần tử — chúng tự sắp xếp (dễ dồn tác nhân về một phía). Với bố cục đòi hỏi vị trí chính xác theo tay — ví dụ **Use Case đặt tác nhân hai bên** hoặc sơ đồ bố trí theo vùng — phải chuyển sang **draw.io / tldraw / SVG vẽ tay**. Đừng cố ép PlantUML ghim vị trí bằng hack vô ích.
-> Ngưỡng + quy trình vẽ tay fallback (sau ≥ 2 vòng auto vẫn FAIL Visual): [`reference/manual-fallback.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/manual-fallback.md).
+> Ngưỡng + quy trình vẽ tay fallback (sau ≥ 2 vòng auto vẫn FAIL Visual): [`reference/manual-fallback.md`](reference/manual-fallback.md).
 
 ### Bẫy kinh điển: Class Diagram không thay thế ERD & Cấu trúc RAM
 
@@ -223,7 +223,7 @@ Mỗi sơ đồ phải lưu file nguồn và xuất đồng thời SVG (vector) 
 - **Graphviz DOT:** `node .claude/skills/diagram-orchestrator/scripts/render-graphviz.mjs --in <path.dot>`
 - **tldraw:** `node .claude/skills/tldraw-diagrams/scripts/render.mjs --in <path.json> --png --scale 2`
 - **Auditor:** `node .claude/skills/diagram-auditor/scripts/audit-diagrams.mjs <targetDir>`
-- **Vẽ tay fallback (khi auto ≥ 2 vòng vẫn FAIL Visual):** theo [`reference/manual-fallback.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/manual-fallback.md) — freeze ngữ nghĩa, dựng `.drawio`/`.tldr`/`.svg` tay, xuất đủ SVG+PNG, qua auditor như bản auto.
+- **Vẽ tay fallback (khi auto ≥ 2 vòng vẫn FAIL Visual):** theo [`reference/manual-fallback.md`](reference/manual-fallback.md) — freeze ngữ nghĩa, dựng `.drawio`/`.tldr`/`.svg` tay, xuất đủ SVG+PNG, qua auditor như bản auto.
 
 ---
 
@@ -296,10 +296,10 @@ Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **
 ## 10. TÀI NGUYÊN NÂNG CAO & BỘ KIỂM THỬ (EVALS & REFERENCES)
 
 Theo chuẩn thiết kế Progressive Disclosure của OpenAI Codex và Anthropic Claude Code, các tài nguyên đào sâu được tổ chức độc lập để nạp khi cần:
-- **Bước 0 — Xác định bài toán & vai trò tác nhân (BẮT BUỘC trước khi vẽ Use Case):** [`reference/step0-bai-toan-va-tac-nhan.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md) (Problem statement, quy mô, ma trận trách nhiệm tác nhân **kèm nguồn bằng chứng / UNKNOWN**, ranh giới hệ thống, luồng lỗi–kiểm duyệt nếu có, ví dụ điền mẫu **trung tính**). Tác nhân của dự án cụ thể được điền ở bản copy theo dự án, KHÔNG hard-code vào skill.
-- **Vẽ tay fallback — khi auto-layout vẫn xấu (SSOT):** [`reference/manual-fallback.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/manual-fallback.md) (ngưỡng ≥ 2 vòng FAIL Visual, 3 đường draw.io/tldraw/SVG, quy trình 6 bước, checklist PASS).
-- **Nguyên tắc thiết kế thị giác & bố cục:** [`reference/design-principles.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/design-principles.md) (Visual hierarchy, whitespace budget, routing, typography, khổ in A4).
-- **Thư viện tương phản Mẫu Tốt & Mẫu Lỗi (Gallery):** [`reference/diagram-gallery.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/diagram-gallery.md) (Đối chiếu mẫu đúng vs mẫu sai cho Use Case, Class, ERD, Sequence, Architecture, Trie/BK-Tree).
-- **Chuẩn hệ sinh thái Agent chính thức:** [`reference/benchmark-ecosystem.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/benchmark-ecosystem.md) (Nghiên cứu kiến trúc từ `openai/codex`, `anthropics/claude-code`, `openai/plugins`, `anthropics/skills`).
-- **Bộ bài kiểm thử đánh giá chất lượng (Evals Suite):** [`evals/README.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/evals/README.md) — Chạy test runner: `node .claude/skills/diagram-orchestrator/scripts/run-evals.mjs`.
+- **Bước 0 — Xác định bài toán & vai trò tác nhân (BẮT BUỘC trước khi vẽ Use Case):** [`reference/step0-bai-toan-va-tac-nhan.md`](reference/step0-bai-toan-va-tac-nhan.md) (Problem statement, quy mô, ma trận trách nhiệm tác nhân **kèm nguồn bằng chứng / UNKNOWN**, ranh giới hệ thống, luồng lỗi–kiểm duyệt nếu có, ví dụ điền mẫu **trung tính**). Tác nhân của dự án cụ thể được điền ở bản copy theo dự án, KHÔNG hard-code vào skill.
+- **Vẽ tay fallback — khi auto-layout vẫn xấu (SSOT):** [`reference/manual-fallback.md`](reference/manual-fallback.md) (ngưỡng ≥ 2 vòng FAIL Visual, 3 đường draw.io/tldraw/SVG, quy trình 6 bước, checklist PASS).
+- **Nguyên tắc thiết kế thị giác & bố cục:** [`reference/design-principles.md`](reference/design-principles.md) (Visual hierarchy, whitespace budget, routing, typography, khổ in A4).
+- **Thư viện tương phản Mẫu Tốt & Mẫu Lỗi (Gallery):** [`reference/diagram-gallery.md`](reference/diagram-gallery.md) (Đối chiếu mẫu đúng vs mẫu sai cho Use Case, Class, ERD, Sequence, Architecture, Trie/BK-Tree).
+- **Chuẩn hệ sinh thái Agent chính thức:** [`reference/benchmark-ecosystem.md`](reference/benchmark-ecosystem.md) (Nghiên cứu kiến trúc từ `openai/codex`, `anthropics/claude-code`, `openai/plugins`, `anthropics/skills`).
+- **Bộ bài kiểm thử đánh giá chất lượng (Evals Suite):** [`evals/README.md`](evals/README.md) — Chạy test runner: `node .claude/skills/diagram-orchestrator/scripts/run-evals.mjs`.
 
