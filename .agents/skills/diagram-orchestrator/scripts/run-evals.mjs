@@ -25,6 +25,7 @@ const testCases = [
   { id: 'EVAL-04', name: '04_balanced_trie', file: 'test.dot', type: 'dot' },
   { id: 'EVAL-05', name: '05_sequence_a4', file: 'test.puml', type: 'puml' },
   { id: 'EVAL-06', name: '06_class_rutgon_hub', file: 'test.puml', type: 'puml', expectWarnings: ['Class graph hub warning', 'parallel-association warning', 'Source/comment count mismatch'] },
+  { id: 'EVAL-07', name: '07_use_case_multi_actor', file: 'test.puml', type: 'puml', expectWarnings: ['Use Case complexity warning', 'Use Case hidden-layout constraint warning'] },
 ];
 
 let totalPass = 0;
