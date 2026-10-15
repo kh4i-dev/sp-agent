@@ -14,6 +14,7 @@ Bộ kiểm thử chuẩn (Benchmark Suite) dùng để đánh giá độc lập
 | **EVAL-04** | `04_balanced_trie` | Cây tiền tố Prefix Trie và BK-Tree. | Phân nhánh tỏa đều hai bên, không dồn cục khoảng trắng, đúng trọng số Levenshtein. |
 | **EVAL-05** | `05_sequence_a4` | Sơ đồ tuần tự đầy đủ 5 lifelines và nhánh alt/else. | Vừa vặn trang in A4 (chiều ngang không quá dài), có `autonumber` và `activate`. |
 | **EVAL-06** | `06_class_rutgon_hub` | Class Diagram có hub User, association khác vai trò, nhiều hidden constraints và comment đếm lớp sai có chủ ý. | Auditor cảnh báo hub/parallel associations/hidden constraints/source count mismatch; warning không tự động bị coi là visual failure. |
+| **EVAL-07** | `07_use_case_multi_actor` | Use Case có 4 actor, 18 use case, 3 package và 5 hidden constraints. | Auditor cảnh báo độ phức tạp actor/use case và hidden layout constraints; mở PNG để kiểm tra routing riêng. |
 
 ---
 
