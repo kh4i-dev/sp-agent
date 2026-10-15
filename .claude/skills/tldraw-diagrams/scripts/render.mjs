@@ -121,9 +121,22 @@ function buildTldr(diagram) {
   }
 
   // Group parsing
+  if (!["LR", "TD"].includes(direction)) {
+    throw new Error(`Unsupported direction "${direction}". Use "LR" or "TD".`);
+  }
+
   const definedGroups = Array.isArray(diagram.groups) ? diagram.groups : [];
   const groupMap = new Map();
   const groupOrder = [];
+  for (const group of definedGroups) {
+    const groupId = group?.id || group?.title;
+    if (!groupId || typeof groupId !== "string") {
+      throw new Error("Every group must have a non-empty string id or title.");
+    }
+    if (groupMap.has(groupId)) {
+      throw new Error(`Duplicate group id: ${groupId}`);
+    }
+  }
 
   definedGroups.forEach((g) => {
     const id = g.id || g.title;
@@ -137,6 +150,17 @@ function buildTldr(diagram) {
   });
 
   const nodes = Array.isArray(diagram.nodes) ? diagram.nodes : [];
+  const nodeIds = new Set();
+  for (const node of nodes) {
+    if (!node || typeof node.id !== "string" || !node.id.trim()) {
+      throw new Error("Every node must have a non-empty string id.");
+    }
+    if (nodeIds.has(node.id)) {
+      throw new Error(`Duplicate node id: ${node.id}`);
+    }
+    nodeIds.add(node.id);
+  }
+
   nodes.forEach((node) => {
     const gid = node.group || "Default";
     if (!groupMap.has(gid)) {
@@ -428,8 +452,7 @@ function buildTldr(diagram) {
     const from = nodePositions.get(edge.from);
     const to = nodePositions.get(edge.to);
     if (!from || !to) {
-      console.warn(`[render-tldraw] Warning: Edge ignored, unknown node: ${edge.from} -> ${edge.to}`);
-      return;
+      throw new Error(`Invalid edge "${edge.from}" -> "${edge.to}": both endpoints must reference declared node ids. Refusing to silently omit this relationship.`);
     }
 
     let startX, startY, endX, endY;
@@ -475,7 +498,7 @@ function buildTldr(diagram) {
     }
 
     const bendVal = typeof edge.bend === "number" ? edge.bend : 0;
-    const arrowKind = edge.kind || (bendVal !== 0 ? "arc" : "arc");
+    const arrowKind = edge.kind || (bendVal !== 0 ? "arc" : "straight");
 
     records.push({
       typeName: "shape",
