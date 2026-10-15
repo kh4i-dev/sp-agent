@@ -131,7 +131,7 @@ Với Class Diagram có từ 6 lớp trở lên, lớp trung tâm bậc cao, nhi
 > Vẽ Use Case mà chưa hiểu hệ thống giải quyết bài toán gì, có bao nhiêu người vận hành, mỗi tác nhân chịu trách nhiệm gì → đó là **lỗi tư duy nghiêm trọng**, KHÔNG phải lỗi bố cục. Sơ đồ sinh ra sẽ sai ngay từ gốc và mọi nỗ lực căn lề đều vô nghĩa.
 
 ### BƯỚC 0 — XÁC ĐỊNH BÀI TOÁN, QUY MÔ & VAI TRÒ TÁC NHÂN (BẮT BUỘC, XUẤT FILE MD TRƯỚC KHI VẼ)
-Trước khi viết một dòng `.puml`, Agent **BẮT BUỘC** tạo một file Markdown (theo mẫu [`diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md)) và trả lời **đủ** các câu hỏi:
+Trước khi viết một dòng `.puml`, Agent **BẮT BUỘC** tạo một file Markdown (theo mẫu [`diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md`](../diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md)) và trả lời **đủ** các câu hỏi:
 1. **Bài toán là gì?** Hệ thống giải quyết vấn đề gì, cho ai, thay thế/đang làm gì hiện tại?
 2. **Quy mô:** bao nhiêu người vận hành, bao nhiêu tác nhân, tần suất, khối lượng?
 3. **Mỗi tác nhân làm gì?** Liệt kê từng vai trò + trách nhiệm cụ thể. Phân biệt rõ:
