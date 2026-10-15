@@ -8,10 +8,19 @@
 
 ## 0. Nguyên tắc mẹ: topology trước, tọa độ sau
 
-Auto-layout (PlantUML/Graphviz) chỉ tối ưu cục bộ theo **thứ tự khai báo**.
+Auto-layout không phải một thuật toán duy nhất. Graphviz `dot` dùng layout phân tầng
+và cố gắng giảm giao cắt/độ dài cạnh; PlantUML có thể chịu ảnh hưởng bởi engine và
+renderer đang dùng. Không engine nào bảo đảm hình cuối không có giao cắt, và hidden
+links/thứ tự khai báo chỉ là các cách tác động bố cục chứ không phải tọa độ tuyệt đối.
 Phần việc của kiến trúc sư — quyết định **ai Ở GẦN ai** — AI phải làm **trước khi viết
-một dòng code**, bằng 6 bước dưới đây. Không bước nào được bỏ qua bằng cảm tính
+một dòng code**, bằng các bước dưới đây. Không bước nào được bỏ qua bằng cảm tính
 ("nhìn là biết", "render ra rồi tính").
+
+**Phân biệt bằng chứng:** quy tắc có căn cứ từ tài liệu engine/nghiên cứu được ghi là
+[source-backed]; ngưỡng vận hành do repo tự chọn được ghi là [heuristic]. Xem
+[`docs/research/layout-thinking-evidence-2026-10-16.md`](../../../../../../docs/research/layout-thinking-evidence-2026-10-16.md)
+để biết nguồn và giới hạn kết luận. Không gọi heuristic như 2.5× trung vị, 10% mực
+hay degree ≥ 5 là định luật khoa học; dùng chúng làm tín hiệu yêu cầu review.
 
 ## 1. Tiền-bố-cục bắt buộc (Adjacency-first)
 
@@ -79,11 +88,18 @@ Sau render, kiểm tra bằng mắt, không đoán từ code:
 
 ## 5. Sàn khoảng cách (spacing floor)
 
-`nodesep`/`ranksep` tối thiểu trong skill là **SÀN, không phải gợi ý**
-(PlantUML chi tiết: 60–80 / 60–90). Không vừa trang A4 → **phân rã sơ đồ**,
-tuyệt đối cấm nén spacing xuống dưới sàn để nhét (case thật: `nodesep 30/ranksep 45`
-là nguyên nhân trực tiếp gây đè nhãn).
-Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp 40–50 (xem §9.4).
+Các mức `nodesep`/`ranksep` khuyến nghị trong skill là **sàn vận hành của repo**,
+không phải hằng số phổ quát cho mọi engine. Đặc biệt, Graphviz `dot` định nghĩa
+`nodesep` và `ranksep` theo inch; không sao chép trực tiếp trị số giữa Graphviz và
+PlantUML nếu chưa xác nhận renderer/cách diễn giải.
+
+Với cấu hình PlantUML đã được benchmark của repo, giữ sàn hiện hành (nodesep 60–80 /
+ranksep 60–90). Nếu không vừa A4, ưu tiên phân rã hoặc đổi bố cục thay vì nén chữ và
+khoảng cách tùy tiện. Ngoại lệ ERD không nhãn động từ dùng rank hẹp 40–50 chỉ áp dụng
+khi đúng cấu hình/renderer đã được kiểm tra tại §9.4.
+
+Đây là guardrail nội bộ dựa trên các lần render đã ghi nhận, không phải bảo đảm rằng
+khoảng cách lớn sẽ tự loại bỏ giao cắt hoặc nhãn chồng.
 
 ## 9. ERD gọn như ảnh mẫu (reference-style ERD)
 
@@ -270,3 +286,75 @@ cong — đã phân scope, không mâu thuẫn)**; #6 nhãn canh ngang; #7 đố
 **Ngưỡng [heuristic] do skill đặt để đo được** (suy từ [S1]–[S3], không có trong nguồn):
 cạnh ≤ 2.5× trung vị; góc phần tư < 10% mực; nửa khung > 75% node; void trong
 container > 25%; nodesep/ranksep sàn 60–80/60–90.
+
+## 13. Quy trình tư duy thực chiến — quyết định nhanh, không vẽ mò
+
+Mục tiêu là giảm số vòng render bằng cách chọn đúng chiến lược từ cấu trúc sơ đồ, không phải bỏ qua kiểm định.
+
+### 13.1 Phiếu bố cục 60 giây
+
+Trước khi sinh mã, ghi ngắn vào model note:
+
+1. **Câu hỏi chính:** người đọc cần hiểu điều gì trong 5–10 giây?
+2. **Nguồn sự thật:** yêu cầu/SSOT, schema, mã nguồn hay giả thuyết thiết kế?
+3. **Kích thước:** số node, số cạnh, số nhóm; degree lớn nhất; cặp node có nhiều quan hệ; nhãn dài nhất.
+4. **Khó khăn dự kiến:** hub, cạnh song song, chu trình, nhiều actor, container lồng nhau, nhiều FK hay lifeline quá nhiều.
+5. **Chiến lược đầu tiên:** auto-layout, chia góc nhìn, hay bố cục thủ công; ghi lý do một câu.
+6. **Điều kiện PASS:** điều kiện ngữ nghĩa và điều kiện hình học phải độc lập, đo/quan sát được.
+
+Nếu chưa thể trả lời câu 1 hoặc 2, dừng và hỏi/đọc nguồn trước. Không bắt đầu bằng cách chọn engine theo thói quen.
+
+### 13.2 Cây quyết định engine/layout
+
+- **UML có ký pháp chuẩn và cấu trúc vừa phải:** thử PlantUML trước.
+- **Đồ thị phân tầng/cây, cạnh có hướng và topology phù hợp:** cân nhắc Graphviz dot.
+- **Bố cục cần vị trí tuyệt đối, actor hai phía với nhiều lane, hoặc đã xác nhận auto-layout không giữ được vị trí:** dùng draw.io/nguồn tọa độ có thể chỉnh tay.
+- **Sơ đồ quá dày để đọc ở kích thước xuất bản:** tách overview và detail theo câu hỏi/nghiệp vụ; không giảm font để ép vừa trang.
+- **Không biết engine có đáp ứng được không:** chạy PoC nhỏ nhất có tính đại diện trước khi chuyển cả mô hình.
+
+Không có luật “PlantUML luôn tốt nhất” hoặc “Graphviz luôn ít giao cắt hơn” cho mọi loại đồ thị. Lựa chọn phải ghi kèm điều kiện và bằng chứng render.
+
+### 13.3 Hai cổng nghiệm thu độc lập
+
+**Cổng A — ngữ nghĩa (không thể đánh đổi):**
+- Node và quan hệ khớp nguồn sự thật; không thiếu/nhân đôi quan hệ.
+- Hướng, role, multiplicity, guard và trạng thái đúng.
+- Không thêm/xóa quan hệ chỉ để hình đẹp hơn.
+- Mọi nội dung chưa được nguồn hỗ trợ được đánh dấu UNKNOWN hoặc “đề xuất”, không trình bày như hiện trạng.
+
+**Cổng B — hình học (phải xem output thực):**
+- Không node/nhãn bị cắt, chồng hoặc gán nhầm cạnh.
+- Không có cạnh vòng xa hoặc xuyên qua node không liên quan mà không có lý do.
+- Nhãn và chữ đọc được ở kích thước in/trình chiếu thật.
+- Bố cục tận dụng khung hợp lý; khoảng trắng không che giấu vùng dồn cục.
+- Tệp nguồn và ảnh kiểm tra thuộc cùng một phiên bản.
+
+Chỉ PASS khi cả A và B đều PASS. Static check/render exit code chỉ là bằng chứng một phần.
+
+### 13.4 Giao thức thử nghiệm có giới hạn
+
+1. Lưu baseline: nguồn, ảnh, renderer/version, kích thước và lỗi quan sát được.
+2. Nêu một giả thuyết cụ thể, ví dụ “đưa nhóm Review sát User sẽ giảm cạnh xuyên nhóm”.
+3. Đổi một biến có liên quan; không đồng thời đổi topology, font, engine và spacing.
+4. Render lại ở cùng cấu hình; so sánh đúng tiêu chí của giả thuyết.
+5. Giữ thay đổi chỉ khi tiêu chí mục tiêu tốt hơn và không tạo regression ngữ nghĩa/đọc hiểu.
+6. Nếu engine không thể giữ cấu trúc mong muốn, hoặc hai vòng có ý nghĩa không tiến triển, dừng auto-layout; phân rã/đổi engine/vẽ tay.
+
+Ngoại lệ: khi đã biết rõ giới hạn engine (ví dụ cần tọa độ tuyệt đối), được fallback sớm mà không phải lãng phí hai vòng thử. Ghi lại lý do.
+
+### 13.5 Scorecard nhẹ cho mỗi bản render
+
+| Tiêu chí | PASS khi | Kết quả |
+|---|---|---|
+| Ngữ nghĩa | Đối chiếu nguồn không thấy thiếu/thừa/sai quan hệ | PASS/FAIL/UNKNOWN |
+| Cắt/chồng | Không có node hoặc nhãn bị cắt/chồng | PASS/FAIL |
+| Routing | Không có cạnh vòng xa/xuyên node không liên quan nghiêm trọng | PASS/FAIL/REVIEW |
+| Độ đọc | Chữ đọc được ở kích thước xuất bản | PASS/FAIL |
+| Cân bằng | Không dồn cục rõ rệt hoặc bỏ trống vùng vô lý | PASS/REVIEW |
+| Tái lập | Có source, lệnh/engine và ảnh cùng phiên bản | PASS/FAIL |
+
+Không gộp thành một điểm thẩm mỹ duy nhất nếu chưa có rubric được hiệu chuẩn bằng nhiều người đánh giá. Các heuristic hiện có chỉ kích hoạt review, không tự chứng minh hình đẹp/xấu.
+
+### 13.6 Đầu ra bắt buộc của agent
+
+Với sơ đồ khó, ghi vào báo cáo: (a) nguồn sự thật, (b) chiến lược/engine và lý do, (c) thay đổi so với baseline, (d) kiểm tra đã chạy và ảnh đã thực sự được xem hay chưa, (e) PASS/FAIL/UNKNOWN theo hai cổng, (f) giới hạn còn lại. Không dùng câu “đã kiểm tra hình” nếu chỉ đọc mã nguồn hoặc chạy auditor tĩnh.

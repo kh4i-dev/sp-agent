@@ -120,3 +120,30 @@ Bộ eval phải gồm ít nhất: hub class nhiều cạnh; nhiều quan hệ g
 - Nghiên cứu học thuật hỗ trợ nguyên tắc thẩm mỹ/khả năng hiểu; không chứng minh mọi threshold nội bộ.
 - Heuristic của repo phải tiếp tục được kiểm chứng qua eval và render thật.
 - Nếu không có ảnh/metrics, kết luận bắt buộc là UNKNOWN — không suy đoán từ source code.
+
+## 6. Bổ sung: cách dùng bằng chứng và tránh khẳng định quá mức
+
+### 6.1 Mức độ bằng chứng
+
+| Nhãn | Ý nghĩa | Được phép kết luận |
+|---|---|---|
+| source-backed | Tài liệu chính thức/nghiên cứu trực tiếp hỗ trợ phát biểu | Chỉ kết luận đúng phạm vi nguồn nói tới |
+| empirical-in-repo | Có baseline, render, quan sát lặp lại trong repo | Kết luận có điều kiện với engine, cấu hình và mẫu đã thử |
+| heuristic | Ngưỡng vận hành tự đặt để kích hoạt review | Chỉ cảnh báo/ưu tiên kiểm tra, không tự kết luận FAIL thẩm mỹ |
+| preference | Quy ước của người dùng/tổ chức (ví dụ monochrome) | Bắt buộc trong phạm vi đó nhưng không phải định luật layout |
+
+### 6.2 Checklist nguồn trước khi đưa vào SSOT
+
+- Đọc trang nguồn chính, không chỉ snippet tìm kiếm.
+- Ghi URL, ngày truy cập, tuyên bố cụ thể được hỗ trợ và giới hạn.
+- Với nghiên cứu học thuật, ghi loại đánh giá/đối tượng; không khái quát kết quả ngoài phạm vi nghiên cứu.
+- Tách câu “engine có thuộc tính X” khỏi câu “thuộc tính X làm sơ đồ này đẹp hơn”; câu thứ hai cần benchmark thực tế.
+- Nếu không có output render được xem, đánh dấu chất lượng thị giác UNKNOWN.
+
+### 6.3 Bổ sung nguồn kỹ thuật cần theo dõi
+
+Các nguồn chính đang dùng vẫn là tài liệu Graphviz dot, nodesep, ranksep, rankdir; PlantUML Class Diagram layout; nghiên cứu Purchase et al. (2001); và hướng dẫn viết/evaluate agent skills của Anthropic. Khi nâng cấp tiếp, nên bổ sung benchmark có ground truth và nghiên cứu so sánh readability thay vì tăng số ngưỡng heuristic.
+
+### 6.4 Tiêu chí hoàn tất của một vòng nghiên cứu
+
+Một thay đổi chỉ được gọi là đã phát triển và kiểm chứng khi có: (1) nguồn và tuyên bố truy vết được, (2) PoC cùng topology/ngữ nghĩa, (3) ảnh baseline/candidate được thực sự xem, (4) semantic diff không regression, (5) eval hồi quy, (6) ghi giới hạn. Nếu thiếu render/visual inspection thì trạng thái tối đa là PASS WITH CONDITIONS hoặc UNKNOWN, không phải “đã chứng minh đẹp hơn”.
