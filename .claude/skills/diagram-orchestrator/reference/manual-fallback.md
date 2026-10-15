@@ -4,19 +4,30 @@
 > Mọi skill sơ đồ (`plantuml-diagrams` §5, `use-case-layout` §3.3–3.4, `tldraw-diagrams` §1,
 > `simplified-diagrams`) defer về đây. Không copy quy trình ra chỗ khác, chỉ trỏ link.
 
-## 0. Khi nào kích hoạt (ngưỡng cứng)
+## 0. Khi nào kích hoạt (hai lối hợp lệ, không mâu thuẫn)
 
-Chuyển sang vẽ tay **khi và chỉ khi** đủ cả 2 điều kiện:
+Chỉ chuyển sang vẽ tay khi lỗi cần giải quyết là **hình học/bố cục**, không phải ngữ nghĩa.
 
-1. Đã làm **≥ 2 vòng render → soi → sửa-1-biến → render lại**
-   (PlantUML: đã thử `nodesep`/`ranksep`, rút nhãn ≤ 25 ký tự, `xlabel`, đổi thứ tự khai báo,
-   tách `package`/lane) mà **Visual Review vẫn FAIL**: dồn actor một phía, connector
-   vòng xa / xuyên ellipse, nhãn đè viền `cluster`, dồn cục ≥ 3 node < 30px.
-2. Lỗi là **hình học / bố cục**, KHÔNG phải lỗi nghiệp vụ.
-   (Mô hình sai → sửa mô hình trước, cấm vẽ tay để che lỗi — xem `diagram-orchestrator` §3.13.)
+### Lối A — Fallback sớm vì biết trước giới hạn của auto-layout
 
-**Cấm** nhảy sang vẽ tay ngay vòng 1 để "cho nhanh". **Cấm** vá mã auto vô hạn
-(quá 3 vòng không tiến triển → dừng, chuyển fallback).
+Được chuyển thẳng sang draw.io khi:
+- Người dùng yêu cầu vị trí tương đối chính xác/actor ở hai bên mà PlantUML không thể ghim vị trí tuyệt đối.
+- Use Case có **≥ 3 actor** cần phân vùng trái/phải hoặc **> 12 use case** và cần kiểm soát đường nối; vẫn phải phân rã nếu vượt ngưỡng nội dung theo SSOT.
+- Mô hình quan hệ dày có hub/bậc cao hoặc nhiều association cùng cặp khiến auto-layout khó biểu đạt rõ, và người dùng cần bố cục điều khiển thủ công.
+
+Các ngưỡng trên là tín hiệu chọn công cụ, không tự động chứng minh sơ đồ sai hay cần luôn luôn vẽ tay. Nêu ngắn gọn lý do để giữ dấu vết quyết định.
+
+### Lối B — Fallback sau thử nghiệm
+
+Nếu không có giới hạn đã biết như trên, thực hiện **≥ 2 vòng render → soi → sửa một biến → render lại** (ví dụ đổi hướng, rút nhãn, đổi thứ tự khai báo, thử ortho/polyline, thêm/bỏ một hidden link). Nếu Visual Review vẫn FAIL vì dồn cục, đường vòng xa, giao cắt hoặc nhãn chồng thì dừng vá tham số.
+
+**Không bắt buộc** phải thử đủ hai vòng khi ngay từ yêu cầu đã cần vị trí tuyệt đối. Ngược lại, không chuyển công cụ chỉ vì một cấu hình bất tiện nếu auto-layout vẫn cho kết quả sạch.
+
+Mọi trường hợp đều phải thỏa:
+1. Lỗi là **hình học / bố cục**, KHÔNG phải lỗi nghiệp vụ.
+2. Đã freeze Bước 0 + mô hình UML trước khi vẽ tay.
+3. Chuyển công cụ chỉ thay đổi vị trí/routing, không thay đổi ý nghĩa actor, class, use case hoặc quan hệ.
+4. Không vá mã auto vô hạn; quá 3 vòng không tiến triển thì dừng và chuyển fallback.
 
 ## 1. Ba đường fallback (chọn 1)
 
