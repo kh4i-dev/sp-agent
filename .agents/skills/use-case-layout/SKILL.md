@@ -5,6 +5,8 @@ description: "Thiết kế Use Case Diagram UML vừa ĐÚNG nghiệp vụ vừa
 
 # Skill: Thiết kế Use Case Diagram đúng nghiệp vụ, bố cục cân đối, đường nối sạch
 
+> **Scope guard:** Skill này sở hữu bố cục Use Case, không phải Class Diagram/ERD. Với UML Class Diagram, dùng quy tắc SSOT tại [diagram-orchestrator/reference/class-diagram-layout.md](../diagram-orchestrator/reference/class-diagram-layout.md); không áp máy móc luật actor hai bên, ellipse hoặc ngưỡng Use Case sang loại sơ đồ khác.
+
 ## 1. Mục tiêu
 
 Tạo sơ đồ Use Case UML vừa **đúng mô hình nghiệp vụ**, vừa **dễ đọc khi in A4 hoặc chèn vào Word**. Ưu tiên bố trí có chủ đích và kiểm chứng hình render, không chấp nhận sơ đồ tự động sinh ra rồi mặc định là đạt. Mọi sơ đồ cho báo cáo/đồ án/luận văn học thuật tuân thủ phong cách **trắng-đen (zero-color)**, KHÔNG dùng màu (xem `AGENTS.md` §Nguyên tắc bất biến #13 và SSOT tại `diagram-orchestrator`).
