@@ -15,7 +15,7 @@ Mục tiêu: Đảm bảo **100% sơ đồ xuất bản** đạt chuẩn kỹ th
 
 > [!CAUTION]
 > **CẤM AUDIT SƠ ĐỒ USE CASE / MÔ HÌNH MIỀN KHI CHƯA CÓ FILE BƯỚC 0.**
-> Trước khi audit bất kỳ sơ đồ Use Case / domain / actor nào, Reviewer **BẮT BUỘC** xác minh tồn tại file `docs/domain/step0-<du-an>.md` (template: [`diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md)), và file đó đã trả lời đủ: bài toán, quy mô, số người vận hành, **trách nhiệm từng tác nhân** (phân biệt ai sửa lỗi IT vs ai không sửa lỗi IT nhưng chịu trách nhiệm nghiệp vụ), ranh giới hệ thống.
+> Trước khi audit bất kỳ sơ đồ Use Case / domain / actor nào, Reviewer **BẮT BUỘC** xác minh tồn tại file `docs/domain/step0-<du-an>.md` (template: [`diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md`](../diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md)), và file đó đã trả lời đủ: bài toán, quy mô, số người vận hành, **trách nhiệm từng tác nhân** (phân biệt ai sửa lỗi IT vs ai không sửa lỗi IT nhưng chịu trách nhiệm nghiệp vụ), ranh giới hệ thống.
 > - **Không có file Bước 0** → trạng thái **BLOCKED** (thiếu nguồn sự thật), KHÔNG được audit và KHÔNG được PASS. Ghi nguyên văn: `⚠️ VI PHẠM KỶ LUẬT: thiếu Bước 0 — lỗi tư duy mô hình hóa, không phải lỗi bố cục.`
 > - **Có file nhưng tác nhân/trách nhiệm mâu thuẫn với sơ đồ** (ví dụ một tác nhân nghiệp vụ *không* sửa lỗi IT lại bị vẽ như người xử lý lỗi kỹ thuật) → **FAIL**.
 
