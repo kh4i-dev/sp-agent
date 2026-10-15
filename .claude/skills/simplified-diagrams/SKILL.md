@@ -203,5 +203,8 @@ Các bảng kỹ thuật như log kiểm toán, bảng tạm OTP và bảng danh
   2. Bố cục 3 cột chuẩn mực, đường nối vuông góc `linetype ortho` hoặc `polyline` (tránh nét sketch méo lệch).
   3. Render ra `.svg` và `.png` 300 DPI qua `render-puml.mjs`.
   4. Chạy `diagram-auditor` kiểm định đạt PASS 100%.
+  4b. Nếu sau ≥ 2 vòng sửa-1-biến mà Visual vẫn FAIL (dồn cục, nhãn đè) → chuyển
+      vẽ tay fallback theo SSOT `diagram-orchestrator/reference/manual-fallback.md`
+      (freeze 5–9 thực thể đã duyệt, dựng `.drawio`/`.tldr` tay, qua auditor như bản auto).
   5. **Bàn giao trực quan sạch (Zero Code Dumps):** Trong phản hồi chat, **CHỈ hiển thị ảnh trực quan (`![Hình X.X](path)`), tiêu đề `Hình X.X: <Tên sơ đồ>`, kịch bản phát biểu 60-90 giây, và link tệp nguồn**. TUYỆT ĐỐI KHÔNG in code block PlantUML ra chat làm rối màn hình.
 

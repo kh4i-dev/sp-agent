@@ -334,7 +334,12 @@ PlantUML/Mermaid **không kiểm soát được vị trí phần tử**. Với *
 ### 5.1 Ngưỡng chuyển sang vẽ tay
 - Số **actor người dùng ≥ 3** HOẶC tổng **use case > 12**.
 - Cần actor đứng **hai bên** / nhóm theo **cụm chức năng**.
+- Hoặc đã qua **≥ 2 vòng render → soi → sửa-1-biến** mà Visual Review vẫn FAIL
+  (dồn actor một phía, vòng xa, nhãn đè viền `cluster`, dồn cục).
 - Vẽ tay: **SVG trắng–đen** (font Segoe UI), hoặc tạo **`.drawio`** để người dùng mở diagrams.net chỉnh & export.
+- Quy trình đầy đủ (freeze ngữ nghĩa → dựng tay 6 bước → audit): xem SSOT
+  [`diagram-orchestrator/reference/manual-fallback.md`](../diagram-orchestrator/reference/manual-fallback.md).
+  Cấm vẽ tay để che lỗi mô hình (thiếu Bước 0 / mô hình sai).
 
 ### 5.2 Mười quy tắc BẮT BUỘC của Use Case
 1. **Actor = người dùng/nhóm chức danh** tương tác với hệ thống. **KHÔNG là actor:** phương thức thanh toán (VietQR/**SePay**), thư viện, DB, kênh gửi (SMTP). → Gộp vào use case (vd "Mua gói & thanh toán VietQR"), không vẽ thành actor.

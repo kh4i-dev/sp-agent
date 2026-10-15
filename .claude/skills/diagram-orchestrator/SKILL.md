@@ -167,6 +167,7 @@ Before declaring a task complete, report:
 
 > [!NOTE]
 > **Bẫy kiểm soát vị trí:** PlantUML/Graphviz **KHÔNG cho ghim vị trí tuyệt đối** từng phần tử — chúng tự sắp xếp (dễ dồn tác nhân về một phía). Với bố cục đòi hỏi vị trí chính xác theo tay — ví dụ **Use Case đặt tác nhân hai bên** hoặc sơ đồ bố trí theo vùng — phải chuyển sang **draw.io / tldraw / SVG vẽ tay**. Đừng cố ép PlantUML ghim vị trí bằng hack vô ích.
+> Ngưỡng + quy trình vẽ tay fallback (sau ≥ 2 vòng auto vẫn FAIL Visual): [`reference/manual-fallback.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/manual-fallback.md).
 
 ### Bẫy kinh điển: Class Diagram không thay thế ERD & Cấu trúc RAM
 
@@ -208,6 +209,7 @@ Mỗi sơ đồ phải lưu file nguồn và xuất đồng thời SVG (vector) 
 - **Graphviz DOT:** `node .claude/skills/diagram-orchestrator/scripts/render-graphviz.mjs --in <path.dot>`
 - **tldraw:** `node .claude/skills/tldraw-diagrams/scripts/render.mjs --in <path.json> --png --scale 2`
 - **Auditor:** `node .claude/skills/diagram-auditor/scripts/audit-diagrams.mjs <targetDir>`
+- **Vẽ tay fallback (khi auto ≥ 2 vòng vẫn FAIL Visual):** theo [`reference/manual-fallback.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/manual-fallback.md) — freeze ngữ nghĩa, dựng `.drawio`/`.tldr`/`.svg` tay, xuất đủ SVG+PNG, qua auditor như bản auto.
 
 ---
 
@@ -281,6 +283,7 @@ Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **
 
 Theo chuẩn thiết kế Progressive Disclosure của OpenAI Codex và Anthropic Claude Code, các tài nguyên đào sâu được tổ chức độc lập để nạp khi cần:
 - **Bước 0 — Xác định bài toán & vai trò tác nhân (BẮT BUỘC trước khi vẽ Use Case):** [`reference/step0-bai-toan-va-tac-nhan.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md) (Problem statement, quy mô, ma trận trách nhiệm tác nhân **kèm nguồn bằng chứng / UNKNOWN**, ranh giới hệ thống, luồng lỗi–kiểm duyệt nếu có, ví dụ điền mẫu **trung tính**). Tác nhân của dự án cụ thể được điền ở bản copy theo dự án, KHÔNG hard-code vào skill.
+- **Vẽ tay fallback — khi auto-layout vẫn xấu (SSOT):** [`reference/manual-fallback.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/manual-fallback.md) (ngưỡng ≥ 2 vòng FAIL Visual, 3 đường draw.io/tldraw/SVG, quy trình 6 bước, checklist PASS).
 - **Nguyên tắc thiết kế thị giác & bố cục:** [`reference/design-principles.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/design-principles.md) (Visual hierarchy, whitespace budget, routing, typography, khổ in A4).
 - **Thư viện tương phản Mẫu Tốt & Mẫu Lỗi (Gallery):** [`reference/diagram-gallery.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/diagram-gallery.md) (Đối chiếu mẫu đúng vs mẫu sai cho Use Case, Class, ERD, Sequence, Architecture, Trie/BK-Tree).
 - **Chuẩn hệ sinh thái Agent chính thức:** [`reference/benchmark-ecosystem.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/benchmark-ecosystem.md) (Nghiên cứu kiến trúc từ `openai/codex`, `anthropics/claude-code`, `openai/plugins`, `anthropics/skills`).

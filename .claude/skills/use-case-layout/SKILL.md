@@ -120,8 +120,14 @@ Dùng các lane khái niệm:
 - **Không tạo liên kết nghiệp vụ giả chỉ để điều khiển layout.**
 - Không giả định PlantUML cho ra vị trí đúng nhờ `left to right direction`, `nodesep` hay `ranksep`.
 - Nếu PlantUML **vẫn sinh connector chồng chéo/vòng xa sau vài lần chỉnh hợp lý** → **chuyển sang draw.io** để định vị thủ công (giữ nguyên mô hình UML đã duyệt). Đừng vá mã vô hạn.
+- Ngưỡng cứng: **≥ 2 vòng render → soi → sửa-1-biến mà Visual vẫn FAIL → dừng vá mã, chuyển fallback**.
+  Quy trình 6 bước (freeze ngữ nghĩa, dựng `.drawio` tay, đi dây ngắn-trực tiếp, giữ zero-color+UML, xuất SVG+PNG, qua auditor):
+  xem SSOT [`diagram-orchestrator/reference/manual-fallback.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/manual-fallback.md).
 
 #### 3.4 Quy tắc khi vẽ tay / draw.io
+
+> Fallback vẽ tay chỉ kích hoạt sau ngưỡng §3.3 (≥ 2 vòng auto FAIL Visual).
+> Chi tiết đầy đủ: SSOT `diagram-orchestrator/reference/manual-fallback.md`.
 
 - Đặt system boundary, vùng chức năng, ellipse và actor **trước**; kiểm khoảng trống rồi mới nối dây.
 - Dùng grid/snap và căn chỉnh; cùng hàng/cột thì căn tâm/mép nhất quán.

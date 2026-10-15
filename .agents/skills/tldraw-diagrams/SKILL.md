@@ -31,6 +31,9 @@ Mục tiêu: Tạo sơ đồ **thẩm mỹ cao, đường cong mềm mại (bezi
    │
    ▼
 3. Visual QA: Soi ảnh SVG/PNG (bắt chữ đè, khoảng cách, nhãn cạnh)
+   │  └─ FAIL sau ≥ 2 vòng sửa-1-biến (bend/direction/nhãn) → FALLBACK VẼ TAY:
+   │     mở `.tldr` trên tldraw.com / VS Code, kéo node tay, đi dây ngắn-trực tiếp,
+   │     giữ zero-color; chi tiết: `diagram-orchestrator/reference/manual-fallback.md`
    │
    ▼
 4. Nhúng vào tài liệu DOCX hoặc Slide PPTX
