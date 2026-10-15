@@ -22,7 +22,7 @@ import path from 'node:path';
 const cliArgs = process.argv.slice(2);
 const targetDir = cliArgs.find((a) => !a.startsWith('--')) || process.cwd();
 const allowColor = cliArgs.includes('--allow-color');
-const recursive = cliArgs.includes('--recursive');
+const recursive = !cliArgs.includes('--top-level-only');
 
 function isGrayscaleHex(hex) {
   let h = hex.replace('#', '').toLowerCase();
@@ -43,7 +43,7 @@ const GRAY_NAMES = new Set([
 ]);
 
 
-console.log(`[diagram-auditor] Đang kiểm định chất lượng sơ đồ tại: ${targetDir}`);
+console.log(`[diagram-auditor] Đang kiểm định chất lượng sơ đồ tại: ${targetDir} (recursive=${recursive})`);
 
 if (!fs.existsSync(targetDir)) {
   console.error(`[diagram-auditor] Lỗi: Thư mục không tồn tại: ${targetDir}`);
@@ -93,6 +93,8 @@ for (const file of files) {
   const filePath = path.join(targetDir, file);
   const pumlPath = filePath.replace(/\.svg$/, '.puml');
   const pngPath = filePath.replace(/\.svg$/, '.png');
+  const sourceCandidates = ['.puml', '.dot', '.drawio', '.tldr', '.mmd', '.json']
+    .map((ext) => filePath.replace(/\.svg$/, ext));
   const content = fs.readFileSync(filePath, 'utf8');
   const issues = [];
   const warnings = [];
@@ -113,7 +115,7 @@ for (const file of files) {
     issues.push(`Kích thước file quá nhỏ (${content.length} bytes), có thể bị render lỗi`);
   }
 
-  // Check 3: Corresponding PNG exists
+  // Check 3: Corresponding PNG and editable source exist
   if (!fs.existsSync(pngPath)) {
     issues.push('Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)');
   } else {
@@ -123,9 +125,14 @@ for (const file of files) {
     }
   }
 
-  // Check 4: Check if corresponding .puml has hardcoded title
-  if (fs.existsSync(pumlPath)) {
-    const pumlContent = fs.readFileSync(pumlPath, 'utf8');
+  const sourcePath = sourceCandidates.find((candidate) => fs.existsSync(candidate));
+  if (!sourcePath) {
+    issues.push('Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.');
+  }
+
+  // Check 4: Check if corresponding PlantUML source has hardcoded title
+  if (sourcePath && sourcePath.endsWith('.puml')) {
+    const pumlContent = fs.readFileSync(sourcePath, 'utf8');
     if (/^\s*title\s+(?![:=])/im.test(pumlContent)) {
       issues.push("Phát hiện từ khóa 'title' trong file .puml — tiêu đề phải để ở caption báo cáo (Hình X.Y), KHÔNG nhúng cứng vào khung ảnh");
     }
@@ -183,12 +190,19 @@ for (const file of files) {
   }
 
   // Check 6: Text Collision Detection (Chữ đè chữ)
-  const textRegex = /<text\s+([^>]+)>([^<]+)<\/text>/g;
+  const textRegex = /<text\b([^>]*)>([\s\S]*?)<\/text>/g;
   let tMatch;
   const texts = [];
   while ((tMatch = textRegex.exec(content)) !== null) {
     const attrs = tMatch[1];
-    const textVal = tMatch[2].trim();
+    const rawText = tMatch[2]
+      .replace(/<tspan\b[^>]*>/g, '')
+      .replace(/<\/tspan>/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+      .replace(/\s+/g, ' ').trim();
+    const textVal = rawText;
     const xMatch = attrs.match(/x="([^"]+)"/);
     const yMatch = attrs.match(/y="([^"]+)"/);
     const fsMatch = attrs.match(/font-size="([^"]+)"/);
@@ -362,6 +376,7 @@ console.log('  * Lỗi ĐỎ (FAIL) chặn cứng: banner, SVG hỏng, thiếu P
 console.log('    quan hệ trùng, đè chữ, đường cắt chữ, VI PHẠM ZERO-COLOR, cỡ chữ < 9pt, tỷ lệ khung lệch.');
 console.log('  * Cảnh báo VÀNG (PASS*) KHÔNG chặn tự động — nhưng Agent BẮT BUỘC soi mắt phân xử.');
 console.log('  * Script KHÔNG THỂ thay thế kiểm tra ngữ nghĩa (Gate A) và soi trực quan bằng mắt (Gate C).');
+console.log('  * Chỉ kiểm tra các path vertex nằm trong bounding box chữ; KHÔNG phải bộ phát hiện mọi giao cắt giữa các đoạn đường nối hoặc va chạm node-edge.');
 console.log('  * Agent KHÔNG ĐƯỢC tuyên bố hoàn thành nếu chưa tự mở ảnh soi mắt + có bằng chứng soi ảnh!');
 console.log('----------------------------------------------------');
 
