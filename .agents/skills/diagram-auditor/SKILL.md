@@ -173,6 +173,8 @@ Sau khi render mỗi sơ đồ, Agent **BẮT BUỘC** thực hiện quy trình 
 
 ## 7. TOOLCHAIN KIỂM ĐỊNH TỰ ĐỘNG
 
+**Giới hạn static audit phải nói rõ:** script mặc định quét đệ quy các SVG, FAIL nếu scope không có SVG, kiểm tra cặp PNG và yêu cầu có nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json). Dùng --top-level-only khi cần giới hạn đúng một thư mục. Các cảnh báo class graph (hub, association song song, density, nhiều hidden constraints) chỉ là tín hiệu để reviewer soi ảnh; chúng không chứng minh sơ đồ có hay không có giao cắt. Script hiện kiểm tra xấp xỉ một số điểm/path vertex trong bounding box chữ, **không** phải bộ giải hình học đầy đủ để phát hiện tất cả giao cắt giữa hai path hoặc va chạm node-edge. Vì vậy static pass ≠ Visual PASS, và tuyệt đối không gọi đây là “100% thẩm mỹ”.
+
 Chạy script kiểm định tích hợp:
 
 ```bash
