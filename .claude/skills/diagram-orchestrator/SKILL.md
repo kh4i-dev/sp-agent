@@ -25,7 +25,7 @@ Sơ đồ đẹp không cứu được mô hình sai; sơ đồ đúng nhưng kh
 ## 1. GIAO THỨC TƯ DUY & GIẢI QUYẾT VẤN ĐỀ (INTELLIGENT PROBLEM-SOLVING PROTOCOL)
 
 > **Tài liệu tư duy bố cục SSOT:** [`reference/layout-thinking.md`](reference/layout-thinking.md).  
-> **Căn cứ kỹ thuật và giới hạn bằng chứng:** [`docs/research/layout-thinking-evidence-2026-10-16.md`](../../../../docs/research/layout-thinking-evidence-2026-10-16.md). Khi dùng các ngưỡng hình học nội bộ, phân biệt [source-backed] với [heuristic]; không suy ra chất lượng ảnh chỉ từ source diff.
+> **Căn cứ kỹ thuật và giới hạn bằng chứng:** [`docs/research/layout-thinking-evidence-2026-10-16.md`](../../../docs/research/layout-thinking-evidence-2026-10-16.md). Khi dùng các ngưỡng hình học nội bộ, phân biệt [source-backed] với [heuristic]; không suy ra chất lượng ảnh chỉ từ source diff.
 
 ### Mission
 Act as a software architect, domain analyst, visual designer, and critical reviewer — not merely a command executor.
