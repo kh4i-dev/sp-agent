@@ -17,7 +17,7 @@ Nạp để vào khối **sơ đồ** với đúng công cụ + qua cổng kiể
 
 | Skill | Vai trò | Khi nào |
 |---|---|---|
-| `diagram-orchestrator` | **CHỦ / SSOT**: phân tích ngữ nghĩa, chọn công cụ, giao thức | luôn nạp đầu |
+| `diagram-orchestrator` | **CHỦ / SSOT**: phân tích ngữ nghĩa, chọn công cụ, giao thức; Class Diagram mật độ cao dùng `reference/class-diagram-layout.md` | luôn nạp đầu |
 | `plantuml-diagrams` | UML/ERD/Sequence/Activity/Class/Use Case chuẩn, trắng-đen | sơ đồ chuẩn mực |
 | `tldraw-diagrams` | Kiến trúc/flowchart nét cong mềm, `.tldr` sửa được | sơ đồ tự do đẹp |
 | `simplified-diagrams` | Sơ đồ khái niệm 5–9 thực thể cho slide/bảo vệ | cần tinh gọn |

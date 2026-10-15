@@ -24,6 +24,8 @@ const testCases = [
   { id: 'EVAL-03', name: '03_crowded_erd', file: 'test.puml', type: 'puml' },
   { id: 'EVAL-04', name: '04_balanced_trie', file: 'test.dot', type: 'dot' },
   { id: 'EVAL-05', name: '05_sequence_a4', file: 'test.puml', type: 'puml' },
+  { id: 'EVAL-06', name: '06_class_rutgon_hub', file: 'test.puml', type: 'puml', expectWarnings: ['Class graph hub warning', 'parallel-association warning', 'Source/comment count mismatch'] },
+  { id: 'EVAL-07', name: '07_use_case_multi_actor', file: 'test.puml', type: 'puml', expectWarnings: ['Use Case complexity warning', 'Use Case hidden-layout constraint warning'] },
 ];
 
 let totalPass = 0;
@@ -59,21 +61,34 @@ for (const tc of testCases) {
   // 2. Chạy diagram-auditor
   try {
     const auditorScript = path.resolve(skillDir, '../diagram-auditor/scripts/audit-diagrams.mjs');
-    execSync(`node "${auditorScript}" "${tcDir}"`, { stdio: 'pipe' });
-    console.log(`  ✅ [PASS] ${tc.id}: Vượt qua kiểm định chất lượng 100%!`);
+    const auditOutput = execSync(`node "${auditorScript}" "${tcDir}"`, { encoding: 'utf8', stdio: 'pipe' });
+    const missingExpectedWarnings = (tc.expectWarnings || []).filter((warning) => !auditOutput.includes(warning));
+    if (missingExpectedWarnings.length > 0) {
+      console.error(`  ❌ [FAIL] ${tc.id}: Không phát hiện warning regression mong đợi: ${missingExpectedWarnings.join(', ')}`);
+      totalFail++;
+      continue;
+    }
+    if (auditOutput.includes('[PASS*]')) {
+      console.log(`  ⚠️ [STATIC-GATE PASS*] ${tc.id}: Qua hard checks nhưng còn warning; cần Visual Review riêng.`);
+    } else {
+      console.log(`  ✅ [STATIC-GATE PASS] ${tc.id}: Qua các kiểm tra tĩnh trong auditor; chưa phải chứng nhận thị giác/ngữ nghĩa.`);
+    }
     totalPass++;
   } catch (err) {
-    console.error(`  ❌ [FAIL] ${tc.id}: Thất bại ở cổng audit!`);
+    const details = err.stdout ? String(err.stdout).slice(-1200) : err.message;
+    console.error(`  ❌ [FAIL] ${tc.id}: Static audit thất bại. ${details}`);
     totalFail++;
   }
 }
 
 console.log('\n====================================================');
-console.log(`📊 TỔNG KẾT BENCHMARK: ${totalPass}/${testCases.length} ĐẠT (PASS)`);
+console.log(`📊 TỔNG KẾT STATIC GATE: ${totalPass}/${testCases.length} bài qua kiểm tra tĩnh`);
+console.log('⚠️ Đây KHÔNG phải kết luận “100% thẩm mỹ” hoặc Visual PASS.');
+console.log('   Reviewer vẫn phải mở từng PNG ở kích thước đọc được, đối chiếu mô hình/ngữ nghĩa và ghi Proof-of-View.');
 if (totalFail === 0) {
-  console.log('🎉 100% SƠ ĐỒ ĐẠT CHUẨN THIẾT KẾ & THẨM MỸ!');
+  console.log('✅ Các ca kiểm tra tĩnh trong runner đã qua.');
   process.exit(0);
 } else {
-  console.error(`⚠️ Có ${totalFail} bài test thất bại. Cần rà soát lại!`);
+  console.error(`❌ Có ${totalFail} bài test thất bại; chưa được nghiệm thu.`);
   process.exit(1);
 }

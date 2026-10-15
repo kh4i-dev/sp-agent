@@ -43,7 +43,7 @@ Mục tiêu: Tạo sơ đồ **thẩm mỹ cao, đường cong mềm mại (bezi
 
 ## 2. Cách tạo sơ đồ qua JSON (Khuyên dùng)
 
-Agent sinh một file `diagram.json` với cấu trúc rõ ràng (không cần tính toán tọa độ thủ công, script sẽ tự động auto-layout):
+Agent sinh file `diagram.json` với cấu trúc rõ ràng. Renderer đặt các group/node theo lưới xác định từ thứ tự khai báo; nó **không** tối ưu vị trí dựa trên topology cạnh, không phát hiện giao cắt và không tự định tuyến quanh node. Vì vậy JSON hợp với sơ đồ đơn giản, còn yêu cầu vị trí/đường nối chính xác cần chỉnh trong canvas và soi ảnh:
 
 ```json
 {
@@ -125,6 +125,8 @@ Mọi sơ đồ dùng cho báo cáo, đồ án, luận văn và slide kỹ thu�
   - `"TD"`: Luồng từ trên xuống dưới (khuyên dùng cho flowchart xử lý nghiệp vụ).
 
 ---
+
+> **Routing guard:** Không dùng renderer JSON này như bằng chứng sơ đồ UML Class/Use Case đã có bố cục tốt. Với nhiều quan hệ, nhiều association chung cặp hoặc nhu cầu actor hai bên, dùng PlantUML để thử bố cục rồi chuyển draw.io theo SSOT manual-fallback khi đường nối không sạch. Renderer giờ phải dừng lỗi nếu edge tham chiếu node không tồn tại hoặc node ID bị trùng; lỗi này không được bỏ qua vì sẽ âm thầm làm mất quan hệ trên hình.
 
 ## 5. Quy tắc QA cho Agent (Render & Visual Gate)
 

@@ -22,6 +22,7 @@ import path from 'node:path';
 const cliArgs = process.argv.slice(2);
 const targetDir = cliArgs.find((a) => !a.startsWith('--')) || process.cwd();
 const allowColor = cliArgs.includes('--allow-color');
+const recursive = !cliArgs.includes('--top-level-only');
 
 function isGrayscaleHex(hex) {
   let h = hex.replace('#', '').toLowerCase();
@@ -42,18 +43,137 @@ const GRAY_NAMES = new Set([
 ]);
 
 
-console.log(`[diagram-auditor] Đang kiểm định chất lượng sơ đồ tại: ${targetDir}`);
+
+
+function analyzeUseCaseGraph(source) {
+  const actors = [...source.matchAll(/^\s*actor\s+(?:"[^"]+"\s+as\s+)?([A-Za-z_][A-Za-z0-9_]*)/gm)].map((m) => m[1]);
+  const useCases = [...source.matchAll(/^\s*usecase\s+(?:"[^"]+"\s+as\s+)?([A-Za-z_][A-Za-z0-9_]*)/gm)].map((m) => m[1]);
+  if (actors.length === 0 || useCases.length === 0) return [];
+
+  const out = [];
+  const hiddenConstraints = source.split(/\r?\n/).filter((line) => !line.trim().startsWith("'") && /\[hidden\]/i.test(line)).length;
+  if (actors.length >= 3 && useCases.length > 12) {
+    out.push("Use Case complexity warning: " + actors.length + " actors and " + useCases.length +
+      " use cases. Confirm a lane/layout plan; consider manual placement or decomposition when actor positions and connector paths matter.");
+  } else if (actors.length >= 3 || useCases.length > 12) {
+    out.push("Use Case layout planning warning: " + actors.length + " actors and " + useCases.length +
+      " use cases. Check actor distribution, system-boundary crossings and connector routes in the rendered image.");
+  }
+  if (hiddenConstraints > 3) {
+    out.push("Use Case hidden-layout constraint warning: " + hiddenConstraints +
+      " hidden links. Hidden constraints do not pin absolute positions and can make real associations take long routes; review one change at a time.");
+  }
+  return out;
+}
+
+function analyzeClassGraph(source) {
+  const classDecl = /^\s*(?:(?:abstract|static|final)\s+)*(?:class|interface|entity|enum|object)\s+(?:"[^"]+"\s+as\s+)?([A-Za-z_][A-Za-z0-9_]*)/gm;
+  const classes = [...source.matchAll(classDecl)].map((m) => m[1]);
+  const ids = [...new Set(classes)];
+  if (ids.length < 2 || !/^\s*(?:abstract\s+)?class\s+/m.test(source)) return [];
+
+  const degree = new Map(ids.map((id) => [id, 0]));
+  const pairCounts = new Map();
+  let semanticEdges = 0;
+  let hiddenConstraints = 0;
+
+  for (const rawLine of source.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("'")) continue;
+    if (!/(?:--|\.{2,}>|<\|--|--\|>|-\[hidden\])/.test(line)) continue;
+
+    if (/\[hidden\]/i.test(line)) {
+      hiddenConstraints++;
+      continue;
+    }
+
+    const hits = [];
+    for (const id of ids) {
+      const re = new RegExp("\\b" + id + "\\b", "g");
+      let match;
+      while ((match = re.exec(line)) !== null) hits.push({ id, index: match.index });
+    }
+    hits.sort((a, b) => a.index - b.index);
+    const endpoints = [];
+    for (const hit of hits) {
+      if (!endpoints.some((e) => e.id === hit.id)) endpoints.push(hit);
+    }
+    if (endpoints.length < 2) continue;
+
+    const a = endpoints[0].id;
+    const b = endpoints[1].id;
+    semanticEdges++;
+    degree.set(a, (degree.get(a) || 0) + 1);
+    degree.set(b, (degree.get(b) || 0) + 1);
+    const key = [a, b].sort().join(" <-> ");
+    pairCounts.set(key, (pairCounts.get(key) || 0) + 1);
+  }
+
+  const out = [];
+  const ranked = [...degree.entries()].sort((a, b) => b[1] - a[1]);
+  const hubs = ranked.filter(([, n]) => n >= 5);
+  if (hubs.length) {
+    out.push("Class graph hub warning: " + hubs.map(([id, n]) => id + " (degree " + n + ")").join(", ") +
+      ". Check hub placement and whether edges pass through unrelated groups; this is a layout warning, not proof of semantic error.");
+  }
+  const parallel = [...pairCounts.entries()].filter(([, n]) => n > 1);
+  if (parallel.length) {
+    out.push("Class graph parallel-association warning: " + parallel.map(([pair, n]) => pair + " (" + n + " associations)").join("; ") +
+      ". Verify whether these are valid role-distinct associations or accidental duplicates; never merge/delete automatically.");
+  }
+  if (semanticEdges > 0 && ids.length >= 6) {
+    const avgDegree = (2 * semanticEdges) / ids.length;
+    const ratio = semanticEdges / ids.length;
+    if (ratio >= 1.35 || avgDegree >= 2.7) {
+      out.push("Class graph density warning: " + ids.length + " classes, " + semanticEdges + " relationships, average degree " +
+        avgDegree.toFixed(2) + ". Consider domain grouping or decomposition if the render has crossings/long edges; metrics alone do not prove poor layout.");
+    }
+  }
+  if (hiddenConstraints > Math.max(2, semanticEdges / 2)) {
+    out.push("Hidden-layout constraint warning: " + hiddenConstraints + " hidden links vs " + semanticEdges +
+      " semantic relationships. Review hidden links because they can force long detours.");
+  }
+
+  const header = source.split(/\r?\n/).slice(0, 5).join(" ");
+  const statedCount = header.match(/\b(\d+)\s*(?:classes|class|lop)\b/i);
+  if (statedCount && Number(statedCount[1]) !== ids.length) {
+    out.push("Source/comment count mismatch: header states " + statedCount[1] + " classes, parser found " + ids.length +
+      ". Verify the stated class count and rendered artifact.");
+  }
+  return out;
+}
+
+console.log(`[diagram-auditor] Đang kiểm định chất lượng sơ đồ tại: ${targetDir} (recursive=${recursive})`);
 
 if (!fs.existsSync(targetDir)) {
   console.error(`[diagram-auditor] Lỗi: Thư mục không tồn tại: ${targetDir}`);
   process.exit(1);
 }
 
-const files = fs.readdirSync(targetDir).filter((f) => f.endsWith('.svg'));
+function collectSvgFiles(dir, recurse = false) {
+  const found = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isFile() && entry.name.toLowerCase().endsWith('.svg')) {
+      found.push(path.relative(targetDir, fullPath));
+    } else if (
+      recurse &&
+      entry.isDirectory() &&
+      !['.git', 'node_modules', '.next', 'dist', 'build'].includes(entry.name)
+    ) {
+      found.push(...collectSvgFiles(fullPath, true));
+    }
+  }
+  return found.sort();
+}
+
+const files = collectSvgFiles(targetDir, recursive);
 
 if (files.length === 0) {
-  console.log('[diagram-auditor] Không tìm thấy file .svg nào để kiểm tra.');
-  process.exit(0);
+  console.error(
+    `[diagram-auditor] FAIL: Không tìm thấy file .svg trong scope: ${targetDir}${recursive ? ' (recursive)' : ''}. Không được coi thư mục rỗng là PASS.`
+  );
+  process.exit(1);
 }
 
 let totalErrors = 0;
@@ -73,6 +193,8 @@ for (const file of files) {
   const filePath = path.join(targetDir, file);
   const pumlPath = filePath.replace(/\.svg$/, '.puml');
   const pngPath = filePath.replace(/\.svg$/, '.png');
+  const sourceCandidates = ['.puml', '.dot', '.drawio', '.tldr', '.mmd', '.json']
+    .map((ext) => filePath.replace(/\.svg$/, ext));
   const content = fs.readFileSync(filePath, 'utf8');
   const issues = [];
   const warnings = [];
@@ -93,14 +215,26 @@ for (const file of files) {
     issues.push(`Kích thước file quá nhỏ (${content.length} bytes), có thể bị render lỗi`);
   }
 
-  // Check 3: Corresponding PNG exists
+  // Check 3: Corresponding PNG and editable source exist
   if (!fs.existsSync(pngPath)) {
     issues.push('Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)');
+  } else {
+    const pngStat = fs.statSync(pngPath);
+    if (!pngStat.isFile() || pngStat.size < 500) {
+      issues.push(`File PNG tương ứng không hợp lệ hoặc quá nhỏ (${pngStat.size} bytes; yêu cầu tối thiểu 500 bytes)`);
+    }
   }
 
-  // Check 4: Check if corresponding .puml has hardcoded title
-  if (fs.existsSync(pumlPath)) {
-    const pumlContent = fs.readFileSync(pumlPath, 'utf8');
+  const sourcePath = sourceCandidates.find((candidate) => fs.existsSync(candidate));
+  if (!sourcePath) {
+    issues.push('Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.');
+  }
+
+  // Check 4: Check if corresponding PlantUML source has hardcoded title
+  if (sourcePath && sourcePath.endsWith('.puml')) {
+    const pumlContent = fs.readFileSync(sourcePath, 'utf8');
+    warnings.push(...analyzeClassGraph(pumlContent));
+    warnings.push(...analyzeUseCaseGraph(pumlContent));
     if (/^\s*title\s+(?![:=])/im.test(pumlContent)) {
       issues.push("Phát hiện từ khóa 'title' trong file .puml — tiêu đề phải để ở caption báo cáo (Hình X.Y), KHÔNG nhúng cứng vào khung ảnh");
     }
@@ -115,7 +249,7 @@ for (const file of files) {
 
       // Check 4c: Duplicate reciprocal lines between same entities
       const relPairs = [];
-      const relRegex = /([A-Z_]+)\s+[|o}{]+--+[|o}{]+\s+([A-Z_]+)/g;
+      const relRegex = /([A-Za-z_][A-Za-z0-9_]*)\s+[|o}{]+--+[|o}{]+\s+([A-Za-z_][A-Za-z0-9_]*)/g;
       let rMatch;
       while ((rMatch = relRegex.exec(pumlContent)) !== null) {
         const e1 = rMatch[1];
@@ -158,12 +292,19 @@ for (const file of files) {
   }
 
   // Check 6: Text Collision Detection (Chữ đè chữ)
-  const textRegex = /<text\s+([^>]+)>([^<]+)<\/text>/g;
+  const textRegex = /<text\b([^>]*)>([\s\S]*?)<\/text>/g;
   let tMatch;
   const texts = [];
   while ((tMatch = textRegex.exec(content)) !== null) {
     const attrs = tMatch[1];
-    const textVal = tMatch[2].trim();
+    const rawText = tMatch[2]
+      .replace(/<tspan\b[^>]*>/g, '')
+      .replace(/<\/tspan>/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+      .replace(/\s+/g, ' ').trim();
+    const textVal = rawText;
     const xMatch = attrs.match(/x="([^"]+)"/);
     const yMatch = attrs.match(/y="([^"]+)"/);
     const fsMatch = attrs.match(/font-size="([^"]+)"/);
@@ -337,6 +478,7 @@ console.log('  * Lỗi ĐỎ (FAIL) chặn cứng: banner, SVG hỏng, thiếu P
 console.log('    quan hệ trùng, đè chữ, đường cắt chữ, VI PHẠM ZERO-COLOR, cỡ chữ < 9pt, tỷ lệ khung lệch.');
 console.log('  * Cảnh báo VÀNG (PASS*) KHÔNG chặn tự động — nhưng Agent BẮT BUỘC soi mắt phân xử.');
 console.log('  * Script KHÔNG THỂ thay thế kiểm tra ngữ nghĩa (Gate A) và soi trực quan bằng mắt (Gate C).');
+console.log('  * Chỉ kiểm tra các path vertex nằm trong bounding box chữ; KHÔNG phải bộ phát hiện mọi giao cắt giữa các đoạn đường nối hoặc va chạm node-edge.');
 console.log('  * Agent KHÔNG ĐƯỢC tuyên bố hoàn thành nếu chưa tự mở ảnh soi mắt + có bằng chứng soi ảnh!');
 console.log('----------------------------------------------------');
 
@@ -344,7 +486,8 @@ if (totalErrors > 0) {
   console.error(`[diagram-auditor] KẾT QUẢ: ${totalErrors} LỖI ĐỎ nghiêm trọng phát hiện (+ ${totalWarnings} cảnh báo vàng). Vui lòng sửa triệt để!`);
   process.exit(1);
 } else {
-  console.log(`[diagram-auditor] KẾT QUẢ TỰ ĐỘNG: 100% sơ đồ ĐẠT lỗi chặn cứng (${files.length}/${files.length} files).`);
+  console.log(`[diagram-auditor] KẾT QUẢ STATIC: ${files.length} SVG đã qua các kiểm tra chặn cứng được triển khai trong script.`);
+  console.log('[diagram-auditor] LƯU Ý: Kết quả static không chứng minh sơ đồ đúng ngữ nghĩa hoặc không có mọi giao cắt đường nối; vẫn bắt buộc Visual Review/Proof-of-View.');
   if (totalWarnings > 0) {
     console.log(`[diagram-auditor] Còn ${totalWarnings} cảnh báo VÀNG cần Agent soi mắt phân xử trước khi PASS (không được bỏ qua).`);
   }

@@ -78,7 +78,8 @@ skinparam ranksep 70                  ' Giãn cách dọc thoáng đãng
    - **Cột 1 (Trái - Tài khoản & Hồ sơ):** `USER`, `PROFILE`.
    - **Cột 2 (Giữa - Luồng tương tác chính):** `REQUEST`, `CONVERSATION`, `REVIEW`.
    - **Cột 3 (Phải - Doanh thu & Thanh toán):** `PLAN`, `ORDER`.
-   - Dùng liên kết ẩn để khóa thẳng hàng 3 cột: `A -[hidden]down- B`.
+   - Chỉ dùng hidden links rất tiết chế để giữ lưới cho **mô hình khái niệm đơn giản** khi đã chứng minh cần thiết; mỗi link phải có lý do và phải render lại để kiểm ảnh hưởng.
+   - **Không áp dụng quy tắc 3 cột/hidden-link hàng loạt cho Class Diagram dày quan hệ.** Với class hub, nhiều association song song hoặc đường vòng xa, defer về [class-diagram-layout.md](../diagram-orchestrator/reference/class-diagram-layout.md).
 3. **KHÔNG ĐÈ NHÃN & KHOẢNG THỞ:** Khoảng cách `nodesep 70` và `ranksep 70` đảm bảo nhãn số lượng và tên quan hệ luôn có khoảng trống riêng biệt.
 4. **CẤM NHỒI NHÉT THAO TÁC CRUD LÊN ĐƯỜNG NỐI LIÊN TẦNG:** Trong sơ đồ kiến trúc phân tầng, tuyệt đối không chèn dày đặc nhãn "Thao tác CRUD", "Tìm kiếm", "Import/Export" lên các mũi tên giữa các tầng. Sơ đồ kiến trúc chỉ thể hiện khối cấu trúc; chi tiết hành động bắt buộc phân rã sang Sơ đồ Tuần tự (Sequence) riêng biệt.
 

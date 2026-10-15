@@ -1,0 +1,73 @@
+@startuml
+' Synthetic layout regression fixture; semantics are documented in step0-fixture.md.
+left to right direction
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 11
+skinparam linetype ortho
+skinparam nodesep 40
+skinparam ranksep 35
+
+actor "Phụ huynh/Học sinh" as Parent
+actor "Gia sư" as Tutor
+actor "Kiểm duyệt viên" as Moderator
+actor "Quản trị viên" as Admin
+
+rectangle "Nền tảng kết nối gia sư" {
+  package "Tài khoản & tìm kiếm" {
+    usecase "Đăng ký tài khoản" as UC_Register
+    usecase "Đăng nhập" as UC_Login
+    usecase "Tìm kiếm gia sư" as UC_Search
+    usecase "Xem hồ sơ công khai" as UC_Profile
+    usecase "Lưu gia sư yêu thích" as UC_Favorite
+  }
+  package "Kết nối & tương tác" {
+    usecase "Gửi yêu cầu kết nối" as UC_Connect
+    usecase "Phản hồi kết nối" as UC_Respond
+    usecase "Nhắn tin" as UC_Message
+    usecase "Đánh giá đối tác" as UC_Review
+    usecase "Báo cáo vi phạm" as UC_Report
+  }
+  package "Gia sư & vận hành" {
+    usecase "Cập nhật hồ sơ gia sư" as UC_TutorProfile
+    usecase "Nộp minh chứng" as UC_Verify
+    usecase "Đăng bài viết" as UC_Post
+    usecase "Xem thống kê" as UC_Stats
+    usecase "Duyệt minh chứng" as UC_Approve
+    usecase "Xử lý báo cáo" as UC_Resolve
+    usecase "Quản lý tài khoản" as UC_Manage
+    usecase "Xem nhật ký audit" as UC_Audit
+  }
+}
+
+Parent -- UC_Register
+Parent -- UC_Login
+Parent -- UC_Search
+Parent -- UC_Profile
+Parent -- UC_Favorite
+Parent -- UC_Connect
+Parent -- UC_Message
+Parent -- UC_Review
+Parent -- UC_Report
+Tutor -- UC_Login
+Tutor -- UC_Profile
+Tutor -- UC_Respond
+Tutor -- UC_Message
+Tutor -- UC_Review
+Tutor -- UC_TutorProfile
+Tutor -- UC_Verify
+Tutor -- UC_Post
+Tutor -- UC_Stats
+Moderator -- UC_Approve
+Moderator -- UC_Resolve
+Admin -- UC_Manage
+Admin -- UC_Audit
+
+' Intentional stress fixture: count hidden constraints and verify warning is emitted.
+UC_Register -[hidden]right- UC_Search
+UC_Search -[hidden]down- UC_Connect
+UC_Connect -[hidden]down- UC_TutorProfile
+UC_TutorProfile -[hidden]down- UC_Approve
+UC_Approve -[hidden]right- UC_Audit
+@enduml

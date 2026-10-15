@@ -5,6 +5,8 @@ description: "Thiết kế Use Case Diagram UML vừa ĐÚNG nghiệp vụ vừa
 
 # Skill: Thiết kế Use Case Diagram đúng nghiệp vụ, bố cục cân đối, đường nối sạch
 
+> **Scope guard:** Skill này sở hữu bố cục Use Case, không phải Class Diagram/ERD. Với UML Class Diagram, dùng quy tắc SSOT tại [diagram-orchestrator/reference/class-diagram-layout.md](../diagram-orchestrator/reference/class-diagram-layout.md); không áp máy móc luật actor hai bên, ellipse hoặc ngưỡng Use Case sang loại sơ đồ khác.
+
 ## 1. Mục tiêu
 
 Tạo sơ đồ Use Case UML vừa **đúng mô hình nghiệp vụ**, vừa **dễ đọc khi in A4 hoặc chèn vào Word**. Ưu tiên bố trí có chủ đích và kiểm chứng hình render, không chấp nhận sơ đồ tự động sinh ra rồi mặc định là đạt. Mọi sơ đồ cho báo cáo/đồ án/luận văn học thuật tuân thủ phong cách **trắng-đen (zero-color)**, KHÔNG dùng màu (xem `AGENTS.md` §Nguyên tắc bất biến #13 và SSOT tại `diagram-orchestrator`).
@@ -21,7 +23,7 @@ Skill này hướng dẫn Agent lập mô hình, chọn bố cục, vẽ bằng 
 
 > **Không xác định bài toán và tác nhân thì cấm vẽ.**
 
-Trước khi tạo `.puml`, XML draw.io, SVG hoặc sơ đồ ở bất kỳ định dạng nào, bắt buộc tạo và hoàn thiện `docs/domain/step0-<du-an>.md` (path canonical theo `diagram-orchestrator`) theo mẫu [step0-bai-toan-va-tac-nhan.md](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/use-case-layout/reference/step0-bai-toan-va-tac-nhan.md) (bài toán, quy mô, tác nhân + trách nhiệm **kèm nguồn bằng chứng / UNKNOWN**).
+Trước khi tạo `.puml`, XML draw.io, SVG hoặc sơ đồ ở bất kỳ định dạng nào, bắt buộc tạo và hoàn thiện `docs/domain/step0-<du-an>.md` (path canonical theo `diagram-orchestrator`) theo mẫu [step0-bai-toan-va-tac-nhan.md](../diagram-orchestrator/reference/step0-bai-toan-va-tac-nhan.md) (bài toán, quy mô, tác nhân + trách nhiệm **kèm nguồn bằng chứng / UNKNOWN**).
 
 Nếu chưa có file này hoặc thông tin cốt lõi chưa được xác minh:
 
@@ -122,7 +124,7 @@ Dùng các lane khái niệm:
 - Nếu PlantUML **vẫn sinh connector chồng chéo/vòng xa sau vài lần chỉnh hợp lý** → **chuyển sang draw.io** để định vị thủ công (giữ nguyên mô hình UML đã duyệt). Đừng vá mã vô hạn.
 - Ngưỡng cứng: **≥ 2 vòng render → soi → sửa-1-biến mà Visual vẫn FAIL → dừng vá mã, chuyển fallback**.
   Quy trình 6 bước (freeze ngữ nghĩa, dựng `.drawio` tay, đi dây ngắn-trực tiếp, giữ zero-color+UML, xuất SVG+PNG, qua auditor):
-  xem SSOT [`diagram-orchestrator/reference/manual-fallback.md`](file:///E:/HOC%20TAP/my-project/sp-agent/.claude/skills/diagram-orchestrator/reference/manual-fallback.md).
+  xem SSOT [`diagram-orchestrator/reference/manual-fallback.md`](../diagram-orchestrator/reference/manual-fallback.md).
 
 #### 3.4 Quy tắc khi vẽ tay / draw.io
 
