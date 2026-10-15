@@ -8,10 +8,19 @@
 
 ## 0. Nguyên tắc mẹ: topology trước, tọa độ sau
 
-Auto-layout (PlantUML/Graphviz) chỉ tối ưu cục bộ theo **thứ tự khai báo**.
+Auto-layout không phải một thuật toán duy nhất. Graphviz `dot` dùng layout phân tầng
+và cố gắng giảm giao cắt/độ dài cạnh; PlantUML có thể chịu ảnh hưởng bởi engine và
+renderer đang dùng. Không engine nào bảo đảm hình cuối không có giao cắt, và hidden
+links/thứ tự khai báo chỉ là các cách tác động bố cục chứ không phải tọa độ tuyệt đối.
 Phần việc của kiến trúc sư — quyết định **ai Ở GẦN ai** — AI phải làm **trước khi viết
-một dòng code**, bằng 6 bước dưới đây. Không bước nào được bỏ qua bằng cảm tính
+một dòng code**, bằng các bước dưới đây. Không bước nào được bỏ qua bằng cảm tính
 ("nhìn là biết", "render ra rồi tính").
+
+**Phân biệt bằng chứng:** quy tắc có căn cứ từ tài liệu engine/nghiên cứu được ghi là
+[source-backed]; ngưỡng vận hành do repo tự chọn được ghi là [heuristic]. Xem
+[`docs/research/layout-thinking-evidence-2026-10-16.md`](../../../../../../docs/research/layout-thinking-evidence-2026-10-16.md)
+để biết nguồn và giới hạn kết luận. Không gọi heuristic như 2.5× trung vị, 10% mực
+hay degree ≥ 5 là định luật khoa học; dùng chúng làm tín hiệu yêu cầu review.
 
 ## 1. Tiền-bố-cục bắt buộc (Adjacency-first)
 
@@ -79,11 +88,18 @@ Sau render, kiểm tra bằng mắt, không đoán từ code:
 
 ## 5. Sàn khoảng cách (spacing floor)
 
-`nodesep`/`ranksep` tối thiểu trong skill là **SÀN, không phải gợi ý**
-(PlantUML chi tiết: 60–80 / 60–90). Không vừa trang A4 → **phân rã sơ đồ**,
-tuyệt đối cấm nén spacing xuống dưới sàn để nhét (case thật: `nodesep 30/ranksep 45`
-là nguyên nhân trực tiếp gây đè nhãn).
-Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp 40–50 (xem §9.4).
+Các mức `nodesep`/`ranksep` khuyến nghị trong skill là **sàn vận hành của repo**,
+không phải hằng số phổ quát cho mọi engine. Đặc biệt, Graphviz `dot` định nghĩa
+`nodesep` và `ranksep` theo inch; không sao chép trực tiếp trị số giữa Graphviz và
+PlantUML nếu chưa xác nhận renderer/cách diễn giải.
+
+Với cấu hình PlantUML đã được benchmark của repo, giữ sàn hiện hành (nodesep 60–80 /
+ranksep 60–90). Nếu không vừa A4, ưu tiên phân rã hoặc đổi bố cục thay vì nén chữ và
+khoảng cách tùy tiện. Ngoại lệ ERD không nhãn động từ dùng rank hẹp 40–50 chỉ áp dụng
+khi đúng cấu hình/renderer đã được kiểm tra tại §9.4.
+
+Đây là guardrail nội bộ dựa trên các lần render đã ghi nhận, không phải bảo đảm rằng
+khoảng cách lớn sẽ tự loại bỏ giao cắt hoặc nhãn chồng.
 
 ## 9. ERD gọn như ảnh mẫu (reference-style ERD)
 
