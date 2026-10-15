@@ -94,7 +94,7 @@ A0. **(Use Case / mô hình miền) BẮT BUỘC làm Bước 0 trước:** tạ
 A. Define purpose, notation, audience, abstraction level, and source of truth.  
 B. Validate semantics before choosing layout.  
 C. Select the appropriate rendering tool.  
-D. Plan layout and identify potentially difficult relationships or long labels.  
+D. Read [layout-thinking.md](reference/layout-thinking.md) before coding; for every non-trivial diagram create a graph manifest from [layout-model-template.md](reference/layout-model-template.md), record semantic evidence and adjacency/zone decisions, then identify difficult relationships and long labels. 
 E. Generate editable source and render the actual image.  
 F. Inspect rendered image for semantic errors, clipping, overlapping labels, poor spacing, unreadable text, and visual imbalance.  
 G. If embedded in DOCX, inspect final rendered pages.  
