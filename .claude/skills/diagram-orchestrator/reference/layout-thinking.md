@@ -83,9 +83,9 @@ Sau render, kiểm tra bằng mắt, không đoán từ code:
 (PlantUML chi tiết: 60–80 / 60–90). Không vừa trang A4 → **phân rã sơ đồ**,
 tuyệt đối cấm nén spacing xuống dưới sàn để nhét (case thật: `nodesep 30/ranksep 45`
 là nguyên nhân trực tiếp gây đè nhãn).
-Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp 40–50 (xem §9.4).
+Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp 40–50 (xem §6.4).
 
-## 9. ERD gọn như ảnh mẫu (reference-style ERD)
+## 6. ERD gọn như ảnh mẫu (reference-style ERD)
 
 > Ground truth thị giác: 4 ảnh ERD mẫu do người dùng cung cấp (kiểu Sakila/MySQL,
 > Lucidchart, Thinnotes, dbdiagram) + vòng lặp gen v1→v4 đã render + soi từng ảnh
@@ -107,11 +107,11 @@ Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp
 5. **ERD rộng đi trang ngang.** 5 cột ở 300 DPI ≈ 35cm > khổ A4 dọc (15cm). Quy tắc:
    ERD > 4 cột hoặc > 8 bảng → trang landscape trong Word, hoặc tách theo miền
    (identity/connection/trust). [S3]#17 + [S1](n) (vừa khung hình).
-6. **Bằng chứng vòng lặp.** Bước nhảy điểm lớn nhất (3.5 → 5/6) đến từ §9.2 + §9.3
+6. **Bằng chứng vòng lặp.** Bước nhảy điểm lớn nhất (3.5 → 5/6) đến từ §6.2 + §6.3
 (bỏ nhãn + cạnh kề), không phải từ cơ chế khóa rank — khớp quy tắc dừng §1
 (khóa rank là gợi ý yếu).
 
-## 10. Class gọn như ảnh mẫu (reference-style Class)
+## 7. Class gọn như ảnh mẫu (reference-style Class)
 
 > Ground truth thị giác: 5 ảnh Class mẫu do người dùng cung cấp (4 đẹp: Lucid
 > Fleet/Vehicle, EdrawMax Restaurant/University/Hotel + 1 phản-ví dụ CodeRanch:
@@ -139,7 +139,7 @@ Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp
    đúng 1 vòng (đã dùng ở v1), sang vòng 2 không tiến triển thì dừng. Đây là lần thứ
    hai luật dừng §1 được kích hoạt bằng thực nghiệm (sau ERD v2→v3).
 
-## 11. Use Case gọn như ảnh mẫu (reference-style Use Case)
+## 8. Use Case gọn như ảnh mẫu (reference-style Use Case)
 
 > Ground truth: 6 ảnh — RG enhanced UC (Bolloju), Wikipedia restaurant, Ambler
 > seminar/shopping/whiteboard (4 ảnh tự tải về, đã soi từng ảnh) + vòng uc-poc1
@@ -161,7 +161,7 @@ Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp
    với actor hai bên (dồn 1 cột + actor 1 phía, cạnh quạt dài). Multi-actor multi-column
    = **VẼ TAY (draw.io)** theo đúng lane đã lập. Không thử hidden thứ hai.
 
-## 12. Sequence gọn như ảnh mẫu (reference-style Sequence)
+## 9. Sequence gọn như ảnh mẫu (reference-style Sequence)
 
 > Ground truth: Ambler alternate-course sequence (tự tải, đã soi) + vòng lặp
 > seq-naive vs seq-guided (cùng 11 bước, đã render + soi cả hai).
@@ -179,7 +179,7 @@ Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp
    dàn trải khó lần; guided (đánh số 1–11, alt conflict, note điều kiện) đọc được ngay —
    cùng nội dung, khác tư duy.
 
-## 13. Activity gọn như ảnh mẫu (reference-style Activity)
+## 10. Activity gọn như ảnh mẫu (reference-style Activity)
 
 > Ground truth: Wikipedia Conducting + Ambler Enroll + Ambler Swimareas (tự tải, đã soi cả 3).
 
@@ -191,7 +191,7 @@ Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp
    Not-Eligible vs Appears...). Luồng phụ không chen vào spine chính.
 5. Start trên cùng, end dưới cùng; chỗ cắt nhau vẽ **nhảy (jump/bridge)** (wiki).
 
-## 14. State gọn theo chuẩn (reference-style State)
+## 11. State gọn theo chuẩn (reference-style State)
 
 > Ground truth: legend notation Wikipedia (đã soi: state/transition/condition/entry
 > action) + văn bản Booch–Rumbaugh–Jacobson UML User Guide ch.8 (đã fetch).
@@ -206,13 +206,13 @@ Ngoại lệ duy nhất: ERD không nhãn động từ được dùng rank hẹp
 4. **Entry/do/exit ghi trong state** (legend); initial + final bắt buộc.
 5. State nào > 4 transitions ra → tách superstate/composite **[heuristic]**.
 
-## 6. Nguồn-đi-kèm (source-or-nothing)
+## 12. Nguồn-đi-kèm (source-or-nothing)
 
 Mỗi `.png`/`.svg` bàn giao phải có **tệp nguồn cùng tên, cùng thư mục**
 (`.puml`/`.dot`/`.drawio`/`.tldr`). Không nguồn = không được chèn vào báo cáo,
 `diagram-auditor` chặn cứng. Cấm nộp hình "vẽ đâu đó rồi export" không truy vết được.
 
-## 7. Checklist 60 giây sau mỗi lần render
+## 13. Checklist 60 giây sau mỗi lần render
 
 Trả lời YES/NO bằng mắt trên ảnh PNG, không suy từ code:
 1. Bốn góc khung đều có mực? (không góc chết > 25% khung)
@@ -225,7 +225,7 @@ Trả lời YES/NO bằng mắt trên ảnh PNG, không suy từ code:
 6 YES mới được chuyển sang `diagram-auditor`. 1 NO = quay lại §1–§5, sửa **một biến**,
 render lại, soi lại.
 
-## 8. Căn cứ khoa học (đã truy cập toàn văn — không phải ý kiến riêng của model)
+## 14. Căn cứ khoa học (đã truy cập toàn văn — không phải ý kiến riêng của model)
 
 > Ba nguồn dưới đây đều đã được fetch và đọc nội dung. Quy tắc nào suy ra từ nguồn
 > ghi `[nguồn]`; ngưỡng vận hành do skill đặt thêm để đo được ghi `[heuristic]`.
@@ -270,3 +270,83 @@ cong — đã phân scope, không mâu thuẫn)**; #6 nhãn canh ngang; #7 đố
 **Ngưỡng [heuristic] do skill đặt để đo được** (suy từ [S1]–[S3], không có trong nguồn):
 cạnh ≤ 2.5× trung vị; góc phần tư < 10% mực; nửa khung > 75% node; void trong
 container > 25%; nodesep/ranksep sàn 60–80/60–90.
+
+ 
+## 15. Thuật toán quyết định bố cục (evidence-first)
+
+Mục tiêu là chọn **chiến lược tiếp theo**, không giả vờ tính ra tọa độ tối ưu từ vài heuristic.
+
+### 15.1. Tách ba loại điều kiện
+
+1. **Semantic invariants (không được đánh đổi):** không thiếu/thêm quan hệ nghiệp vụ; cardinality/multiplicity và hướng mũi tên đúng; actor, boundary, trạng thái và guard đúng; mọi node/edge truy vết về nguồn.
+2. **Legibility constraints (hard gate):** chữ đọc được ở kích thước in đích; không có chữ bị cắt/đè; node không chồng; nhãn thuộc đúng edge; source file và rendered artifact cùng phiên bản.
+3. **Aesthetic objectives (optimize):** giảm giao cắt, bends và edge length variance; tăng phân bố đều, đối xứng khi phù hợp, gom cụm theo miền. Chỉ tối ưu nhóm 3 sau khi nhóm 1 và 2 đạt.
+
+Không gộp ba nhóm thành một điểm tổng duy nhất: điểm thẩm mỹ cao không thể bù cho quan hệ sai hoặc chữ không đọc được.
+
+### 15.2. Tạo graph manifest trước khi chọn engine
+
+Ghi ra `<diagram-name>-model.md`:
+- loại sơ đồ, mục đích, người đọc và kích thước đích (A4 dọc/ngang, slide, màn hình);
+- node có ID ổn định, loại node và miền nghiệp vụ;
+- edge có ID, source/target, loại ngữ nghĩa, direction, multiplicity/guard/label;
+- nguồn chứng cứ cho mỗi node/edge (schema, code, requirement, hoặc giả định được ghi rõ);
+- edge bắt buộc kề nhau, thứ bậc, lane/zone và ràng buộc không được vi phạm.
+
+**Không suy ra cạnh chỉ từ tên trường hay tên class.** ERD lấy FK từ schema/migration thực tế; class lấy association từ domain/code scope; sequence lấy lời gọi/side-effect từ implementation; state lấy các transition có bằng chứng. Ý tưởng To-Be phải được gắn nhãn, không trộn với As-Is.
+
+### 15.3. Chọn chiến lược bằng topology, không chọn theo sở thích
+
+| Dấu hiệu đầu vào | Chiến lược đầu tiên | Khi nào dừng auto-layout |
+|---|---|---|
+| Cây/phân cấp hoặc luồng một chiều, ít chu trình | Layered engine (Graphviz dot hoặc renderer phù hợp) | Khi hierarchy/edge direction bị phá sau một lần chỉnh constraint |
+| UML nhỏ, chuẩn ký hiệu quan trọng hơn vị trí chính xác | PlantUML auto-layout với adjacency-first | Khi lần chỉnh có căn cứ không cải thiện hoặc tạo regression |
+| ERD nhiều FK, bảng có nhiều quan hệ chéo | Gom theo miền/FK, tách overview + các view chi tiết nếu cần | Khi cạnh xa vẫn xuyên qua nhiều bảng hoặc không đọc được ở khổ đích |
+| Class nhiều hub/association song song | Gom theo package/role, thử một bố cục auto có giới hạn | Sau một lần thử có mục tiêu không cải thiện: phân rã hoặc chuyển sang layout thủ công |
+| Use Case nhiều actor ở hai phía/nhiều cột | Lập actor–use-case matrix và lane trước; chọn công cụ có định vị đủ kiểm soát | Khi auto-layout dồn actor/use case một phía hoặc include/extend cắt association |
+| Sequence nhiều lifeline/nhánh | Chia theo scenario; giữ thứ tự gọi và alt/opt/loop theo code | Khi vượt kích thước đọc được: chia scenario, không thu nhỏ chữ |
+| Activity/state nhiều ngoại lệ hoặc transition | Tách happy path và exception/state submachine khi ngữ nghĩa cho phép | Khi đường quay vòng che guard/transition hoặc mô hình không còn truy vết được |
+
+Bảng này là **quy tắc định tuyến ban đầu**, không phải khẳng định engine nào luôn cho hình đẹp. Renderer và phiên bản thực tế vẫn phải được kiểm chứng.
+
+### 15.4. Chấm điểm có trọng số nhưng có veto
+
+Sau khi vượt semantic + legibility gates, chấm mỗi tiêu chí 0–2:
+- giao cắt cạnh;
+- bends/độ trực giao;
+- độ dài cạnh bất thường;
+- phân bố node/trọng tâm;
+- nhãn và khoảng trắng;
+- độ dễ lần theo hướng đọc.
+
+Ghi riêng tổng điểm và từng tiêu chí. Một tiêu chí bằng 0 phải có ghi chú; **không được PASS chỉ nhờ tổng điểm cao**. Không tuyên bố tự động đo giao cắt nếu script chưa tính hình học từ tọa độ/path. Mọi số liệu ước lượng bằng mắt phải ghi là đánh giá thị giác, không ghi là metric máy đo.
+
+### 15.5. Quy tắc lặp thử có giới hạn
+
+1. Lưu baseline: nguồn, ảnh, SHA-256, renderer/version và lệnh render.
+2. Nêu một giả thuyết lỗi cụ thể và một thay đổi chính; giữ nguyên các biến khác.
+3. Render lại và so sánh baseline với bản mới. Ghi điều gì cải thiện và điều gì thoái lui.
+4. Nếu cùng một lỗi không cải thiện sau một thử nghiệm có mục tiêu, không lặp lại cùng kiểu constraint; chuyển engine, phân rã, hoặc layout thủ công.
+5. Tối đa **hai phương án bố cục có chủ đích** cho một sơ đồ trước khi buộc phải giải thích vì sao tiếp tục auto-layout còn hợp lý. Đây là giới hạn vận hành, không phải định luật khoa học.
+6. Sau lần render cuối, kiểm tra đúng artifact cuối cùng. Bất kỳ thay đổi nguồn nào sau proof-of-view đều làm mất hiệu lực bằng chứng ảnh.
+
+### 15.6. Ghi kết quả và mức độ chắc chắn
+
+Mỗi sơ đồ phải kết thúc bằng một trạng thái:
+- `PASS`: semantic, legibility và visual review đều có bằng chứng;
+- `PASS WITH CONDITIONS`: giới hạn được ghi cụ thể và chấp nhận;
+- `FAIL`: có lỗi xác định chưa sửa;
+- `BLOCKED`: thiếu nguồn, renderer, ảnh hoặc công cụ kiểm chứng.
+
+Phân biệt rõ:
+- **Observed:** trực tiếp đọc được từ schema/code/ảnh/log;
+- **Derived:** suy luận có thể giải thích từ bằng chứng;
+- **Heuristic:** ngưỡng kinh nghiệm của skill;
+- **Unknown:** chưa có bằng chứng.
+
+### 15.7. Căn cứ kỹ thuật bổ sung
+
+- Graphviz `dot` là bố cục phân tầng; mục tiêu gồm giữ hướng cạnh, giảm giao cắt và độ dài cạnh. Các thuộc tính như `rank`, `constraint`, `ordering` là ràng buộc cụ thể, không phải công cụ định vị tuyệt đối: https://www.graphviz.org/docs/layouts/dot/
+- Tài liệu Graphviz lưu ý fine-tuning constraints nên thận trọng; can thiệp quá nhiều có thể gây xung đột rank/cluster: https://graphviz.org/doc/info/attrs.html
+- Purchase et al. (2001) nhấn mạnh tiêu chí vẽ UML phải xét ngữ nghĩa miền, không thể suy rằng một aesthetic đơn lẻ bảo đảm khả năng hiểu: https://eprints.gla.ac.uk/35831/
+- Các ngưỡng như tối đa hai phương án auto, điểm 0–2 và ngưỡng hình học trong skill là **heuristic vận hành**, không phải kết quả được các nguồn trên chứng minh trực tiếp.
