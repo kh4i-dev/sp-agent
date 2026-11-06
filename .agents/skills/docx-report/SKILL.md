@@ -646,6 +646,7 @@ Kiểm tra: không mất nội dung, số trang thay đổi có lý do, hình/ca
 
 > [!CAUTION]
 > **PASS TÀI LIỆU = HAI ĐIỀU KIỆN — THIẾU MỘT = KHÔNG ĐƯỢC BÁO HOÀN THIỆN.**
+> **Riêng lệnh "chốt in/nộp": thêm ĐK3 — GATE IN ẤN (audit nội dung + bảng) ở mục dưới.**
 >
 > | # | Điều kiện | Bằng chứng bắt buộc |
 > | :-- | :--- | :--- |
@@ -690,6 +691,56 @@ Agent **BẮT BUỘC** phải gọi công cụ xem ảnh (`view_file` trên các
                          │                                                                  │
               [Sửa code & layout] ──> (Render lại)                                    [Báo cáo giao file]
 ```
+
+## GATE IN ẤN — AUDIT NỘI DUNG + BẢNG (bắt buộc trước khi "chốt in"/nộp)
+
+> Render đẹp **không** đồng nghĩa đủ nội dung. Trước khi nói "in được", chạy **ĐK3** dưới đây
+> bên cạnh ĐK1–ĐK2 của mục RENDER & VISUAL QA. Thiếu ĐK3 = **FAIL — content gate**.
+
+### Quy trình 3 lệnh + 1 vòng mắt
+
+```bash
+# 1) Cấu trúc + căn lề bảng (exit 1 nếu có cảnh báo)
+python scripts/audit_tables_docx.py final.docx
+# 2) Chỗ trống / thông tin bìa / caption lệch danh mục / số liệu cần đối chiếu
+python scripts/audit_content_gaps.py final.docx
+# 3) Render toàn bộ (ĐK1) rồi soi từng trang PNG (ĐK2)
+python scripts/render_docx.py final.docx --output_dir out --dpi 150
+```
+
+### Checklist NỘI DUNG (đủ để in)
+
+- [ ] **Đủ trường bìa & nhiệm vụ**: Trường, Khoa/Bộ môn, Đề tài, Ngành, Hệ, GVHD, Họ tên SV,
+      Lớp, MSSV, năm; **Ngày giao nhiệm vụ** và **Ngày hoàn thành nhiệm vụ** có giá trị
+      (không bỏ trống sau dấu `:`).
+- [ ] **Đủ chương/mục theo đề cương**; mỗi mục có thân bài (không tiêu đề trơ).
+- [ ] **Không placeholder**: TODO/TBD/Lorem/XXX/`[...]`.
+- [ ] **Mục lục & Danh mục khớp trang** sau khi cập nhật field (TOC/TOF/TOT + PAGE);
+      mọi caption `Hình x.y`/`Bảng x.y` trong thân bài đều có dòng trong danh mục tương ứng.
+- [ ] **Số liệu nhất quán 4 chiều**: text ↔ bảng ↔ hình chụp GUI ↔ nguồn thật
+      (`benchmark*.json`, log test). Script `audit_content_gaps.py` in mọi giá trị `N.n ms`
+      để tự đối chiếu; cảnh báo lệch là lỗi chặn in.
+- [ ] **Phụ lục code**: đoạn trích phải tự nhất quán (biến khởi tạo trước khi dùng,
+      không cắt cụt khối `if/for`, không dư dấu).
+- [ ] **Hình**: mỗi hình có lời dẫn trong thân bài ("Hình x.y …"), caption nằm dưới hình,
+      và nội dung hình khớp lời caption (vd. caption nói "lưu họ tên **và mã sinh viên**"
+      thì hình phải thể hiện được điều đó, hoặc hạ caption cho khớp).
+
+### Checklist BẢNG (lỗi hay gặp nhất khi in)
+
+- [ ] **Header căn giữa + in đậm**; ô dữ liệu **căn giữa theo chiều dọc** (`w:vAlign=center`).
+- [ ] **Cột số/ngắn căn giữa** (N, ms, hệ số, mã); cột văn bản dài căn trái.
+- [ ] **Không tràn/bẻ chữ** trong ô hẹp (vd. `NVARCHAR(100)` bị tách thành `NVARCHAR(100` + `)`),
+      không để cột "mỏng dính" do `tblGrid` lệch.
+- [ ] **Bảng > 6 dòng** đặt `w:tblHeader` (lặp header khi sang trang).
+- [ ] **Caption dưới bảng** đúng số hiệu, khớp danh mục bảng.
+- [ ] **Số trong bảng khớp** với thân bài và với nguồn JSON/log (làm tròn nhất quán).
+
+### Cách sửa căn lề hàng loạt (đã kiểm chứng)
+
+Giữ nguyên 100% định dạng, chỉ thêm/sửa `<w:jc>` trong `w:pPr` (đúng thứ tự OOXML: sau
+`spacing`/`ind`) và `<w:vAlign w:val="center"/>` trong `w:tcPr` (trước `hideMark`).
+Bỏ qua các **bảng layout** (bìa nhiệm vụ/khối chữ ký: không caption, ≤3 cột, ≤4 dòng).
 
 ## Format phản hồi cuối
 
