@@ -1,0 +1,32 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, sans-serif
+skinparam defaultFontSize 13
+skinparam classFontSize 13
+skinparam classAttributeFontSize 11
+skinparam roundCorner 0
+skinparam dpi 300
+skinparam linetype ortho
+skinparam nodesep 70
+skinparam ranksep 70
+
+left to right direction
+
+actor "Shop" as Shop
+actor "Hub DROP" as HubDrop
+actor "Hub SORT" as HubSort
+actor "Hub LASTMILE" as HubLastmile
+actor "Shipper" as Shipper
+actor "Buyer" as Buyer
+
+Shop -> HubDrop : Mang kien den diem gui
+HubDrop -> HubDrop : Quet tem QR
+alt Tem sai/thu hoi
+    HubDrop --> Shop : Tu choi: SEAL_BROKEN
+else Can lech > 10%
+    HubDrop : Gan co "sut can"
+else Tem hong/uot
+end
+end
+@enduml

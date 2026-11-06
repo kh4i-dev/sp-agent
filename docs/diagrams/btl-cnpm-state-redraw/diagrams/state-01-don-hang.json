@@ -1,0 +1,460 @@
+{
+  "view": "declared",
+  "width": 1480,
+  "height": 1030,
+  "nodes": [
+    {
+      "id": "pre",
+      "label": "Trước vận chuyển",
+      "x": 70,
+      "y": 70,
+      "w": 1010,
+      "h": 220,
+      "kind": "composite",
+      "evidence": "backend/src/common/enums.ts:17-38"
+    },
+    {
+      "id": "post",
+      "label": "Sau giao hàng",
+      "x": 790,
+      "y": 390,
+      "w": 650,
+      "h": 240,
+      "kind": "composite",
+      "evidence": "backend/src/common/enums.ts:17-38"
+    },
+    {
+      "id": "PendingPayment",
+      "label": "Chờ thanh toán",
+      "x": 160,
+      "y": 160,
+      "w": 220,
+      "h": 76,
+      "kind": "state",
+      "evidence": "backend/src/common/enums.ts:17-38",
+      "parent": "pre"
+    },
+    {
+      "id": "Paid",
+      "label": "Đã thanh toán",
+      "x": 500,
+      "y": 160,
+      "w": 220,
+      "h": 76,
+      "kind": "state",
+      "evidence": "backend/src/common/enums.ts:17-38",
+      "parent": "pre"
+    },
+    {
+      "id": "Packed",
+      "label": "Đã đóng gói",
+      "x": 830,
+      "y": 160,
+      "w": 220,
+      "h": 76,
+      "kind": "state",
+      "evidence": "backend/src/common/enums.ts:17-38",
+      "parent": "pre"
+    },
+    {
+      "id": "Shipping",
+      "label": "Đang giao",
+      "x": 1210,
+      "y": 160,
+      "w": 220,
+      "h": 76,
+      "kind": "state",
+      "evidence": "backend/src/common/enums.ts:17-38"
+    },
+    {
+      "id": "Delivered",
+      "label": "Đã giao",
+      "x": 1210,
+      "y": 490,
+      "w": 220,
+      "h": 76,
+      "kind": "state",
+      "evidence": "backend/src/common/enums.ts:17-38",
+      "parent": "post"
+    },
+    {
+      "id": "DeliveredVerified",
+      "label": "Đã xác thực",
+      "x": 820,
+      "y": 490,
+      "w": 220,
+      "h": 76,
+      "kind": "state",
+      "evidence": "backend/src/common/enums.ts:17-38",
+      "parent": "post"
+    },
+    {
+      "id": "Cancelled",
+      "label": "Đã hủy",
+      "x": 390,
+      "y": 490,
+      "w": 220,
+      "h": 76,
+      "kind": "state",
+      "evidence": "backend/src/common/enums.ts:17-38"
+    },
+    {
+      "id": "Completed",
+      "label": "Hoàn tất",
+      "x": 1100,
+      "y": 820,
+      "w": 220,
+      "h": 76,
+      "kind": "state",
+      "evidence": "backend/src/common/enums.ts:17-38"
+    },
+    {
+      "id": "Returned",
+      "label": "Trả hàng",
+      "x": 390,
+      "y": 820,
+      "w": 220,
+      "h": 76,
+      "kind": "state",
+      "evidence": "backend/src/common/enums.ts:17-38"
+    },
+    {
+      "id": "initial",
+      "label": "",
+      "x": 10,
+      "y": 184,
+      "w": 28,
+      "h": 28,
+      "kind": "initial",
+      "evidence": "backend/src/common/enums.ts:17-38"
+    },
+    {
+      "id": "final_cancel",
+      "label": "",
+      "x": 484,
+      "y": 666,
+      "w": 32,
+      "h": 32,
+      "kind": "final",
+      "evidence": "backend/src/common/enums.ts:17-38"
+    },
+    {
+      "id": "final_return",
+      "label": "",
+      "x": 484,
+      "y": 966,
+      "w": 32,
+      "h": 32,
+      "kind": "final",
+      "evidence": "backend/src/common/enums.ts:17-38"
+    }
+  ],
+  "edges": [
+    {
+      "id": "init",
+      "source": "initial",
+      "target": "PendingPayment",
+      "points": [
+        [
+          38,
+          198
+        ],
+        [
+          160,
+          198
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38"
+    },
+    {
+      "id": "payment",
+      "source": "PendingPayment",
+      "target": "Paid",
+      "points": [
+        [
+          380,
+          198
+        ],
+        [
+          500,
+          198
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38",
+      "trigger": "thanh toán",
+      "label": "thanh toán",
+      "label_at": [
+        440,
+        143
+      ]
+    },
+    {
+      "id": "pack",
+      "source": "Paid",
+      "target": "Packed",
+      "points": [
+        [
+          720,
+          198
+        ],
+        [
+          830,
+          198
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38",
+      "trigger": "đóng gói",
+      "label": "đóng gói",
+      "label_at": [
+        775,
+        143
+      ]
+    },
+    {
+      "id": "pickup",
+      "source": "Packed",
+      "target": "Shipping",
+      "points": [
+        [
+          1050,
+          198
+        ],
+        [
+          1210,
+          198
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38",
+      "trigger": "nhận kiện",
+      "label": "nhận kiện",
+      "label_at": [
+        1155,
+        143
+      ]
+    },
+    {
+      "id": "deliver",
+      "source": "Shipping",
+      "target": "Delivered",
+      "points": [
+        [
+          1320,
+          236
+        ],
+        [
+          1320,
+          490
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38",
+      "trigger": "giao thành công",
+      "label": "giao thành công",
+      "label_at": [
+        1170,
+        355
+      ]
+    },
+    {
+      "id": "verify",
+      "source": "Delivered",
+      "target": "DeliveredVerified",
+      "points": [
+        [
+          1210,
+          528
+        ],
+        [
+          1040,
+          528
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38",
+      "trigger": "xác thực tem",
+      "label": "xác thực tem",
+      "label_at": [
+        1125,
+        479
+      ]
+    },
+    {
+      "id": "cancel",
+      "source": "pre",
+      "target": "Cancelled",
+      "points": [
+        [
+          500,
+          290
+        ],
+        [
+          500,
+          490
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38",
+      "trigger": "hủy đơn",
+      "label": "hủy đơn",
+      "label_at": [
+        370,
+        398
+      ],
+      "shared_exit_verified": true
+    },
+    {
+      "id": "release",
+      "source": "post",
+      "target": "Completed",
+      "points": [
+        [
+          1210,
+          630
+        ],
+        [
+          1210,
+          820
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38",
+      "trigger": "giải ngân\nthành công",
+      "label": "giải ngân\nthành công",
+      "label_at": [
+        1340,
+        705
+      ],
+      "shared_exit_verified": true
+    },
+    {
+      "id": "return_verified",
+      "source": "DeliveredVerified",
+      "target": "Returned",
+      "points": [
+        [
+          930,
+          566
+        ],
+        [
+          930,
+          745
+        ],
+        [
+          500,
+          745
+        ],
+        [
+          500,
+          820
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38",
+      "trigger": "chấp thuận trả hàng",
+      "label": "chấp thuận trả hàng",
+      "label_at": [
+        715,
+        719
+      ]
+    },
+    {
+      "id": "return_completed",
+      "source": "Completed",
+      "target": "Returned",
+      "points": [
+        [
+          1100,
+          858
+        ],
+        [
+          610,
+          858
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38",
+      "trigger": "chấp thuận trả hàng",
+      "label": "chấp thuận trả hàng",
+      "label_at": [
+        855,
+        834
+      ]
+    },
+    {
+      "id": "finish_cancel",
+      "source": "Cancelled",
+      "target": "final_cancel",
+      "points": [
+        [
+          500,
+          566
+        ],
+        [
+          500,
+          666
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38"
+    },
+    {
+      "id": "finish_return",
+      "source": "Returned",
+      "target": "final_return",
+      "points": [
+        [
+          500,
+          896
+        ],
+        [
+          500,
+          966
+        ]
+      ],
+      "evidence": "backend/src/common/enums.ts:28-38"
+    }
+  ],
+  "expected_pairs": [
+    [
+      "PendingPayment",
+      "Paid"
+    ],
+    [
+      "PendingPayment",
+      "Cancelled"
+    ],
+    [
+      "Paid",
+      "Packed"
+    ],
+    [
+      "Paid",
+      "Cancelled"
+    ],
+    [
+      "Packed",
+      "Shipping"
+    ],
+    [
+      "Packed",
+      "Cancelled"
+    ],
+    [
+      "Shipping",
+      "Delivered"
+    ],
+    [
+      "Delivered",
+      "DeliveredVerified"
+    ],
+    [
+      "Delivered",
+      "Completed"
+    ],
+    [
+      "DeliveredVerified",
+      "Completed"
+    ],
+    [
+      "DeliveredVerified",
+      "Returned"
+    ],
+    [
+      "Completed",
+      "Returned"
+    ]
+  ]
+}

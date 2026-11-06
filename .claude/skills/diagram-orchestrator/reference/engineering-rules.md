@@ -66,7 +66,7 @@ Tài liệu cẩm nang thực chiến đào sâu nguyên tắc thiết kế, b�
 
 ## 5. Activity Diagram — Sơ đồ hoạt động
 - **Mục đích:** Thể hiện trình tự hành động, điều kiện rẽ nhánh, luồng lặp và luồng song song.
-- **Công cụ:** PlantUML Activity (`.puml`).
+- **Công cụ:** **VẼ TAY draw.io/SVG (bắt buộc** — quyết định dự án `tool-sweet-spot.md` §0.1; PlantUML chỉ để nháp). Quy tắc bố cục: `plantuml-diagrams/reference/activity-rules.md`.
 - **Câu hỏi cần trả lời:** Quy trình vận hành ra sao? Điều kiện nào làm đổi hướng xử lý?
 - **Kinh nghiệm cốt lõi:**
   - Activity tập trung vào quy trình nghiệp vụ; Sequence tập trung vào trao đổi giữa các object theo thời gian.
@@ -77,7 +77,7 @@ Tài liệu cẩm nang thực chiến đào sâu nguyên tắc thiết kế, b�
 
 ## 6. State Machine Diagram — Sơ đồ máy trạng thái
 - **Mục đích:** Mô tả các trạng thái và chuyển đổi hợp lệ trong vòng đời của một đối tượng dữ liệu.
-- **Công cụ:** PlantUML State (`.puml`).
+- **Công cụ:** **VẼ TAY draw.io/SVG (bắt buộc** — quyết định dự án `tool-sweet-spot.md` §0.1; PlantUML chỉ để nháp). Quy tắc bố cục: `plantuml-diagrams/reference/state-rules.md`.
 - **Câu hỏi cần trả lời:** Đối tượng có những trạng thái nào? Sự kiện nào kích hoạt chuyển đổi? Trạng thái nào là điểm kết thúc không thể đảo ngược?
 - **Kinh nghiệm cốt lõi:**
   - Trạng thái là danh từ/tính từ (`PENDING`, `VERIFIED`, `REJECTED`), không phải hành động.

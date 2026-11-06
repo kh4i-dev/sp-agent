@@ -37,6 +37,8 @@ A `.docx` is a ZIP archive of XML files. Choose your approach by task:
 - **Lists:** never insert `•` literally; use a `numbering` config with `LevelFormat.BULLET`.
 - **`ImageRun` requires `type:`** (`"png"`, `"jpg"`, …).
 - **`PageBreak` must be inside a `Paragraph`.**
+- **Table paragraph indent leakage (Footgun):** Word paragraphs inside table cells inherit `firstLine` indentation from the `Normal` style (e.g. 720 dxa / 1.25 cm in Vietnamese academic documents) unless explicitly zeroed out (`w:ind w:firstLine="0" w:left="0" w:right="0"`). On narrow code/ID columns (< 1500 dxa), this pushes text rightwards and breaks short words or IDs into single letters (`F-1` / `2`, `M` / `ã UC`). Always explicitly zero out indentations on table cell paragraphs.
+- **Table code columns need `noWrap` & fixed layout:** Set `noWrap` on ID/code columns (`F-01`, `Mã UC`, `STT`) to prevent splitting at hyphens. Center code columns, left-align text columns, and NEVER use justified alignment (`both`) inside table cells.
 - **Never use `\n`** — use separate `Paragraph` elements.
 - **TOC:** headings must use built-in `HeadingLevel.*`; custom heading styles need `outlineLevel` set or they won't appear.
 - **Don't use a table as a horizontal rule** — use a paragraph bottom border instead.

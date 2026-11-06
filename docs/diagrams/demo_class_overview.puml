@@ -1,0 +1,56 @@
+@startuml
+' Class Diagram Overview - Hệ thống Quản lý Gia sư (Tối giản cho auto-layout)
+' Caption: "Hình 3.1: Sơ đồ lớp tổng quan"
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, "DejaVu Sans", sans-serif
+skinparam defaultFontSize 12
+skinparam classFontSize 13
+skinparam classAttributeFontSize 11
+skinparam classAttributeIconSize 0
+skinparam roundCorner 0
+skinparam dpi 300
+skinparam linetype ortho
+skinparam nodesep 80
+skinparam ranksep 90
+
+' ==== HIDDEN LAYOUT: 3 CỘT ====
+User -[hidden]- ConnectionRequest
+ConnectionRequest -[hidden]- Conversation
+Conversation -[hidden]- Review
+Review -[hidden]- Favorite
+
+' ==== 9 CLASSES (≤ 9 rule) ====
+
+class User
+class UserProfile
+class TutorProfile
+class ConnectionRequest
+class Conversation
+class Message
+class Review
+class Report
+class Favorite
+
+' ==== QUAN HỆ (CHỈ MULTIPLICITY) ====
+
+User "1" -- "0..1" UserProfile
+User "1" -- "0..1" TutorProfile
+
+User "1" -- "0..*" ConnectionRequest
+ConnectionRequest "0..*" -- "1" User
+
+Conversation "1" *-- "0..*" Message
+User "1" -- "0..*" Conversation
+
+User "1" -- "0..*" Review
+Review "0..*" -- "1" User
+
+User "1" -- "0..*" Report
+Report "0..*" -- "1" User
+
+User "1" -- "0..*" Favorite
+Favorite "0..*" -- "1" TutorProfile
+
+@enduml

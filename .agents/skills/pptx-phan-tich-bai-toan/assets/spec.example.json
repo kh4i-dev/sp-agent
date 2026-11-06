@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "footer": "Đồ án · Phân tích bài toán",
+    "course_line": "Báo cáo bài tập lớn · Môn Công nghệ Phần mềm"
+  },
+  "slides": [
+    {
+      "layout": "cover",
+      "title": "[Tên đề tài — khoảng 12–16 từ, nêu rõ đối tượng và cơ chế cốt lõi]",
+      "subtitle": "[Một câu phụ đề: công nghệ hoặc phạm vi]",
+      "image": "docs/screenshots/01-trang-chu.png",
+      "meta_lines": [
+        "Giảng viên hướng dẫn: [hỏi người dùng, KHÔNG tự điền]",
+        "Sinh viên thực hiện: [hỏi người dùng] — Lớp: [hỏi người dùng]",
+        "Năm học 2025 – 2026"
+      ],
+      "note": "Ảnh: giao diện hệ thống chạy thật."
+    },
+    {
+      "layout": "agenda",
+      "kicker": "Nội dung",
+      "title": "Bốn phần của phần phân tích bài toán",
+      "items": [
+        { "text": "Đặt vấn đề", "sub": "Bối cảnh và ba rủi ro của COD" },
+        { "text": "Mục tiêu và phạm vi", "sub": "Cần gì, không làm gì" },
+        { "text": "Phân tích hệ thống", "sub": "Tác nhân, kiến trúc, luồng" },
+        { "text": "So sánh và kết luận", "sub": "Chọn phương án nào, vì sao" }
+      ]
+    },
+    {
+      "layout": "kpi",
+      "kicker": "Bối cảnh",
+      "title": "Số liệu cho thấy vấn đề là thật",
+      "lead": "Mọi số liệu dưới đây phải kèm nguồn. Không dùng số liệu tự chế để gây ấn tượng.",
+      "items": [
+        { "value": "17,3%", "label": "[chỉ số] — nguồn: [cơ quan, năm]" },
+        { "value": "18.900", "label": "[chỉ số] — nguồn: [cơ quan, năm]" },
+        { "value": "73,99%", "label": "[chỉ số] — nguồn: [cơ quan, năm]" }
+      ],
+      "source": "Nguồn: [ghi rõ từng nguồn; nếu chưa kiểm chứng thì đánh dấu UNVERIFIED]."
+    },
+    {
+      "layout": "compare",
+      "kicker": "So sánh phương án",
+      "title": "Phương án hiện tại và phương án đề xuất",
+      "lead": "Trang này nhiều chữ nhất deck — bù lại bằng hai khối nền nhạt và dấu đầu dòng ngắn.",
+      "plans": [
+        {
+          "name": "[Phương án A]",
+          "pros": ["[ưu điểm 1 — tối đa 10 từ]", "[ưu điểm 2]", "[ưu điểm 3]"],
+          "cons": ["[nhược điểm 1]", "[nhược điểm 2]", "[nhược điểm 3]"]
+        },
+        {
+          "name": "[Phương án B]",
+          "pros": ["[ưu điểm 1]", "[ưu điểm 2]", "[ưu điểm 3]"],
+          "cons": ["[nhược điểm 1]", "[nhược điểm 2]"]
+        }
+      ]
+    },
+    {
+      "layout": "diagram",
+      "kicker": "Kiến trúc",
+      "title": "Kiến trúc tổng thể",
+      "lead": "Chỉ đưa 1–2 sơ đồ CHÍNH vào deck. Sơ đồ học thuật vẽ trắng–đen.",
+      "image": "docs/diagrams/01-kien-truc.png",
+      "caption": "Hình X: [tên sơ đồ] — nguồn: phần X.Y của báo cáo."
+    },
+    {
+      "layout": "closing",
+      "title": "Xin cảm ơn quý thầy cô và các bạn",
+      "lead": "[Một câu chốt cho phần phân tích bài toán.]",
+      "meta_lines": ["[Sinh viên] — [Lớp]", "Phần tiếp theo: [tên chương sau]"]
+    }
+  ]
+}

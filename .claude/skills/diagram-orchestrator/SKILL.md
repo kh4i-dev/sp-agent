@@ -1,7 +1,10 @@
 ---
 name: diagram-orchestrator
-description: Điều phối thông minh toàn bộ hệ thống sơ đồ kỹ thuật cho báo cáo Word (docx-report), slide (pptx-deck), đồ án tốt nghiệp và tài liệu kiến trúc. Tự động phân tích ngữ nghĩa và nguồn dữ liệu để chọn chính xác công cụ tối ưu cho từng sơ đồ riêng biệt (PlantUML cho UML/ERD chuẩn mực; Graphviz DOT cho cấu trúc cây Prefix Trie, BK-Tree, đồ thị thuật toán; tldraw/draw.io cho kiến trúc tổng thể trực quan tự do); áp dụng Giao thức Giải quyết Vấn đề Thông minh (Intelligent Problem-Solving Protocol), chuẩn thẩm mỹ Academic Monochrome (Trắng - Đen học thuật 300 DPI, không title nhúng trong ảnh) và bắt buộc đi qua cổng kiểm định diagram-auditor trước khi xuất bản. Dùng khi cần vẽ sơ đồ, chọn công cụ vẽ sơ đồ, diagram orchestrator, sơ đồ cây, trie, bk-tree, kiến trúc hệ thống, phối hợp sơ đồ.
+description: "Điều phối thông minh toàn bộ hệ thống sơ đồ kỹ thuật cho báo cáo Word (docx-report), slide (pptx-deck), đồ án tốt nghiệp và tài liệu kiến trúc. Tự động phân tích ngữ nghĩa và nguồn dữ liệu để chọn chính xác công cụ tối ưu cho từng sơ đồ riêng biệt (PlantUML cho UML/ERD chuẩn mực; Graphviz DOT cho cấu trúc cây Prefix Trie, BK-Tree, đồ thị thuật toán; tldraw/draw.io cho kiến trúc tổng thể trực quan tự do); áp dụng Giao thức Giải quyết Vấn đề Thông minh (Intelligent Problem-Solving Protocol), chuẩn thẩm mỹ Academic Monochrome (Trắng - Đen học thuật 300 DPI, không title nhúng trong ảnh) và bắt buộc đi qua cổng kiểm định diagram-auditor trước khi xuất bản. Dùng khi cần vẽ sơ đồ, chọn công cụ vẽ sơ đồ, diagram orchestrator, sơ đồ cây, trie, bk-tree, kiến trúc hệ thống, phối hợp sơ đồ."
 ---
+
+> **Quy tắc hiện hành (02/11/2026):** bản cuối dùng `handdrawn-diagrams`: Python toạ độ cố định → `docs/diagrams/vectors/*.svg` + `docs/images/diagrams/*.png`, spec JSON riêng. PlantUML/Graphviz/Mermaid/drawio/tldraw trong các ví dụ bên dưới chỉ dùng nháp. Nguồn `.py` là bắt buộc. Duyệt ngữ nghĩa theo nguồn, chạy `run_diagrams.py` (cổng máy), rồi Vision QA từng hình; không suy PASS bố cục từ exit 0. Use Case chung gốc ở junction thân–tay `(ax, ay−4)` = tâm đầu +18 với mẫu hiện hành, không ở bụng. State đọc `plantuml-diagrams/reference/state-playbook.md`, không note/legend/footer trên canvas. Khi hướng dẫn cũ trái khối này, áp dụng khối này.
+
 
 # Diagram Orchestrator Skill — Điều Phối Sơ Đồ Kỹ Thuật Thích Ứng
 
@@ -95,6 +98,7 @@ When image inspection is required, use a tool that actually exposes the rendered
 For every diagram, complete these stages:
 A0. **(Use Case / mô hình miền) BẮT BUỘC làm Bước 0 trước:** tạo file `docs/domain/step0-<du-an>.md` theo template [`reference/step0-bai-toan-va-tac-nhan.md`](reference/step0-bai-toan-va-tac-nhan.md) — xác định bài toán, quy mô, số người vận hành, **trách nhiệm từng tác nhân** (phân biệt ai sửa lỗi IT vs ai không sửa lỗi IT nhưng chịu trách nhiệm nghiệp vụ), ranh giới hệ thống, quan hệ thật sự cần. **Không có file Bước 0 → CẤM vẽ** (vi phạm kỷ luật, sản phẩm bị bác bỏ).  
 A. Define purpose, notation, audience, abstraction level, and source of truth.  
+A1. **NGHĨ TRƯỚC KHI VẼ (Think-Before-Draw) — bắt buộc ra giấy:** trước khi viết code, phải (1) chọn công cụ theo SSOT [`reference/tool-sweet-spot.md`](reference/tool-sweet-spot.md), (2) lập **bảng adjacency-first** (quan hệ → zone) theo [`reference/layout-thinking.md`](reference/layout-thinking.md) §1, (3) **dự đoán bố cục** và chỗ dễ vỡ (nhãn dài, hub, cặp include/extend, hành lang dây). Chưa có kế hoạch → **chưa được viết một dòng code**. Cấm "render rồi tính".  
 B. Validate semantics before choosing layout.  
 C. Select the appropriate rendering tool.  
 D. Plan layout and identify potentially difficult relationships or long labels.  
@@ -120,6 +124,42 @@ Before declaring a task complete, report:
 - **Status:** PASS, PASS WITH CONDITIONS, FAIL, or BLOCKED.
 
 ---
+
+## 1.10. BỘ NÃO TƯ DUY & ĐIỀU PHỐI VẼ HÌNH CHUẨN ĐẸP NHƯ CON NGƯỜI KÉO THẢ (HUMAN-GRADE INTERACTIVE DIAGRAMMING MINDSET)
+
+Khi con người sử dụng các công cụ vẽ sơ đồ có tương tác kéo thả trực quan (như Draw.io, Lucidchart, Figma, Microsoft Visio), họ luôn tuân theo các nguyên lý tâm lý học Gestalt và trực giác không gian thẩm mỹ mà các bộ sinh mã tự động (code generators) thường bỏ sót. Để tạo ra sơ đồ chuẩn đẹp như người vẽ tay, Agent **BẮT BUỘC** áp dụng 7 nguyên lý tư duy sau:
+
+### 1. Bounding Box co dãn tự nhiên — Tuyệt đối không đè/cắt đứt nét viền
+- **Tư duy con người**: Khi thấy chuỗi văn bản dài hơn ô hình chữ nhật, con người sẽ **kéo rộng chiều ngang (width)** hoặc **tăng chiều cao (height)** của hộp để chữ nằm trọn vẹn bên trong với khoảng đệm an toàn (padding >= 12-16px).
+- **Hành vi máy móc cần cấm**: Tuyệt đối **CẤM** dùng các thủ thuật che mắt như vẽ một miếng trắng (`<rect fill="#ffffff">`) đè lên viền ô chữ nhật làm mất nét ô, đứt nét viền, hoặc để chữ tràn ra cắt đứt đường biên.
+- **Quy chuẩn viền**: Viền hình chữ nhật kỹ thuật/UML phải vuông vức 100% 90 độ (`rx=0, ry=0`), nét đen đơn sắc liền mạch, không bị đứt khúc hay chắp vá.
+
+### 2. Nhãn chuyển trạng thái / Mũi tên kết thúc — Nổi trên đường & Tách biệt mép hộp
+- **Tư duy con người**: Nhãn hành động/sự kiện chuyển trạng thái luôn được đặt nổi phía trên đường kẻ (`y - 8` hoặc `x + 10`), giữ khoảng cách thở (breathing room) >= 35-40px với mép các hộp trạng thái.
+- **Hành vi máy móc cần cấm**: Không để chữ dính sát sạt vào mép hộp (< 25px) hoặc đè lên viền hộp; nhãn không được che mất đầu mũi tên.
+
+### 3. Sequence Diagram — Giãn dòng thông thoáng & Tab Frame độc lập
+- **Khoảng cách dọc giữa các bước (Lifeline Spacing)**: Con người kéo dãn tối thiểu **45–50px mỗi bước** (thay vì ép chật 20-25px như máy) để mắt người đọc dễ lần theo số thứ tự (autonumber) và nội dung thông điệp mà không bị dính chùm.
+- **Khung nhóm/Giao dịch (Frame Transaction, Alt, Opt, Loop)**:
+  - Tab nhãn góc trên (ví dụ: `group [Prisma $transaction]` hay `alt [Thành công]`) là một khối định danh độc lập.
+  - Thông điệp đầu tiên bên trong khung phải có **khoảng đệm an toàn (safe margin) >= 30-35px** tính từ đỉnh khung xuống mũi tên đầu tiên. Tuyệt đối không để mũi tên hay chữ đè lên tab frame.
+
+### 4. Sơ đồ Hiện trạng / Luồng xử lý (As-Is / Flow Diagram) — Luồng ngang & Mũi tên chỉ thẳng 90 độ
+- Các bước của quy trình xếp ngang tuần tự với khoảng cách >= 45-55px.
+- Các khối bất cập / nguyên nhân (Pain Points) đặt thẳng hàng ở bên dưới bước bị ảnh hưởng, dùng **mũi tên đỏ chỉ thẳng góc 90 độ đi lên**. Không vẽ đường chéo hay bắt chéo luồng gây rối mắt.
+
+### 5. Sơ đồ Use Case — Phân vùng Actor theo vòng đời & Hành lang thông gió (Air Corridors)
+- **Lane L (Trái)**: Xếp toàn bộ người dùng cuối (Khách vãng lai, Phụ huynh, Gia sư) theo tiến trình vòng đời tương tác từ trên xuống dưới.
+- **Lane R (Phải)**: Dành riêng cho Quản trị viên (Admin), Kiểm duyệt viên (Moderator), Hệ thống bên ngoài (OTP, Cổng thanh toán).
+- **Hành lang thông gió (Air Corridors)**: Cột giữa để lại khoảng hở dọc rộng rãi để các Use Case tương tác hai chiều (Chat, Đánh giá, Báo cáo) đón các đường nối từ hai phía mà **không cắt ngang qua bất kỳ Use Case độc lập nào**.
+
+### 6. Chuẩn Học thuật Tuyệt đối — Zero-Title & Zero-Legend trong Canvas
+- **CẤM nhúng tiêu đề to trong ảnh**: Tiêu đề thuộc về Caption của Word (`Hình X.Y: Tên sơ đồ`). Nhúng tiêu đề trong ảnh là lỗi trùng lặp tiêu đề thô thiển.
+- **CẤM nhúng hộp chú thích nét đứt / note box / legend trong ảnh**: Mọi giải thích ký hiệu, từ viết tắt hoặc quy ước phải viết thành văn xuôi dẫn nhập hoặc phân tích bên dưới hình trong bài viết Word.
+
+### 7. Quy trình Visual Audit Loop bằng Mắt Thật (LibreOffice & PyMuPDF)
+- Script chạy exit code 0 chỉ chứng minh cú pháp không lỗi, KHÔNG chứng minh sơ đồ đẹp.
+- **Bắt buộc**: Render file ra PDF qua LibreOffice (`soffice --headless --convert-to pdf`), dùng PyMuPDF render trang sang ảnh PNG và dùng công cụ xem ảnh (`view_file`) soi trực quan từng chi tiết bằng mắt trước khi bàn giao.
 
 ## 2. BÀI KIỂM TRA NĂNG LỰC TƯ DUY (3 LITMUS TESTS)
 
@@ -170,21 +210,24 @@ Trước khi viết PlantUML, lập bảng lớp/nhóm/bậc (degree)/các assoc
 
 | Khi cần trả lời câu hỏi... | Loại sơ đồ | Công cụ tối ưu | Định dạng & Renderer |
 |---|---|---|---|
-| Ai sử dụng hệ thống, muốn đạt mục tiêu nghiệp vụ gì? | **Use Case** | **PlantUML** | `.puml` → `render-puml.mjs` |
-| Quy trình xử lý nghiệp vụ đi qua những bước và điều kiện nào? | **Activity** | **PlantUML** | `.puml` → `render-puml.mjs` |
-| Những đối tượng/lớp nào tồn tại, trách nhiệm và quan hệ ra sao? | **Class** | **PlantUML** | `.puml` → `render-puml.mjs` |
-| Dữ liệu lưu trữ thế nào, khóa chính/ngoại và quan hệ ra sao? | **ERD** | **PlantUML** | `.puml` → `render-puml.mjs` |
+| Ai sử dụng hệ thống, muốn đạt mục tiêu nghiệp vụ gì? | **Use Case** | **VẼ TAY: draw.io/SVG** (PlantUML chỉ nháp) | `.drawio`/`.svg` → exporter | 
+| Quy trình xử lý nghiệp vụ đi qua những bước và điều kiện nào? | **Activity** | **VẼ TAY: draw.io/SVG** (PlantUML chỉ nháp) | `.drawio`/`.svg` → exporter |
+| Những đối tượng/lớp nào tồn tại, trách nhiệm và quan hệ ra sao? | **Class** | **PlantUML auto** (nhỏ), **draw.io tay/phân rã** (≥6 lớp, hub) | `.puml` / `.drawio` |
+| Dữ liệu lưu trữ thế nào, khóa chính/ngoại và quan hệ ra sao? | **ERD** | **PlantUML (auto)** | `.puml` → `render-puml.mjs` |
 | Thành phần nào gửi thông điệp cho thành phần nào, theo thứ tự gì? | **Sequence** | **PlantUML** | `.puml` → `render-puml.mjs` |
-| Một đối tượng trải qua những trạng thái nào trong vòng đời? | **State Machine**| **PlantUML** | `.puml` → `render-puml.mjs` |
+| Một đối tượng trải qua những trạng thái nào trong vòng đời? | **State Machine**| **VẼ TAY: draw.io/SVG** (PlantUML chỉ nháp) | `.drawio`/`.svg` → exporter |
 | Hệ thống gồm những khối phần mềm lớn nào và phụ thuộc nhau ra sao? | **Component** | **PlantUML / tldraw** | `.puml` hoặc `.tldr` |
 | Phần mềm chạy ở máy/môi trường nào, kết nối mạng ra sao? | **Deployment**| **PlantUML / tldraw** | `.puml` hoặc `.tldr` |
 | Cấu trúc cây tiền tố Prefix Trie, BK-Tree, đồ thị thuật toán? | **Data Structure**| **Graphviz (DOT)** | `.dot` → `render-graphviz.mjs` |
 | Kiến trúc tổng quan cần bố trí tự do, bo góc mềm mại, theo vùng? | **High-Level Arch**| **tldraw / draw.io** | `.tldr` → `render.mjs` |
 | Luồng dữ liệu đi giữa tiến trình, kho dữ liệu và thực thể ngoài? | **DFD** | **draw.io / tldraw** | `.tldr` / vector |
 
-> [!NOTE]
-> **Bẫy kiểm soát vị trí:** PlantUML/Graphviz **KHÔNG cho ghim vị trí tuyệt đối** từng phần tử — chúng tự sắp xếp (dễ dồn tác nhân về một phía). Với bố cục đòi hỏi vị trí chính xác theo tay — ví dụ **Use Case đặt tác nhân hai bên** hoặc sơ đồ bố trí theo vùng — phải chuyển sang **draw.io / tldraw / SVG vẽ tay**. Đừng cố ép PlantUML ghim vị trí bằng hack vô ích.
-> Ngưỡng + quy trình vẽ tay fallback (sau ≥ 2 vòng auto vẫn FAIL Visual): [`reference/manual-fallback.md`](reference/manual-fallback.md).
+> [!IMPORTANT]
+> **CHỌN VẼ TAY hay AUTO — đọc SSOT [`reference/tool-sweet-spot.md`](reference/tool-sweet-spot.md):**
+> **AUTO đẹp** khi bố cục là hệ quả tất định của cấu trúc: **Sequence, Trie/BK-Tree/AST, ERD vừa, Class nhỏ**.
+> **VẼ TAY (draw.io/SVG) chuẩn** khi bố cục cần vị trí tuyệt đối do người quyết: **Use Case (bắt buộc)**, **State Machine (bắt buộc)**, **Activity (bắt buộc)**, **Class ≥ 6 lớp/có hub**, **kiến trúc tổng quan, DFD, Deployment trực quan**.
+> **Bẫy kiểm soát vị trí:** PlantUML/Graphviz **KHÔNG ghim được vị trí** từng phần tử (dễ dồn actor về một phía). Đừng ép PlantUML ghim vị trí bằng hack vô ích — chuyển **draw.io / SVG vẽ tay**.
+> Ngưỡng + quy trình vẽ tay: [`reference/manual-fallback.md`](reference/manual-fallback.md).
 
 ### Bẫy kinh điển: Class Diagram không thay thế ERD & Cấu trúc RAM
 
@@ -239,6 +282,11 @@ Mỗi sơ đồ phải lưu file nguồn và xuất đồng thời SVG (vector) 
 > 3. **CẤM coi `os.startfile()`, `Start-Process`, đọc kích thước ảnh, metadata hay đọc source code `.puml` là bằng chứng đã kiểm tra ảnh.**
 > 4. **Tách biệt 2 vai trò (Generator vs Adversarial Reviewer):** Người kiểm định phải chủ động tìm lỗi để bác bỏ sản phẩm chưa đạt, không được tự động đồng ý hay tự cấp chứng chỉ hoàn thành cho chính mình.
 > 5. **KHÔNG GỘP NĂM KẾT QUẢ DƯỚI ĐÂY THÀNH MỘT TRẠNG THÁI PASS DUY NHẤT NẾU CÒN BƯỚC CHƯA ĐƯỢC KIỂM CHỨNG.**
+> 6. **LUẬT CHỐNG LÀM ẨU (ANTI-RUSH) — BẮT BUỘC SOI ẢNH TRƯỚC KHI NÓI "XONG":** Việc vẽ nhanh rồi báo xong mà **chưa thực sự đưa ảnh vào tầm nhìn của model** là **lỗi nặng nhất**. Trước mọi chữ `PASS`/`xong`/`hoàn thành`, Agent **BẮT BUỘC**:
+>    - **Nạp PNG vào ngữ cảnh model** bằng công cụ đọc ảnh thật (ví dụ `read` trên file `.png`, hoặc trình xem ảnh của harness) — **không** chỉ mở bằng app hệ điều hành.
+>    - **Dán khối Proof-of-View**: ≥ 3 nhãn đọc **nguyên văn từ ảnh** + vị trí + trả lời rõ **đè? đều? dễ nhìn?** + tên file/dung lượng/thời điểm.
+>    - Tự hỏi: *"Tôi có thể trích 3 nhãn nguyên văn từ ảnh không?"* **Không trích được = CHƯA xem ảnh = CẤM PASS.**
+>    - Không nạp được ảnh (thiếu công cụ) → báo `BLOCKED — Visual QA unavailable`, **tuyệt đối không PASS**. Thà nói chưa xong còn hơn bàn giao ảnh sai/chữ đè mà chưa nhìn.
 
 Báo cáo nghiệm thu cuối cùng **BẮT BUỘC** trình bày tách bạch 5 mục:
 1. **Render validation:** File PNG & SVG tồn tại, > 500B, biên dịch sạch không có banner compiler, SVG **không chứa mã màu phi thang độ xám**.
@@ -300,9 +348,45 @@ Khi báo cáo kết quả hoàn thành hoặc audit cho người dùng, Agent **
 
 Theo chuẩn thiết kế Progressive Disclosure của OpenAI Codex và Anthropic Claude Code, các tài nguyên đào sâu được tổ chức độc lập để nạp khi cần:
 - **Bước 0 — Xác định bài toán & vai trò tác nhân (BẮT BUỘC trước khi vẽ Use Case):** [`reference/step0-bai-toan-va-tac-nhan.md`](reference/step0-bai-toan-va-tac-nhan.md) (Problem statement, quy mô, ma trận trách nhiệm tác nhân **kèm nguồn bằng chứng / UNKNOWN**, ranh giới hệ thống, luồng lỗi–kiểm duyệt nếu có, ví dụ điền mẫu **trung tính**). Tác nhân của dự án cụ thể được điền ở bản copy theo dự án, KHÔNG hard-code vào skill.
-- **Vẽ tay fallback — khi auto-layout vẫn xấu (SSOT):** [`reference/manual-fallback.md`](reference/manual-fallback.md) (ngưỡng ≥ 2 vòng FAIL Visual, 3 đường draw.io/tldraw/SVG, quy trình 6 bước, checklist PASS).
+- **Điểm ngọt công cụ — loại nào AUTO đẹp, loại nào phải VẼ TAY (SSOT):** [`reference/tool-sweet-spot.md`](reference/tool-sweet-spot.md) (bảng loại sơ đồ → công cụ → vẽ tay/auto → lý do + bằng chứng; luật chọn 1 câu).
+- **Vẽ tay fallback — khi auto-layout vẫn xấu (SSOT):** [`reference/manual-fallback.md`](reference/manual-fallback.md) (ngưỡng, 3 đường draw.io/tldraw/SVG, quy trình 6 bước, checklist PASS).
+- **Tư duy bố cục cho AI — NGHĨ trước khi vẽ (SSOT):** [`reference/layout-thinking.md`](reference/layout-thinking.md) (adjacency-first: bảng quan hệ→zone trước khi viết code; trục luồng deployment; ngân sách cạnh 2.5× + test 4 góc; nhãn đủ dấu tiếng Việt; sàn spacing; checklist 60 giây).
 - **Nguyên tắc thiết kế thị giác & bố cục:** [`reference/design-principles.md`](reference/design-principles.md) (Visual hierarchy, whitespace budget, routing, typography, khổ in A4).
 - **Thư viện tương phản Mẫu Tốt & Mẫu Lỗi (Gallery):** [`reference/diagram-gallery.md`](reference/diagram-gallery.md) (Đối chiếu mẫu đúng vs mẫu sai cho Use Case, Class, ERD, Sequence, Architecture, Trie/BK-Tree).
 - **Chuẩn hệ sinh thái Agent chính thức:** [`reference/benchmark-ecosystem.md`](reference/benchmark-ecosystem.md) (Nghiên cứu kiến trúc từ `openai/codex`, `anthropics/claude-code`, `openai/plugins`, `anthropics/skills`).
 - **Bộ bài kiểm thử đánh giá chất lượng (Evals Suite):** [`evals/README.md`](evals/README.md) — Chạy test runner: `node .claude/skills/diagram-orchestrator/scripts/run-evals.mjs`.
 
+---
+
+## ⚡ PROMPT BẮT BUỘC KHI GỌI SKILL NÀY (COPY VÀO PROMPT AGENT)
+
+> **KHI BẠN ĐƯỢC YÊU CẦU VẼ/AUDIT/ĐIỀU PHỐI SƠ ĐỒ, BẮT BUỘC TUÂN THỦ GIAO THỨC 10 GIAI ĐOẠN (A0–H) — KHÔNG BƯỚC NÀO ĐƯỢC BỎ QUA:**
+>
+> **A0. BƯỚC 0 (Use Case/Domain): TẠO FILE `docs/domain/step0-<du-an>.md` TRƯỚC KHI VẼ**
+> - Xác định: bài toán, quy mô, số người vận hành, **trách nhiệm từng tác nhân** (phân biệt ai sửa lỗi IT vs ai chịu trách nhiệm nghiệp vụ KHÔNG sửa lỗi IT), ranh giới hệ thống, quan hệ thật sự cần.
+> - Mỗi trách nhiệm **phải có bằng chứng** (`[REQ-xx]`, `[BRD §x.y]`, `[code:file:line]`, `[user-confirmed YYYY-MM-DD]`). Chưa rõ ghi `UNKNOWN`. **Cấm tự suy diễn**.
+> - **Thiếu file Bước 0 = DỪNG, KHÔNG VẼ**, báo: `⚠️ VI PHẠM KỶ LUẬT: thiếu Bước 0 — lỗi tư duy mô hình hóa.`
+>
+> **A. XÁC ĐỊNH MỤC ĐÍCH & NGUỒN SỰ THẬT:** 1 sơ đồ = 1 câu hỏi. Nguồn: schema DB / mã nguồn / yêu cầu nghiệp vụ.
+> **B. VALIDATE SEMANTICS TRƯỚC KHI CHỌN LAYOUT:** Đối chiếu 100% với thực tế. Không nhảy tầng (UI→Store). Không nhầm UML Class ↔ ERD ↔ Trie.
+> **C. CHỌN CÔNG CỤ THEO NGỮ NGHĨA (SSOT `tool-sweet-spot.md`):**
+>    - **AUTO đẹp:** Sequence, ERD vừa, Class nhỏ, Trie/BK-Tree/AST → PlantUML/Graphviz
+>    - **VẼ TAY (draw.io/SVG) chuẩn:** Use Case (**bắt buộc**), State Machine (**bắt buộc**), Activity (**bắt buộc**), Class ≥6 lớp/có hub, kiến trúc tổng quan, DFD, Deployment trực quan
+> **D. NGHĨ TRƯỚC KHI VẼ (bắt buộc):** lập bảng adjacency-first + chọn zone + dự đoán bố cục **trước khi viết một dòng code** (`layout-thinking.md` §1–§2).
+> **D1. LẬP BẢNG ADJACENCY-FIRST** (`docs/diagrams/<ten>-model.md`): Mỗi FK/association = 1 dòng, kèm zone + có-bắt-buộc-ngắn. Theo `layout-thinking.md` §1.
+> **E. SINH NGUỒN + RENDER THỰC TẾ:** Chạy script render tương ứng, xuất **ĐỒNG THỜI SVG + PNG 300DPI**.
+> **F. INSPECT RENDERED IMAGE — BẮT BUỘC SOI ẢNH (ANTI-RUSH):**
+>    - Chạy `audit-diagrams.mjs` → 0 lỗi ĐỎ (chỉ là cổng phụ, KHÔNG thay mắt soi)
+>    - **Nạp PNG vào ngữ cảnh model** (vd `read` file `.png`) — không phải mở bằng app hệ điều hành
+>    - Ghi Proof-of-View: **≥3 nhãn nguyên văn từ ảnh** + vị trí + **đè? đều? dễ nhìn?** + tên file/dung lượng/hash
+>    - **Không trích được 3 nhãn = chưa xem ảnh = CẤM PASS.** Thiếu công cụ → `BLOCKED — Visual QA unavailable`
+> **G. NẾU CHÈN VÀO DOCX: KIỂM TRA TRANG WORD THỰC TẾ** (rộng 14–15.5cm, khớp caption, `keep_with_next`).
+> **H. GHI NHẬN BẰNG CHỨNG & TRẠNG THÁI:** PASS / PASS WITH CONDITIONS / FAIL / BLOCKED — tách 5 cổng riêng.
+>
+> **QUY TẮC DỪNG VÁ THAM SỐ (STOP PARAMETER TWEAKING):** Chỉ 1 lần thử khóa rank/hidden link. Không giữ rank → dừng, chuyển vẽ tay/phân rã (`manual-fallback.md`). **Cấm vá vô hạn.**
+>
+> **NGƯỠNG CHUYỂN VẼ TAY:** ≥ 2 vòng render→soi→sửa-1-biến vẫn FAIL Visual → freeze ngữ nghĩa, dựng `.drawio`/`.tldr`/SVG tay, qua auditor như bản auto.
+>
+> **ADVERSARIAL REVIEWER:** Bạn là người **chủ động tìm lỗi để bác bỏ**. Hỏi: *"Đâu là 3 lỗi tôi có thể tìm ra để FAIL sơ đồ này?"*
+>
+> **ZERO CODE DUMPS:** Bàn giao chỉ gồm: ảnh `![Hình X.Y](path)`, caption `Hình X.Y: <tên>`, báo cáo 5 cổng, câu hỏi nghiệm thu user, link file nguồn. **CẤM xả code block ra chat.**

@@ -1,0 +1,102 @@
+{
+  "name": "san-tmbt-nguoi-ban",
+  "title": "Sàn TMBT",
+  "subtitle": "Phân hệ người bán",
+  "actors": [
+    {
+      "id": "seller",
+      "label": "Người bán",
+      "side": "L"
+    }
+  ],
+  "usecases": [
+    {
+      "id": "uc_register",
+      "label": "Đăng ký mở gian hàng"
+    },
+    {
+      "id": "uc_listing",
+      "label": "Đăng bán sản phẩm"
+    },
+    {
+      "id": "uc_order",
+      "label": "Tiếp nhận và xử lý đơn hàng"
+    },
+    {
+      "id": "uc_handover",
+      "label": "Bàn giao cho tài xế"
+    },
+    {
+      "id": "uc_revenue",
+      "label": "Xem doanh thu và số dư ví"
+    },
+    {
+      "id": "uc_withdraw",
+      "label": "Rút tiền từ ví"
+    },
+    {
+      "id": "uc_rating",
+      "label": "Xem đánh giá sản phẩm"
+    },
+    {
+      "id": "uc_support",
+      "label": "Tiếp nhận và xử lý yêu cầu hỗ trợ"
+    },
+    {
+      "id": "uc_qr",
+      "label": "Đóng gói và in tem QR",
+      "secondary": true
+    },
+    {
+      "id": "uc_feedback",
+      "label": "Phản hồi khách hàng",
+      "secondary": true
+    }
+  ],
+  "associations": [
+    [
+      "seller",
+      "uc_register"
+    ],
+    [
+      "seller",
+      "uc_listing"
+    ],
+    [
+      "seller",
+      "uc_order"
+    ],
+    [
+      "seller",
+      "uc_handover"
+    ],
+    [
+      "seller",
+      "uc_revenue"
+    ],
+    [
+      "seller",
+      "uc_withdraw"
+    ],
+    [
+      "seller",
+      "uc_rating"
+    ],
+    [
+      "seller",
+      "uc_support"
+    ]
+  ],
+  "includes": [
+    [
+      "uc_order",
+      "uc_qr"
+    ]
+  ],
+  "extends": [
+    [
+      "uc_feedback",
+      "uc_rating"
+    ]
+  ]
+}

@@ -36,6 +36,19 @@ Tạo/ghi trong file mô hình một bảng trước khi bố trí:
 
 Nếu mô hình quá dày, chọn một sơ đồ tổng quan nhỏ + các sơ đồ chi tiết theo câu hỏi. Không nhân bản lớp sang nhiều hình mà không đánh dấu chúng là các góc nhìn của cùng mô hình.
 
+## 2.5. Access modifier — ghi rõ phạm vi truy cập (bắt buộc)
+
+Mỗi thuộc tính/phương thức phải ghi ký hiệu phạm vi truy cập đúng chuẩn UML; PlantUML dùng **ký tự text** (đặt `skinparam classAttributeIconSize 0`), **cấm** icon tròn màu:
+
+| Ký hiệu | Tên | Quy tắc truy cập |
+| :---: | :--- | :--- |
+| `+` | **Public** | Truy cập được từ **mọi nơi**. |
+| `-` | **Private** | Chỉ truy cập **bên trong chính lớp đó**. |
+| `#` | **Protected** | Truy cập **trong lớp và các lớp con** (subclasses). |
+| `~` | **Package** | Truy cập **trong cùng package**. |
+
+> Ví dụ: `+ login()`, `- passwordHash : String`, `# onInit()`, `~ helper()`. Không để trống ký hiệu (mặc định mơ hồ) và không trộn lẫn icon màu với ký tự text.
+
 ## 3. Bố trí node theo cấu trúc quan hệ
 
 1. **Nhóm theo miền nghiệp vụ**, không theo thứ tự khai báo thuận tiện. Ví dụ tùy code: tài khoản/hồ sơ; kết nối; hội thoại/tin nhắn; đánh giá/kiểm duyệt.

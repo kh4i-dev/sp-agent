@@ -1,0 +1,123 @@
+@startuml
+title Hệ thống Quản lý Gia sư - Class Diagram (CÓ LỖI CỐ Ý)
+
+skinparam monochrome false
+skinparam BackgroundColor #FFE082
+skinparam classAttributeIconSize 1
+
+class User {
+  + String id
+  + String email
+  + String fullName
+  + Role role
+  + login()
+  + updateProfile()
+  + sendMessage()
+  + createRequest()
+  + rateTutor()
+  + viewReport()
+  + manageFavorite()
+}
+
+class UserProfile {
+  + String id
+  + String userId
+  + String bio
+  + Float ratingAvg
+  + Integer totalReviews
+  + updateRating()
+}
+
+class TutorProfile {
+  + String id
+  + String userId
+  + String subjects
+  + Float hourlyRate
+  + Boolean isVerified
+  + verify()
+}
+
+class ConnectionRequest {
+  + String id
+  + String senderId
+  + String receiverId
+  + RequestStatus status
+  + String message
+  + accept()
+  + reject()
+}
+
+class Message {
+  + String id
+  + String conversationId
+  + String senderId
+  + String content
+  + MessageType type
+  + send()
+}
+
+class Conversation {
+  + String id
+  + String participant1Id
+  + String participant2Id
+  + LocalDateTime createdAt
+  + getMessages()
+}
+
+class Review {
+  + String id
+  + String reviewerId
+  + String revieweeId
+  + Integer rating
+  + String comment
+  + createReview()
+}
+
+class Report {
+  + String id
+  + String reporterId
+  + String reportedId
+  + ReportReason reason
+  + String description
+  + submitReport()
+}
+
+class Favorite {
+  + String id
+  + String userId
+  + String tutorId
+  + addFavorite()
+  + removeFavorite()
+}
+
+' Quan hệ - CÓ LỖI: trùng lặp, nhãn verb, vòng xa
+User "1" -- "0..1" UserProfile : has >
+User "1" -- "0..1" TutorProfile : has >
+User "1" *-- "0..*" ConnectionRequest : sends >
+User "1" *-- "0..*" ConnectionRequest : receives >
+User "1" *-- "0..*" Message : sends >
+User "1" *-- "0..*" Conversation : participates >
+User "1" *-- "0..*" Review : writes >
+User "1" *-- "0..*" Review : receives >
+User "1" *-- "0..*" Report : submits >
+User "1" *-- "0..*" Report : reportedIn >
+User "1" *-- "0..*" Favorite : owns >
+
+ConnectionRequest "0..*" -- "1" User : sender >
+ConnectionRequest "0..*" -- "1" User : receiver >
+
+Message "0..*" -- "1" Conversation : belongsTo >
+Conversation "1" *-- "0..*" Message : contains >
+
+Review "0..*" -- "1" User : reviewer >
+Review "0..*" -- "1" User : reviewee >
+
+Report "0..*" -- "1" User : reporter >
+Report "0..*" -- "1" User : reported >
+
+Favorite "0..*" -- "1" User : user >
+Favorite "0..*" -- "1" TutorProfile : tutor >
+
+note right of User : Lớp trung tâm degree cao\nnhiều quan hệ xuyên hình
+
+@enduml

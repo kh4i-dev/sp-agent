@@ -1,0 +1,85 @@
+[
+  {
+    "case": "halo_text_overlap",
+    "expected": "E2",
+    "detected": true,
+    "errors": [
+      {
+        "code": "E2",
+        "msg": "nhãn đè nhau: 'SAME LABEL' × 'SAME LABEL'",
+        "at": [
+          20,
+          44
+        ],
+        "ratio": 1.0
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "case": "transformed_outside_canvas",
+    "expected": "E1",
+    "detected": true,
+    "errors": [
+      {
+        "code": "E1",
+        "msg": "nhãn ra ngoài khung: 'OUTSIDE'",
+        "at": [
+          520,
+          51
+        ]
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "case": "nonfinite_line",
+    "expected": "E6",
+    "detected": true,
+    "errors": [
+      {
+        "code": "E6",
+        "msg": "non-finite x1: NaN"
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "case": "white_label_background_below_later_line",
+    "expected": "E3",
+    "detected": true,
+    "errors": [
+      {
+        "code": "E3",
+        "msg": "dây cắt qua nhãn: 'LABEL'",
+        "at": [
+          20,
+          44
+        ],
+        "seg": [
+          0,
+          55,
+          300,
+          55
+        ]
+      }
+    ],
+    "warnings": []
+  },
+  {
+    "case": "shape_outside_canvas",
+    "expected": "E1",
+    "detected": true,
+    "errors": [
+      {
+        "code": "E1",
+        "msg": "hình/đường vượt mép khung",
+        "at": [
+          390,
+          200
+        ]
+      }
+    ],
+    "warnings": []
+  }
+]

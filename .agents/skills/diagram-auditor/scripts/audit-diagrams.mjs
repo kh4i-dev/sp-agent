@@ -52,10 +52,10 @@ function analyzeUseCaseGraph(source) {
 
   const out = [];
   const hiddenConstraints = source.split(/\r?\n/).filter((line) => !line.trim().startsWith("'") && /\[hidden\]/i.test(line)).length;
-  if (actors.length >= 3 && useCases.length > 12) {
+  if (actors.length >= 3 && useCases.length > 25) {
     out.push("Use Case complexity warning: " + actors.length + " actors and " + useCases.length +
       " use cases. Confirm a lane/layout plan; consider manual placement or decomposition when actor positions and connector paths matter.");
-  } else if (actors.length >= 3 || useCases.length > 12) {
+  } else if (actors.length >= 3 || useCases.length > 25) {
     out.push("Use Case layout planning warning: " + actors.length + " actors and " + useCases.length +
       " use cases. Check actor distribution, system-boundary crossings and connector routes in the rendered image.");
   }

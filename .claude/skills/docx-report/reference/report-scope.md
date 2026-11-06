@@ -25,6 +25,8 @@ Mục đích: chặn lỗi AI viết báo cáo/đồ án **quá ít trang, nông
 | **Kết luận** | ≥ 1 | Tổng kết + hướng phát triển |
 | **Tài liệu tham khảo** | — | **≥ 5 – 10** tài liệu, mọi trích dẫn phải có trong danh mục |
 
+> Cách viết **đặc tả use case** đúng (bộ 9 thành phần, ID bước/luồng, exception đủ 4 thứ, template bảng, ví dụ): `reference/use-case-spec.md`.
+
 ## 3. Độ sâu theo chương — Báo cáo BTL
 
 Mỗi chương **≥ 3 – 5 trang**, gồm tối thiểu: Mở đầu (lý do, mục tiêu, phạm vi, phương pháp, bố cục) →

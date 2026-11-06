@@ -11,3 +11,6 @@ vendor/
 Thumbs.db
 .DS_Store
 *.tmp
+
+# Isolated dependencies for diagram visual QA
+tools/.state-audit-runtime/

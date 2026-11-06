@@ -39,6 +39,30 @@ foreach ($n in $skillNames) {
 $assigned = @{}
 foreach ($k in $blocks.Keys) { foreach ($m in $blocks[$k]) { $assigned[$m] = $true } }
 
+# ---------- 1b. Helper: resolve tham chieu backtick-path (them 02/11/2026, xem skill-feedback/reference/pitfalls.md) ----------
+function Test-SkillRef([string]$ref, [string]$skillDir) {
+    $ref = $ref.Replace("/", "\")
+    # 1) cheo-skill: <skill-name>/... (nguon that: .claude/skills)
+    if (Test-Path -LiteralPath (Join-Path $cDir $ref)) { return $true }
+    # 2) trong skill: <skill>/<ref> hoac cap con scripts|reference(s)
+    foreach ($sub in @("", "scripts", "reference", "references")) {
+        if (Test-Path -LiteralPath (Join-Path (Join-Path $skillDir $sub) $ref)) { return $true }
+    }
+    # 3) repo root / tools / docs
+    foreach ($base in @($root, (Join-Path $root "tools"), (Join-Path $root "docs"))) {
+        if (Test-Path -LiteralPath (Join-Path $base $ref)) { return $true }
+    }
+    # 4) suffix-match trong moi skill (ref cheo skill viet thieu ten skill)
+    foreach ($sd in (Get-ChildItem -LiteralPath $cDir -Directory)) {
+        if (Test-Path -LiteralPath (Join-Path $sd.FullName $ref)) { return $true }
+    }
+    return $false
+}
+# Ten thu muc PROJECT-RELATIVE (deliverable cua du an nguoi dung, khong phai file repo) -> bo qua
+$deliverableRefRe = '^(domain|diagrams|audit|tables|datasets|okf|soi-so-do|private-docs|btl-cnpm)/|^docs/(project-overview|domain-models|coding-style|db-observation|\.doc-architect-state)'
+$backtickRefRe = [regex]'\x60([A-Za-z0-9_][A-Za-z0-9_/.-]*\.(?:md|py|ps1|mjs|json|tldr|sh|prisma))\x60'
+
+
 # ---------- 2. Kiem tra tung skill ----------
 foreach ($n in $skillNames) {
     $dir = Join-Path $cDir $n
@@ -108,6 +132,51 @@ foreach ($n in $skillNames) {
     if (@("docx-report","human-report-writing") -contains $n) {
         if ($content -notmatch "(?i)em dash|em-dash") { Add-Finding $n "WARN" "thieu luat cam em dash" }
     }
+
+    # ---------- 2b/2c. SKILL.md + reference(s)/*.md: mojibake, link markdown, ref backtick-path ----------
+    $refDirs = @("reference", "references") | ForEach-Object { Join-Path $dir $_ } | Where-Object { Test-Path -LiteralPath $_ }
+    $mdFiles = @($skillFile) + @($refDirs | ForEach-Object { Get-ChildItem -LiteralPath $_ -Filter *.md -File -ErrorAction SilentlyContinue } | Select-Object -ExpandProperty FullName)
+    $seenRefs = New-Object System.Collections.ArrayList
+    $vendorRefs = New-Object System.Collections.ArrayList   # references/ (so nhieu) = quy uoc vendored -> gom 1 dong
+    foreach ($mdf in $mdFiles) {
+        $mtxt = Get-Content -LiteralPath $mdf -Raw -Encoding UTF8
+        $relName = $mdf.Substring($dir.Length + 1)
+        $isVendor = $mdf -match '\\references\\'
+        if ($mtxt -match "\u00C3[\u0080-\u00BF]|\u00E2\u20AC\u0099|\u00E2\u0080") { Add-Finding $n "FAIL" "nghi mojibake: $relName" }
+        if ($mdf -ne $skillFile) {   # link markdown trong reference file (SKILL.md da check o tren)
+            $isTemplate = (Split-Path -Leaf $mdf) -match '-template\.md$'   # template link den file se sinh ra trong du an nguoi dung
+            foreach ($lm in [regex]::Matches($mtxt, "\[[^\]]*\]\(([^)]+)\)")) {
+                $tgt = $lm.Groups[1].Value.Trim().Split("#")[0]
+                if ($isTemplate) { continue }
+                if ($tgt -match "^(https?:|mailto:|tel:|file:|data:)" -or $tgt -eq "") { continue }
+                if ($tgt -match '^/') { continue }   # link root-absolute: vi du minh hoa bundle (SPEC...), khong phai file repo
+                # chi soi target dang file (co extension) hoac thu muc (ket thuc /) - bo qua link gia nhu [NOT](n), [OR](o)
+                if ($tgt -notmatch '\.[A-Za-z0-9]{1,8}$' -and $tgt -notmatch '/$') { continue }
+                if ($tgt -match '[<>|"?*]|path[\\/]to|^path$|relative-url|does-not-exist|subdir|NNNN|\{\{|\.\.\.|(^|/)(other|example|sample)\.md$') { continue }
+                $found = $false
+                foreach ($base in @((Split-Path -Parent $mdf), $dir)) {
+                    if (Test-Path -LiteralPath (Join-Path $base ([uri]::UnescapeDataString($tgt).Replace("/", "\")))) { $found = $true; break }
+                }
+                if (-not $found) { Add-Finding $n "WARN" "link hong ($relName): '$tgt'" }
+            }
+        }
+        foreach ($bm in $backtickRefRe.Matches($mtxt)) {
+            $ref = $bm.Groups[1].Value
+            if ($ref -notmatch "/") { continue }   # ten tran: theo luat ghi full-path (pitfalls 02/11/2026)
+            if ($ref -match "NNN|^\d|<|\{\{|\.\.|^X/|(^|/)x\." -or $ref -match $deliverableRefRe) { continue }
+            if (Test-SkillRef $ref $dir) { continue }
+            if ($isVendor) {
+                if (-not $vendorRefs.Contains($ref)) { [void]$vendorRefs.Add($ref) }
+            } elseif (-not $seenRefs.Contains("$relName|$ref")) {
+                [void]$seenRefs.Add("$relName|$ref")
+                Add-Finding $n "WARN" "ref backtick khong resolve ($relName): '$ref'"
+            }
+        }
+    }
+    if ($vendorRefs.Count -gt 0) {
+        $sample = ($vendorRefs | Select-Object -First 3) -join ", "
+        Add-Finding $n "WARN" "references/ (vendored, install mot phan?): $($vendorRefs.Count) ref khong resolve - vi du: $sample"
+    }
 }
 
 # ---------- 3. Mirror parity .claude <-> .agents ----------
@@ -139,6 +208,31 @@ if (Test-Path -LiteralPath $agentsPath) {
         if (($listed -join ",") -ne ($actual -join ",")) {
             [void]$globalFindings.Add("WARN  drift $k : AGENTS[$($listed -join ',')] != coord[$($actual -join ',')]")
         }
+    }
+}
+
+# ---------- 3c. docs/lessons-learned.md: hang bang mo coi (thu vao sau 02/11/2026) ----------
+$llPath = Join-Path $root "docs\lessons-learned.md"
+if (Test-Path -LiteralPath $llPath) {
+    $llLines = Get-Content -LiteralPath $llPath -Encoding UTF8
+    $i = 0
+    while ($i -lt $llLines.Count) {
+        $ln = $llLines[$i]
+        if ($ln -match '^\s*\|' -and $ln -notmatch '^\|[\s:\-|]+\|$') {
+            $j = $i - 1; $hasSep = $false
+            while ($j -ge 0 -and $llLines[$j].Trim() -ne '') {
+                if ($llLines[$j] -match '^\|[\s:\-|]+\|$') { $hasSep = $true; break }
+                $j--
+            }
+            if (-not $hasSep) {
+                $next = if ($i + 1 -lt $llLines.Count) { $llLines[$i + 1] } else { '' }
+                if ($next -match '^\|[\s:\-|]+\|$') { $i++; continue }   # dung la HEADER row (separator nam sau)
+                [void]$globalFindings.Add("WARN  lessons-learned.md: hang bang mo coi (thieu header) tai dong $($i + 1)")
+                while ($i -lt $llLines.Count -and $llLines[$i].Trim() -ne '') { $i++ }   # bao 1 lan/ Block
+                continue
+            }
+        }
+        $i++
     }
 }
 

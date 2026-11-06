@@ -1,0 +1,57 @@
+@startuml
+left to right direction
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 70
+skinparam ranksep 70
+
+actor "Khách (Guest)" as Guest
+actor "Khách hàng" as Customer
+actor "Khách VIP" as Vip
+actor "Người xem" as Viewer
+actor "Người audit" as Auditor
+actor "Quản trị" as Admin
+actor "Hệ thống mail" as MailSys
+
+Customer --|> Guest
+Vip --|> Customer
+
+rectangle "Hệ thống" {
+  package "Tài khoản" {
+    usecase "Đăng nhập" as UC_Login
+    usecase "Xác thực OTP" as UC_OTP
+  }
+  package "Luồng chính" {
+    usecase "Gửi yêu cầu" as UC_Request
+    usecase "Thanh toán" as UC_Pay
+  }
+  package "Tra cứu" {
+    usecase "Xem danh sách" as UC_View
+    usecase "Tìm kiếm nâng cao" as UC_Search
+  }
+  package "Kiểm duyệt" {
+    usecase "Kiểm duyệt" as UC_Review
+    usecase "Ghi log audit" as UC_Log
+    usecase "Xuất báo cáo" as UC_Report
+  }
+}
+
+Guest -- UC_Login
+Customer -- UC_Request
+Customer -- UC_Pay
+Viewer -- UC_View
+Auditor -- UC_Review
+Auditor -- UC_Report
+Admin -- UC_Report
+
+UC_Request ..> UC_OTP : <<include>>
+UC_Request ..> MailSys : <<include>>
+UC_Pay ..> UC_OTP : <<include>>
+UC_Review ..> UC_Log : <<include>>
+
+UC_Request ..> UC_Pay : <<extend>>
+UC_View ..> UC_Search : <<extend>>
+UC_Review ..> UC_Report : <<extend>>
+
+MailSys -- UC_Request
+@enduml

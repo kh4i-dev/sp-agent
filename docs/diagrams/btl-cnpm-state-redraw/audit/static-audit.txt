@@ -1,0 +1,13 @@
+[diagram-auditor] Đang kiểm định chất lượng sơ đồ tại: tools/.state-audit-runtime/static-check (recursive=false)
+✓ [PASS] state-01-don-hang.svg (Chuẩn mực 100%, không đè chữ, không cắt nét, đủ SVG + PNG)
+----------------------------------------------------
+[LƯU Ý NGHIỆM THU - ANTI-FALSE-PASS DOCTRINE]:
+  * Lỗi ĐỎ (FAIL) chặn cứng: banner, SVG hỏng, thiếu PNG, title nhúng, nhãn ERD,
+    quan hệ trùng, đè chữ, đường cắt chữ, VI PHẠM ZERO-COLOR, cỡ chữ < 9pt, tỷ lệ khung lệch.
+  * Cảnh báo VÀNG (PASS*) KHÔNG chặn tự động — nhưng Agent BẮT BUỘC soi mắt phân xử.
+  * Script KHÔNG THỂ thay thế kiểm tra ngữ nghĩa (Gate A) và soi trực quan bằng mắt (Gate C).
+  * Chỉ kiểm tra các path vertex nằm trong bounding box chữ; KHÔNG phải bộ phát hiện mọi giao cắt giữa các đoạn đường nối hoặc va chạm node-edge.
+  * Agent KHÔNG ĐƯỢC tuyên bố hoàn thành nếu chưa tự mở ảnh soi mắt + có bằng chứng soi ảnh!
+----------------------------------------------------
+[diagram-auditor] KẾT QUẢ STATIC: 1 SVG đã qua các kiểm tra chặn cứng được triển khai trong script.
+[diagram-auditor] LƯU Ý: Kết quả static không chứng minh sơ đồ đúng ngữ nghĩa hoặc không có mọi giao cắt đường nối; vẫn bắt buộc Visual Review/Proof-of-View.

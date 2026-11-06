@@ -1,0 +1,42 @@
+[
+  {
+    "file": "E:\\HOC TAP\\my-project\\btl-cnpm\\private-docs\\images\\diagrams\\slide-usecase-nguoi-mua.png",
+    "bytes": 454493,
+    "mtime": "2026-11-01T16:59:43.718399",
+    "sha256": "03c0d4c1bb1b0a3d4358adbea04041f05efd243abd3b3dcfc3f06b5e326d1bd5",
+    "svg_width": "1540",
+    "svg_height": "1936",
+    "drawio_exists": true,
+    "v6_png_exists": false
+  },
+  {
+    "file": "E:\\HOC TAP\\my-project\\btl-cnpm\\private-docs\\images\\diagrams\\slide-usecase-nguoi-ban.png",
+    "bytes": 408527,
+    "mtime": "2026-11-01T16:59:43.341264",
+    "sha256": "8709f6dfb0ce34cbbe231707ac41c8cf07a273e2e9a105049f89d69df86e676e",
+    "svg_width": "1540",
+    "svg_height": "1744",
+    "drawio_exists": true,
+    "v6_png_exists": false
+  },
+  {
+    "file": "E:\\HOC TAP\\my-project\\btl-cnpm\\private-docs\\images\\diagrams\\slide-usecase-tai-xe.png",
+    "bytes": 308021,
+    "mtime": "2026-11-01T16:59:44.418223",
+    "sha256": "befc63af540e9865f6443968118064e401e540b878f2cb7fc33b17214874c332",
+    "svg_width": "1540",
+    "svg_height": "1360",
+    "drawio_exists": true,
+    "v6_png_exists": false
+  },
+  {
+    "file": "E:\\HOC TAP\\my-project\\btl-cnpm\\private-docs\\images\\diagrams\\slide-usecase-noi-bo.png",
+    "bytes": 480505,
+    "mtime": "2026-11-01T16:59:44.114095",
+    "sha256": "bf4f5464fe37c130fafbca519463a00aa3e004fe35b3dce3127ecac49e706eff",
+    "svg_width": "1540",
+    "svg_height": "2278",
+    "drawio_exists": true,
+    "v6_png_exists": false
+  }
+]

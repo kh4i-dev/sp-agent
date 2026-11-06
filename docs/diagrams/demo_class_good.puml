@@ -1,0 +1,166 @@
+@startuml
+' Class Diagram - Hệ thống Quản lý Gia sư (Overview)
+' Adjacency-first model: docs/diagrams/demo_class-model.md
+' Không title trong ảnh — caption do docx-report sinh: "Hình 3.1: Sơ đồ lớp tổng quan"
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI", Arial, "DejaVu Sans", sans-serif
+skinparam defaultFontSize 12
+skinparam classFontSize 13
+skinparam classAttributeFontSize 11
+skinparam classAttributeIconSize 0
+skinparam roundCorner 0
+skinparam dpi 300
+skinparam linetype ortho
+skinparam nodesep 80
+skinparam ranksep 90
+
+' ==== HIDDEN LAYOUT CONSTRAINTS ====
+User -[hidden]- ConnectionRequest
+UserProfile -[hidden]- Conversation
+TutorProfile -[hidden]- Favorite
+
+' ==== DOMAIN GROUPS ====
+
+package "Tài khoản && Hồ sơ" {
+  class User {
+    + String id
+    + String email
+    - String passwordHash
+    # String fullName
+    ~ Role role
+    + UserStatus status
+    - int loginAttempts
+    + login()
+    - validatePassword()
+    # updateProfile()
+    ~ helper()
+  }
+
+  class UserProfile {
+    + String id
+    + String userId
+    - String bio
+    # Float ratingAvg
+    ~ ProfileStatus status
+    + updateRating()
+    - recalcRating()
+  }
+
+  class TutorProfile {
+    + String id
+    + String userId
+    - String subjects
+    # Float hourlyRate
+    ~ Boolean isVerified
+    + verify()
+    - checkDocuments()
+  }
+}
+
+package "Kết nối && Hội thoại" {
+  class ConnectionRequest {
+    + String id
+    + String senderId
+    + String receiverId
+    - String message
+    # RequestStatus status
+    ~ LocalDateTime createdAt
+    + accept()
+    + reject()
+    - validate()
+  }
+
+  class Conversation {
+    + String id
+    + String participant1Id
+    + String participant2Id
+    - LocalDateTime createdAt
+    # List~Message~ messages
+    ~ ConversationStatus status
+    + getMessages()
+    - appendMessage()
+  }
+
+  class Message {
+    + String id
+    + String conversationId
+    + String senderId
+    - String content
+    # MessageType type
+    ~ MessageStatus status
+    + send()
+    - validateContent()
+  }
+}
+
+package "Đánh giá" {
+  class Review {
+    + String id
+    + String reviewerId
+    + String revieweeId
+    - Integer rating
+    # String comment
+    ~ ReviewStatus status
+    + createReview()
+    - validateRating()
+  }
+
+  class Report {
+    + String id
+    + String reporterId
+    + String reportedId
+    - ReportReason reason
+    # String description
+    ~ ReportStatus status
+    + submitReport()
+    - validateReason()
+  }
+}
+
+package "Yêu thích" {
+  class Favorite {
+    + String id
+    + String userId
+    + String tutorId
+    - LocalDateTime createdAt
+    # FavoriteStatus status
+    ~ FavoriteType type
+    + addFavorite()
+    + removeFavorite()
+    - validate()
+  }
+}
+
+' ==== QUAN HỆ ====
+
+User "1" -- "0..1" UserProfile : profile >
+User "1" -- "0..1" TutorProfile : tutorProfile >
+
+User "1" -- "0..*" ConnectionRequest : sentRequests >
+User "1" -- "0..*" ConnectionRequest : receivedRequests >
+
+ConnectionRequest "0..*" -- "1" User : sender >
+ConnectionRequest "0..*" -- "1" User : receiver >
+
+Conversation "1" *-- "0..*" Message : messages >
+Message "0..*" -- "1" Conversation : conversation >
+User "1" -- "0..*" Conversation : conversations >
+
+User "1" -- "0..*" Review : givenReviews >
+User "1" -- "0..*" Review : receivedReviews >
+
+Review "0..*" -- "1" User : reviewer >
+Review "0..*" -- "1" User : reviewee >
+
+User "1" -- "0..*" Report : submittedReports >
+User "1" -- "0..*" Report : reportedIn >
+
+Report "0..*" -- "1" User : reporter >
+Report "0..*" -- "1" User : reported >
+
+User "1" -- "0..*" Favorite : favorites >
+Favorite "0..*" -- "1" TutorProfile : tutor >
+
+@enduml

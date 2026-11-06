@@ -6,13 +6,16 @@ Tài liệu tham chiếu chi tiết hướng dẫn định tuyến và lựa ch�
 
 ## 1. Ma trận định tuyến chi tiết (Detailed Routing Matrix)
 
+> **Chọn VẼ TAY hay AUTO trước khi tra bảng này:** xem SSOT [`tool-sweet-spot.md`](tool-sweet-spot.md).
+> Tóm tắt: **Use Case / State Machine / Activity = VẼ TAY (draw.io/SVG) bắt buộc**; **Class dày = VẼ TAY hoặc phân rã**; **Sequence/Trie = AUTO (PlantUML/Graphviz) đẹp**.
+
 | Loại sơ đồ | Công cụ khuyến nghị | Định dạng nguồn | Renderer | Lý do kỹ thuật cốt lõi |
 |---|---|---|---|---|
-| **Use Case Diagram** | PlantUML | `.puml` | Kroki / PlantUML | Actor hình người chuẩn ISO/UML 2.x, ranh giới hệ thống, quan hệ `<<include>>`, `<<extend>>`. |
-| **Activity Diagram** | PlantUML | `.puml` | Kroki / PlantUML | Cú pháp mới (`start`, `if/else`, `split`, `stop`), luồng rẽ nhánh chuẩn kỹ thuật. |
+| **Use Case Diagram** | **VẼ TAY: draw.io / SVG** (PlantUML chỉ làm bản nháp tham chiếu) | `.drawio` / `.svg` | diagrams.net / Playwright | PlantUML **không ghim được vị trí** actor và không chia 2 cột UC với actor hai bên → dồn 1 cột, dây quạt dài. Phải vẽ tay để đặt actor hai bên + canh cột/hàng (`tool-sweet-spot.md`, `layout-thinking.md` §11). |
+| **Activity Diagram** | **VẼ TAY: draw.io / SVG** (PlantUML chỉ làm bản nháp tham chiếu) | `.drawio` / `.svg` | diagrams.net / Playwright | Swimlane cần **ghim lane** "Người dùng \| Hệ thống" + nhãn guard đúng trên cạnh rẽ; auto hay làm nhãn trôi giữa lane, dây chéo xuyên node. Quy tắc: `plantuml-diagrams/reference/activity-rules.md`. |
 | **Sequence Diagram** | PlantUML | `.puml` | Kroki / PlantUML | Quản lý lifeline, `activate`/`deactivate`, `alt`/`else`, `autonumber` chính xác. |
-| **Class Diagram** | PlantUML | `.puml` | Kroki / PlantUML | Visibility `+`, `-`, `#`, quan hệ composition `*--`, aggregation `o--`, generalization `--\|>`. |
-| **State Machine** | PlantUML | `.puml` | Kroki / PlantUML | Trạng thái bắt đầu `[*]`, chuyển trạng thái rõ ràng, ghi chú guard conditions. |
+| **Class Diagram** | PlantUML auto cho 4–6 lớp thưa; **VẼ TAY (draw.io) hoặc phân rã khi ≥ 6 lớp / có hub / nhiều association cùng cặp** | `.puml` / `.drawio` | Kroki / diagrams.net | Visibility `+`, `-`, `#`, composition `*--`, aggregation `o--`, generalization `--\|>`. Auto không ghim hub-center → đổi hint vẫn ra hình học y hệt (`layout-thinking.md` §10). |
+| **State Machine** | **VẼ TAY: draw.io / SVG** (PlantUML chỉ làm bản nháp tham chiếu) | `.drawio` / `.svg` | diagrams.net / Playwright | Cần ghim vị trí state + nhãn sự kiện `event [guard] / action` **đúng trên cạnh**; chu kỳ `backButton_onclick` dễ thành dây chéo/vòng xa khi auto. Quy tắc: `plantuml-diagrams/reference/state-rules.md`. |
 | **ERD (Thực thể quan hệ)** | PlantUML | `.puml` | Kroki / PlantUML | Ký hiệu Crow's foot (`\|\|--o{`), PK/FK rõ ràng, không vẽ đè nhãn lên đường nối. |
 | **Prefix Trie** | Graphviz DOT | `.dot` | Kroki / Graphviz | Cấu trúc cây tiền tố với các tầng ký tự phân cấp (`rankdir=TB`), node hình tròn/chữ nhật, đánh dấu ký tự kết thúc. |
 | **BK-Tree** | Graphviz DOT | `.dot` | Kroki / Graphviz | Cây tìm kiếm mờ (Fuzzy matching) với trọng số khoảng cách Levenshtein (`label="d=1"`), phân nhánh đa chiều hoàn hảo. |

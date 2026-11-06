@@ -92,6 +92,25 @@ Và kiểm tra môi trường bằng **khả năng thật**, không qua trung gi
 tìm Word bằng đường dẫn chuẩn + tạo COM object thật, đừng tìm trong PATH
 (Office không tự thêm vào PATH nên check PATH luôn báo sai).
 
+### Bài học 12: Bẫy Rò rỉ Thụt Lề Đoạn Văn từ Style Normal vào Ô Bảng (Table Indent Leakage Trap)
+- **Triệu chứng phát hiện**: Các ô bảng hẹp (chứa STT, Mã UC, Mã yêu cầu như `F-01`, `F-12`...) xuất hiện khoảng trống đầu dòng vô lý đẩy chữ sát mép phải, khiến các mã này bị bẻ gãy rớt dòng dị dạng (`F-1` và `2`, `M` và `ã UC`).
+- **Nguyên nhân cốt lõi**: Trong file Word tiếng Việt, style `Normal` thường khai báo thụt lề đầu dòng 1.25 cm (`<w:ind w:firstLine="720"/>`). Do các thẻ `<w:p>` bên trong ô bảng (`<w:tc>`) không khai báo thẻ `<w:ind>` độc lập, Word và LibreOffice để thuộc tính này rò rỉ vào toàn bộ ô bảng. Với các ô hẹp (dưới 1500 twips), thụt lề 720 twips nuốt trọn hơn một nửa diện tích ô.
+- **Giải pháp phẫu thuật vi mô bằng `lxml`**: Quét trực tiếp `word/document.xml`, duyệt toàn bộ thẻ `<w:tc>`, với mỗi `<w:p>` bên trong, lấy hoặc tạo thẻ `<w:pPr>` và ép cứng:
+  ```python
+  ind = pPr.find(qn('w:ind'))
+  if ind is None:
+      ind = etree.SubElement(pPr, qn('w:ind'))
+  ind.set(qn('w:firstLine'), '0')
+  ind.set(qn('w:left'), '0')
+  ind.set(qn('w:right'), '0')
+  if qn('w:firstLineChars') in ind.attrib:
+      del ind.attrib[qn('w:firstLineChars')]
+  ```
+- Đồng thời:
+  1. Thêm `<w:tblLayout w:type="fixed"/>` vào `<w:tblPr>`.
+  2. Bổ sung `<w:noWrap/>` vào `<w:tcPr>` của cột mã/STT để chống ngắt dòng tại dấu gạch nối (`-`).
+  3. Căn giữa (`w:val="center"`) cho cột mã, căn trái (`w:val="left"`) cho cột nội dung; **TUYỆT ĐỐI CẤM căn đều hai bên (`both`/justified)** trong ô bảng.
+
 ---
 
 ## 3. Mẫu Code Python Chuẩn tắc (Safe In-Place Script Pattern)

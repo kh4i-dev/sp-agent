@@ -14,6 +14,12 @@
 | **Ranh giới** | Hình chữ nhật bao quanh các use case | Không có ranh giới |
 | **Association (actor–usecase)** | Đường **thẳng, KHÔNG mũi tên** | Mũi tên (sai — trông như luồng dữ liệu) |
 | **`<<include>>`/`<<extend>>`** | Nét **đứt + mũi tên hở + nhãn**; nối **usecase↔usecase** | Nối actor↔usecase |
+
+**Hướng mũi tên nét đứt (đúng chuẩn UML — dễ nhầm):**
+- `<<include>>`: mũi tên hướng **VỀ use case ĐƯỢC include** — `Base ..> Included : <<include>>` (base luôn gọi hành vi dùng chung bắt buộc).
+- `<<extend>>`: mũi tên hướng **VỀ use case CƠ SỞ được mở rộng** — `Extending ..> Base : <<extend>>` (hành vi mở rộng có điều kiện).
+- Cả hai **chỉ nối usecase↔usecase**, **không** nối actor; **không** dùng cho association (association là nét liền, không mũi tên).
+- Cặp base↔target đặt **liền kề** để đường nét đứt **ngắn** (xem `use-case-layout` §3.5: cấm đường dài).
 | **Kế thừa actor** | Tam giác rỗng `--|>` | Đường thường |
 
 > **SePay/VietQR/SMTP KHÔNG phải actor.** Thanh toán = use case "Mua gói & thanh toán VietQR"; email OTP = bước trong use case, không vẽ SMTP thành actor (nếu buộc phải thể hiện hệ thống ngoài thì để **secondary xa bên phải**, KHÔNG để là actor nghiệp vụ chính).

@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="state-model" name="state-01-don-hang">
+    <mxGraphModel page="1" pageWidth="1480" pageHeight="1030">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pre" value="Trước vận chuyển" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=7;verticalAlign=top;spacingTop=12;whiteSpace=wrap;html=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="70" y="70" width="1010" height="220" />
+        </mxCell>
+        <mxCell id="post" value="Sau giao hàng" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=7;verticalAlign=top;spacingTop=12;whiteSpace=wrap;html=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="790" y="390" width="650" height="240" />
+        </mxCell>
+        <mxCell id="PendingPayment" value="Chờ thanh toán" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=18;whiteSpace=wrap;html=0;" vertex="1" parent="pre">
+          <mxGeometry as="geometry" x="90" y="90" width="220" height="76" />
+        </mxCell>
+        <mxCell id="Paid" value="Đã thanh toán" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=18;whiteSpace=wrap;html=0;" vertex="1" parent="pre">
+          <mxGeometry as="geometry" x="430" y="90" width="220" height="76" />
+        </mxCell>
+        <mxCell id="Packed" value="Đã đóng gói" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=18;whiteSpace=wrap;html=0;" vertex="1" parent="pre">
+          <mxGeometry as="geometry" x="760" y="90" width="220" height="76" />
+        </mxCell>
+        <mxCell id="Shipping" value="Đang giao" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=18;whiteSpace=wrap;html=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1210" y="160" width="220" height="76" />
+        </mxCell>
+        <mxCell id="Delivered" value="Đã giao" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=18;whiteSpace=wrap;html=0;" vertex="1" parent="post">
+          <mxGeometry as="geometry" x="420" y="100" width="220" height="76" />
+        </mxCell>
+        <mxCell id="DeliveredVerified" value="Đã xác thực" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=18;whiteSpace=wrap;html=0;" vertex="1" parent="post">
+          <mxGeometry as="geometry" x="30" y="100" width="220" height="76" />
+        </mxCell>
+        <mxCell id="Cancelled" value="Đã hủy" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=18;whiteSpace=wrap;html=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="490" width="220" height="76" />
+        </mxCell>
+        <mxCell id="Completed" value="Hoàn tất" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=18;whiteSpace=wrap;html=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1100" y="820" width="220" height="76" />
+        </mxCell>
+        <mxCell id="Returned" value="Trả hàng" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;rounded=1;arcSize=18;whiteSpace=wrap;html=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="820" width="220" height="76" />
+        </mxCell>
+        <mxCell id="initial" value="" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;ellipse;fillColor=#000000;whiteSpace=wrap;html=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="10" y="184" width="28" height="28" />
+        </mxCell>
+        <mxCell id="final_cancel" value="" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;shape=endState;whiteSpace=wrap;html=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="484" y="666" width="32" height="32" />
+        </mxCell>
+        <mxCell id="final_return" value="" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;shape=endState;whiteSpace=wrap;html=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="484" y="966" width="32" height="32" />
+        </mxCell>
+        <mxCell id="init" value="" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;" edge="1" parent="1" source="initial" target="PendingPayment">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="payment" value="thanh toán" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;" edge="1" parent="1" source="PendingPayment" target="Paid">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+            <mxPoint as="offset" x="0.0" y="-63.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pack" value="đóng gói" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;" edge="1" parent="1" source="Paid" target="Packed">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+            <mxPoint as="offset" x="0.0" y="-63.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pickup" value="nhận kiện" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=1.0;exitY=0.5;entryX=0.0;entryY=0.5;" edge="1" parent="1" source="Packed" target="Shipping">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+            <mxPoint as="offset" x="25.0" y="-63.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="deliver" value="giao thành công" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=0.5;exitY=1.0;entryX=0.5;entryY=0.0;" edge="1" parent="1" source="Shipping" target="Delivered">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+            <mxPoint as="offset" x="-150.0" y="-16.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="verify" value="xác thực tem" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;" edge="1" parent="1" source="Delivered" target="DeliveredVerified">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+            <mxPoint as="offset" x="0.0" y="-57.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel" value="hủy đơn" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=0.42574257425742573;exitY=1.0;entryX=0.5;entryY=0.0;" edge="1" parent="1" source="pre" target="Cancelled">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+            <mxPoint as="offset" x="-130.0" y="0.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="release" value="giải ngân&#10;thành công" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=0.6461538461538462;exitY=1.0;entryX=0.5;entryY=0.0;" edge="1" parent="1" source="post" target="Completed">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+            <mxPoint as="offset" x="130.0" y="-13.5" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="return_verified" value="chấp thuận trả hàng" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=0.5;exitY=1.0;entryX=0.5;entryY=0.0;" edge="1" parent="1" source="DeliveredVerified" target="Returned">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="930" y="745" />
+              <mxPoint x="500" y="745" />
+            </Array>
+            <mxPoint as="offset" x="-52.0" y="-34.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="return_completed" value="chấp thuận trả hàng" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=0.0;exitY=0.5;entryX=1.0;entryY=0.5;" edge="1" parent="1" source="Completed" target="Returned">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+            <mxPoint as="offset" x="0.0" y="-32.0" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="finish_cancel" value="" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=0.5;exitY=1.0;entryX=0.5;entryY=0.0;" edge="1" parent="1" source="Cancelled" target="final_cancel">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="finish_return" value="" style="fontFamily=Arial;fontSize=30;fontColor=#000000;strokeColor=#000000;fillColor=#ffffff;edgeStyle=none;rounded=0;endArrow=block;endFill=1;exitPerimeter=0;entryPerimeter=0;fontSize=27;exitX=0.5;exitY=1.0;entryX=0.5;entryY=0.0;" edge="1" parent="1" source="Returned" target="final_return">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

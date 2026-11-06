@@ -126,9 +126,12 @@ Mọi sơ đồ dùng cho báo cáo, đồ án, luận văn và slide kỹ thu�
 
 ---
 
-> **Routing guard:** Không dùng renderer JSON này như bằng chứng sơ đồ UML Class/Use Case đã có bố cục tốt. Với nhiều quan hệ, nhiều association chung cặp hoặc nhu cầu actor hai bên, dùng PlantUML để thử bố cục rồi chuyển draw.io theo SSOT manual-fallback khi đường nối không sạch. Renderer giờ phải dừng lỗi nếu edge tham chiếu node không tồn tại hoặc node ID bị trùng; lỗi này không được bỏ qua vì sẽ âm thầm làm mất quan hệ trên hình.
+> **Routing guard:** Không dùng renderer JSON này như bằng chứng sơ đồ UML Class/Use Case đã có bố cục tốt. Chọn vẽ tay hay auto theo SSOT [`diagram-orchestrator/reference/tool-sweet-spot.md`](../diagram-orchestrator/reference/tool-sweet-spot.md): **Use Case = vẽ tay (draw.io) ngay**, không "thử PlantUML trước"; **Class ≥6 lớp/có hub = vẽ tay hoặc phân rã**. Renderer giờ phải dừng lỗi nếu edge tham chiếu node không tồn tại hoặc node ID bị trùng; lỗi này không được bỏ qua vì sẽ âm thầm làm mất quan hệ trên hình.
 
 ## 5. Quy tắc QA cho Agent (Render & Visual Gate)
+
+> [!CAUTION]
+> **BẮT BUỘC SOI ẢNH (anti-rush):** render xong phải **nạp file `.png` vào ngữ cảnh model** (đọc chính file ảnh) và tự kiểm **chữ có đè? khoảng cách có đều? nhìn có dễ?** trước khi báo xong. Renderer trả exit 0 **không** phải bằng chứng ảnh đẹp; không trích được ≥3 nhãn nguyên văn từ ảnh = chưa xem ảnh = **CẤM PASS**. Chi tiết: `diagram-auditor` §2.
 
 1. **Kiểm tra chữ trong khối (Labels):**
    - Không dồn quá nhiều chữ vào 1 dòng. Dùng ký tự xuống dòng `\n` để tách thành:

@@ -1,6 +1,6 @@
 ---
 name: coord-slides
-description: Điều phối khối SLIDE / THUYẾT TRÌNH (PowerPoint .pptx): nạp nhanh để làm, sửa, làm đẹp, tái tạo slide, chuyển tài liệu PDF/Word sang PPT, thêm narration/animation. Gom pptx-deck (slide cơ bản), pptx (thao tác OOXML), ppt-master (native cao cấp), theme-factory (màu/font), anti-slop (chống AI slop). Từ khóa kích hoạt: làm slide, thuyết trình, PowerPoint, pptx, deck, bảo vệ đồ án, beautify slide, PDF sang PPT, tái tạo slide.
+description: Điều phối khối SLIDE / THUYẾT TRÌNH (PowerPoint .pptx): nạp nhanh để làm, sửa, làm đẹp, tái tạo slide, chuyển tài liệu PDF/Word sang PPT, thêm narration/animation. Gom pptx-deck (slide cơ bản), pptx-phan-tich-bai-toan (slide chương phân tích bài toán, học thuật, chống mùi AI), pptx (thao tác OOXML), ppt-master (native cao cấp), theme-factory (màu/font), anti-slop (chống AI slop). Từ khóa kích hoạt: làm slide, thuyết trình, PowerPoint, pptx, deck, bảo vệ đồ án, slide phân tích bài toán, beautify slide, PDF sang PPT, tái tạo slide.
 ---
 
 # coord-slides — Điều phối khối Slide / Thuyết trình
@@ -16,6 +16,7 @@ description: Điều phối khối SLIDE / THUYẾT TRÌNH (PowerPoint .pptx): n
 | Skill | Vai trò | Khi nào |
 |---|---|---|
 | `pptx-deck` | **CHỦ (deck cơ bản)**: template, bố cục, chart native, speaker notes | slide thường |
+| `pptx-phan-tich-bai-toan` | **CHỦ (chương phân tích bài toán, học thuật)**: bìa, đặt vấn đề, phạm vi, so sánh ưu–nhược, ít sơ đồ, ảnh thật, layer sửa được, chống "mùi AI" | slide đồ án phần phân tích |
 | `ppt-master` | **CHỦ (native cao cấp)**: chuyển tài liệu→slide, tái tạo, beautify, animation, TTS | deck đẳng cấp |
 | `pptx` | Thao tác OOXML/pptxgenjs chuyên sâu (template, chart, QA) | case nâng cao |
 | `theme-factory` | Áp theme màu/font (**branded/marketing**) | khi cần theme |

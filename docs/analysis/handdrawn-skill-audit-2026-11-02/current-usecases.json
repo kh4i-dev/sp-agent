@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "file": "slide-usecase-noi-bo.svg",
+      "canvas": [
+        1670,
+        1794
+      ],
+      "counts": {
+        "text": 45,
+        "shape": 22,
+        "segment": 42
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "slide-usecase-nguoi-mua.svg",
+      "canvas": [
+        1330,
+        2084
+      ],
+      "counts": {
+        "text": 31,
+        "shape": 20,
+        "segment": 29
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "errors": 0,
+  "warnings": 0
+}

@@ -1,7 +1,10 @@
 ---
 name: skill-coordinator
-description: Bản đồ + giao thức điều phối TOÀN BỘ bộ skill sp-agent để các skill phối hợp và tôn trọng lẫn nhau, tránh dùng lẻ một skill (như chỉ `docx-report`) hoặc làm trái quy ước chung. Nạp khi bắt đầu bất kỳ việc lớn: viết báo cáo/đồ án/luận văn, làm slide, vẽ sơ đồ, nghiên cứu, xử lý Word/PDF/Excel, lập tài liệu dự án. Từ khóa kích hoạt: điều phối skill, chọn skill, nạp skill, phối hợp skill, quy trình đồ án, bắt đầu dự án tài liệu, không biết dùng skill nào.
+description: "Bản đồ + giao thức điều phối TOÀN BỘ bộ skill sp-agent để các skill phối hợp và tôn trọng lẫn nhau, tránh dùng lẻ một skill (như chỉ `docx-report`) hoặc làm trái quy ước chung. Nạp khi bắt đầu bất kỳ việc lớn: viết báo cáo/đồ án/luận văn, làm slide, vẽ sơ đồ, nghiên cứu, xử lý Word/PDF/Excel, lập tài liệu dự án. Từ khóa kích hoạt: điều phối skill, chọn skill, nạp skill, phối hợp skill, quy trình đồ án, bắt đầu dự án tài liệu, không biết dùng skill nào."
 ---
+
+> **Quy tắc hiện hành (02/11/2026):** bản cuối dùng `handdrawn-diagrams`: Python toạ độ cố định → `docs/diagrams/vectors/*.svg` + `docs/images/diagrams/*.png`, spec JSON riêng. PlantUML/Graphviz/Mermaid/drawio/tldraw trong các ví dụ bên dưới chỉ dùng nháp. Nguồn `.py` là bắt buộc. Duyệt ngữ nghĩa theo nguồn, chạy `run_diagrams.py` (cổng máy), rồi Vision QA từng hình; không suy PASS bố cục từ exit 0. Use Case chung gốc ở junction thân–tay `(ax, ay−4)` = tâm đầu +18 với mẫu hiện hành, không ở bụng. State đọc `plantuml-diagrams/reference/state-playbook.md`, không note/legend/footer trên canvas. Khi hướng dẫn cũ trái khối này, áp dụng khối này.
+
 
 # Skill Coordinator — Nhạc trưởng của bộ skill sp-agent
 
@@ -29,6 +32,7 @@ thật cần **nhiều skill phối hợp** (nội dung → sơ đồ → văn p
 | Tài liệu dự án / ADR | `doc-architect`, `living-docs` | `okf-knowledge-format`, `documentation`, `documentation-and-adrs` |
 | Thiết kế/bố cục (chống slop) | `anti-slop` | `theme-factory`, `diagram-design` |
 | Kỷ luật kỹ thuật / debug | `engineering-discipline` | — |
+| Gặp lỗi khi chạy theo skill → đóng góp bài học | `skill-feedback` | `engineering-discipline` (chứng minh bằng evidence) |
 
 > **Nạp nhanh theo khối:** nếu việc thuộc một khối rõ ràng, nạp thẳng **coordinator của khối đó** thay vì tự ghép:
 > `coord-report` (báo cáo/đồ án Word) · `coord-docs` (tài liệu dự án, viết/sửa docs) · `coord-diagrams` (sơ đồ) · `coord-slides` (slide) · `coord-data` (Excel/PDF/biểu đồ) · `coord-research` (nghiên cứu).
@@ -104,6 +108,7 @@ diagram-orchestrator (chọn công cụ theo ngữ nghĩa) → <tool> → diagra
 - ❌ Dùng **màu** cho sơ đồ đồ án học thuật; nhúng `title` trong ảnh.
 - ❌ Sửa `.claude/skills/` mà quên `tools/sync-skills.ps1`.
 - ❌ Nạp skill nhưng **bỏ bước render / kiểm ảnh** mà skill yêu cầu.
+- ❌ Gặp lỗi khi chạy theo skill mà **không đóng góp lại** vào skill đó (phiên sau lặp lại đúng lỗi cũ) — dùng `skill-feedback`.
 
 ---
 

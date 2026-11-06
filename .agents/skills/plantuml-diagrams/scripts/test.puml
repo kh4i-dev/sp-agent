@@ -1,0 +1,6 @@
+@startuml
+skinparam monochrome true
+actor A
+actor B
+A -> B : test
+@enduml

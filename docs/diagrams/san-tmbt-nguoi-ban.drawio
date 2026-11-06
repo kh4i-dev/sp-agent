@@ -1,0 +1,33 @@
+<mxfile host="app.diagrams.net" agent="sp-agent-use-case-layout" version="24.7.17">
+  <diagram id="6d5a9b4f015d" name="Page-1">
+    <mxGraphModel dx="1000" dy="640" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="boundary" value="Sàn TMBT" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fontSize=16;fontStyle=1;fillColor=none;strokeColor=#000000;arcSize=2;" vertex="1" parent="1"><mxGeometry x="220" y="30" width="576" height="943" as="geometry"/></mxCell>
+        <mxCell id="subtitle" value="Phân hệ người bán" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;" vertex="1" parent="1"><mxGeometry x="348" y="62" width="320" height="24" as="geometry"/></mxCell>
+        <mxCell id="uc_register" value="Đăng ký mở gian hàng" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="253" y="108" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="uc_listing" value="Đăng bán sản phẩm" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="347" y="178" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="uc_order" value="Tiếp nhận và xử lý đơn hàng" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="415" y="274" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="uc_handover" value="Bàn giao cho tài xế" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="450" y="385" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="uc_revenue" value="Xem doanh thu và số dư ví" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="450" y="502" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="uc_withdraw" value="Rút tiền từ ví" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="415" y="613" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="uc_rating" value="Xem đánh giá sản phẩm" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="347" y="709" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="uc_support" value="Tiếp nhận và xử lý yêu cầu hỗ trợ" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="253" y="779" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="uc_qr" value="Đóng gói và in tem QR" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="621" y="171" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="uc_feedback" value="Phản hồi khách hàng" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="512" y="869" width="150" height="64" as="geometry"/></mxCell>
+        <mxCell id="seller" value="Người bán" style="shape=umlActor;verticalAlign=top;html=1;outlineConnect=0;labelPosition=left;verticalLabelPosition=middle;align=right;fillColor=#FFFFFF;strokeColor=#000000;fontSize=12;" vertex="1" parent="1"><mxGeometry x="130" y="446" width="40" height="60" as="geometry"/></mxCell>
+        <mxCell id="as1" style="endArrow=none;html=1;rounded=1;strokeColor=#000000;" edge="1" parent="1" source="seller" target="uc_register"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="as2" style="endArrow=none;html=1;rounded=1;strokeColor=#000000;" edge="1" parent="1" source="seller" target="uc_listing"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="as3" style="endArrow=none;html=1;rounded=1;strokeColor=#000000;" edge="1" parent="1" source="seller" target="uc_order"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="as4" style="endArrow=none;html=1;rounded=1;strokeColor=#000000;" edge="1" parent="1" source="seller" target="uc_handover"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="as5" style="endArrow=none;html=1;rounded=1;strokeColor=#000000;" edge="1" parent="1" source="seller" target="uc_revenue"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="as6" style="endArrow=none;html=1;rounded=1;strokeColor=#000000;" edge="1" parent="1" source="seller" target="uc_withdraw"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="as7" style="endArrow=none;html=1;rounded=1;strokeColor=#000000;" edge="1" parent="1" source="seller" target="uc_rating"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="as8" style="endArrow=none;html=1;rounded=1;strokeColor=#000000;" edge="1" parent="1" source="seller" target="uc_support"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="in9" value="«include»" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=1;fontSize=11;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" edge="1" parent="1" source="uc_order" target="uc_qr"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="ex10" value="«extend»" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=1;fontSize=11;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" edge="1" parent="1" source="uc_feedback" target="uc_rating"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

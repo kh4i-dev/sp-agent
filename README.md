@@ -4,7 +4,7 @@ Bộ **agent skills** cho học tập/đồ án: viết tài liệu Word, làm s
 nghiên cứu có dẫn nguồn, xử lý PDF/Excel, viết tài liệu dự án.
 
 Mục tiêu: bạn ra lệnh tự nhiên ("viết báo cáo", "làm slide", "vẽ use case", "nghiên cứu X") —
-agent **tự nhận diện và nạp đúng skill** để làm đúng chuẩn. Hiện có **33 skill**.
+agent **tự nhận diện và nạp đúng skill** để làm đúng chuẩn. Hiện có **42 skill**.
 
 ## Cách agent nạp skill (quan trọng)
 
@@ -28,7 +28,7 @@ sp-agent/
 ├── CLAUDE.md                 # trỏ về AGENTS.md
 ├── README.md                 # file này
 ├── .gitignore                # bỏ vendor/ + __pycache__/
-├── .claude/skills/           # NGUỒN CHÍNH — sửa ở đây (32 skill)
+├── .claude/skills/           # NGUỒN CHÍNH — sửa ở đây (42 skill)
 ├── .agents/skills/           # BẢN MIRROR (đừng sửa tay)
 ├── vendor/                   # repo tham khảo (KHÔNG auto-load, KHÔNG commit)
 ├── reference/                # tài liệu tham khảo & guide ppt-master
@@ -38,7 +38,7 @@ sp-agent/
     └── verify-skills.ps1     # kiểm tra frontmatter SKILL.md
 ```
 
-## Skill index (33)
+## Skill index (34)
 
 ### Điều phối (meta)
 
@@ -60,6 +60,7 @@ sp-agent/
 | Skill | Việc |
 |---|---|
 | `pptx-deck` | Slide thuyết trình: template, chart native, render QA |
+| `pptx-phan-tich-bai-toan` | Slide **chương phân tích bài toán**: bìa, đặt vấn đề, mục tiêu/phạm vi, tác nhân, kiến trúc, so sánh ưu–nhược; ít sơ đồ, ảnh thật, chữ vừa phải, layer sửa được, chống "mùi AI" |
 | `ppt-master` | PDF/Doc/MD → slide native, tái tạo slide từ ảnh, beautify, animation/narration |
 | `pptx` | Tạo/đọc/sửa `.pptx/.potx` (layout, speaker notes) |
 
@@ -73,6 +74,7 @@ sp-agent/
 | `simplified-diagrams` | Sơ đồ tinh gọn/khái niệm (5-8 thực thể) cho bảo vệ đồ án |
 | `tldraw-diagrams` | Sơ đồ kiến trúc/flowchart thẩm mỹ cao, đường cong mềm |
 | `diagram-auditor` | Audit chất lượng sơ đồ (chống False-PASS, méo/đè nhãn) |
+| *(công cụ trong `use-case-layout`)* | `scripts/eye_audit.py` — "soi như mắt người" ở **độ phóng đại**: tìm **ứng viên** lỗi hình học (line xuyên ellipse/chữ/**tên actor**, nhãn tràn, cột lệch, bước cột lệch nhịp, vòng xa, neo lơ lửng, dồn cục…) + **cắt zoom 4×** từng vùng + **overlay lưới 10×10** để mắt phán `THAT`/`BAO-OAN`. Không phán PASS/FAIL hộ |
 | `diagram-design` | Đa dạng sơ đồ (gantt, sankey, ERD, UML…) xuất HTML/SVG/PNG |
 
 ### Nghiên cứu
@@ -94,6 +96,7 @@ sp-agent/
 
 | Skill | Việc |
 |---|---|
+| `project-handbook` | **Sổ tay dự án → PDF**: đọc mã nguồn rồi viết tài liệu để người khác hiểu trọn dự án (thuật ngữ, máy trạng thái, đường đi của tiền, **đặc tả từng trường hợp Đầu vào–Xử lý hệ thống–Đầu ra–Nhánh lỗi**, kịch bản chạy suốt, mã lỗi, hạn chế đã biết, bảng kiểm phủ); xuất **PDF A4 có bìa + mục lục + số trang** |
 | `doc-architect` | Lập/audit tài liệu dự án (README, AGENTS.md, docs/) |
 | `living-docs` | ADR/MADR, PRD, sơ đồ kiến trúc Mermaid sống |
 | `okf-knowledge-format` | Đóng gói tri thức theo OKF bundle |
@@ -123,6 +126,9 @@ sp-agent/
 ```powershell
 # Python packages
 pip install python-docx python-pptx openpyxl xlsxwriter pandas pymupdf pdfplumber pypdf reportlab
+# markdown: bat buoc cho project-handbook (md -> html -> pdf)
+# pillow  : bat buoc cho use-case-layout/eye_audit.py --overlay (ve luoi so tham)
+pip install markdown pillow
 
 # LibreOffice — bắt buộc cho render QA (Word/Slide) và recalc Excel
 winget install TheDocumentFoundation.LibreOffice
@@ -130,6 +136,10 @@ winget install TheDocumentFoundation.LibreOffice
 # pandoc (tùy chọn)
 winget install JohnMacFarlane.Pandoc
 ```
+
+> **Chrome/Edge là bắt buộc cho `project-handbook`** (xuất `.md` → `.pdf` qua Chrome headless + CDP,
+> để có chân trang "Trang n/ N" mà pandoc/wkhtmltopdf không làm được). Thường đã có sẵn;
+> nếu chưa: `winget install Google.Chrome`. Cần **Node ≥ 20** (dùng `WebSocket` có sẵn, không cần npm install).
 
 Kiểm tra môi trường:
 

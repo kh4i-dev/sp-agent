@@ -1,10 +1,13 @@
 # Vẽ tay Fallback — Khi auto-layout vẫn xấu (SSOT)
 
-> **Vị trí:** `diagram-orchestrator/reference/manual-fallback.md` là **SSOT**.
+> **Vị trí:** `diagram-orchestrator/reference/manual-fallback.md` là **SSOT về QUY TRÌNH vẽ tay**.
+> Còn **quyết định "nên vẽ tay hay để auto"** thì xem SSOT [`tool-sweet-spot.md`](tool-sweet-spot.md).
 > Mọi skill sơ đồ (`plantuml-diagrams` §5, `use-case-layout` §3.3–3.4, `tldraw-diagrams` §1,
 > `simplified-diagrams`) defer về đây. Không copy quy trình ra chỗ khác, chỉ trỏ link.
 
 ## 0. Khi nào kích hoạt (hai lối hợp lệ, không mâu thuẫn)
+
+> **Ngoại lệ quan trọng — USE CASE / STATE MACHINE / ACTIVITY:** với ba loại sơ đồ này, vẽ tay **KHÔNG phải fallback** mà là **đường chính mặc định** (Use Case: auto không ghim được vị trí actor/điểm neo đường nối → dễ dồn actor, kéo dây rối; State/Activity: bắt buộc ghim vị trí phần tử + nhãn neo trên cạnh — quyết định dự án 2026-10-26 trong `tool-sweet-spot.md` §0.1). Với cả ba, dùng thẳng Lối A bên dưới, không cần chờ qua thử nghiệm.
 
 Chỉ chuyển sang vẽ tay khi lỗi cần giải quyết là **hình học/bố cục**, không phải ngữ nghĩa.
 
@@ -75,21 +78,22 @@ Vẽ tay chỉ đổi **vị trí / routing**, không đổi actor, use case, qu
 - Đặt tên: `<name>-manual.drawio|.tldr` + `<name>-manual.svg|.png`;
   giữ bản auto cũ (`<name>-auto-vN.*`) để truy vết, không xóa.
 
-### Bước F6 — Qua cổng auditor như bản auto
-- Chạy `node .claude/skills/diagram-auditor/scripts/audit-diagrams.mjs <thư-mục>` — 0 lỗi ĐỎ.
-- Proof-of-View: mở PNG vào ngữ cảnh model, ghi ≥ 3 nhãn nguyên văn + vị trí +
-  danh sách lỗi/không lỗi + dấu vết file (tên + dung lượng + thời điểm render).
+### Bước F6 — Duyệt bố cục BẰNG MẮT SOI ẢNH (không giao cho script)
+- **Mở PNG vào ngữ cảnh model và tự trả lời 3 câu hỏi (đè / đều / dễ nhìn):**
+  đường nối có **đè** lên ellipse/chữ/tên actor/nhãn không? các nhóm use case có **cách đều, cân** không? nhìn có **dễ** không (đường ngắn, lần theo được, không vòng xa)?
+- Proof-of-View: ghi ≥ 3 nhãn nguyên văn + vị trí + kết luận cho từng câu hỏi + dấu vết file (tên + dung lượng + thời điểm render).
+- *(Tuỳ chọn)* có thể chạy `node .claude/skills/diagram-auditor/scripts/audit-diagrams.mjs <thư-mục>` để tham khảo, nhưng script chỉ đếm toạ độ nên **có thể báo oan/bỏ sót giao cắt** → **kết quả script KHÔNG thay được mắt soi ảnh**.
 - Báo cáo 5 kết quả độc lập + hỏi người dùng nghiệm thu trước khi swap vào DOCX
   (`diagram-orchestrator` §7).
 
 ## 3. Checklist PASS cho bản vẽ tay
 
-- [ ] Có baseline auto + lý do chuyển fallback (vòng nào, lỗi gì, ảnh nào).
+- [ ] Có lý do chuyển vẽ tay (Use Case / State Machine / Activity = mặc định, không cần baseline auto; loại khác = vòng nào, lỗi gì, ảnh nào).
 - [ ] Bước 0 + model UML đã freeze, không đổi ngữ nghĩa khi vẽ tay.
 - [ ] Actor 2 bên (trái = chính, phải = phụ/ngoài), không actor vô cớ ở đáy.
-- [ ] Không connector vòng xa / xuyên ellipse / đè nhãn; nhãn ≤ 25 ký tự.
+- [ ] **Đã mở PNG soi mắt** và trả lời rõ **đè? đều? dễ nhìn?** (không connector vòng xa / xuyên ellipse / đè nhãn; nhóm use case cách đều, cân).
 - [ ] Zero-color, không `title`, chữ ≥ 9pt, ratio 0.5–2.4, ≤ 15 node (chi tiết) / ≤ 9 (khái niệm).
-- [ ] Đủ nguồn + `.svg` + `.png` tại `docs/diagrams/`; audit 0 đỏ; Proof-of-View có bằng chứng.
+- [ ] Đủ nguồn + `.svg` + `.png` tại `docs/diagrams/`; Proof-of-View (soi ảnh) có bằng chứng. Script (nếu chạy) chỉ tham khảo, không thay mắt soi.
 
 ## 4. Anti-patterns (cấm)
 

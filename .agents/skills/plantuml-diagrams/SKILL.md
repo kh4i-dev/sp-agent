@@ -1,9 +1,17 @@
 ---
 name: plantuml-diagrams
-description: Vẽ sơ đồ kỹ thuật UML/ERD chuẩn mực 100% bằng PlantUML thay thế hoàn toàn Mermaid; xuất ra SVG/PNG chất lượng cao, đúng quy ước ISO/UML 2.x (Use Case hình người, Class diagram, Sequence diagram, Activity, State Machine, ERD) với phong cách trắng đen học thuật nghiêm ngặt (ZERO-COLOR: luôn trắng-đen kể cả khi ảnh mẫu người dùng gửi có màu — không bao giờ sao chép màu từ ảnh tham chiếu) cùng quy chuẩn bố cục đẹp đo được cho báo cáo Word (docx-report), slide PPTX, luận văn. Dùng khi người dùng cần vẽ sơ đồ kỹ thuật, UML, use case, class diagram, sequence, ERD, activity, state machine, plantuml, thay thế mermaid.
+description: "CHỈ DÙNG LÀM NHÁP (draft) — không dùng làm file cuối. Bộ luật UML 2.x/ISO + zero-color trắng-đen + state-playbook + activity-rules đáng giữ để NGHĨ bố cục, sau đó render lại bằng skill `handdrawn-diagrams` (vẽ tay SVG, toạ độ cứng). Lý do: PlantUML vẽ xấu và khó kiểm soát vị trí/nhãn (quyết định 2026-11-01). Vẫn dùng khi người dùng chỉ muốn bản nháp nhanh, hoặc cần đọc luật UML/ERD/state/activity chuẩn mực. Từ khóa: plantuml, nháp UML, luật UML, zero-color, state playbook, activity rules."
 ---
 
-# PlantUML Diagrams Skill — Chuẩn mực UML Tuyệt đối cho Báo cáo & Luận văn
+> **Quy tắc hiện hành (02/11/2026):** bản cuối dùng `handdrawn-diagrams`: Python toạ độ cố định → `docs/diagrams/vectors/*.svg` + `docs/images/diagrams/*.png`, spec JSON riêng. PlantUML/Graphviz/Mermaid/drawio/tldraw trong các ví dụ bên dưới chỉ dùng nháp. Nguồn `.py` là bắt buộc. Duyệt ngữ nghĩa theo nguồn, chạy `run_diagrams.py` (cổng máy), rồi Vision QA từng hình; không suy PASS bố cục từ exit 0. Use Case chung gốc ở junction thân–tay `(ax, ay−4)` = tâm đầu +18 với mẫu hiện hành, không ở bụng. State đọc `plantuml-diagrams/reference/state-playbook.md`, không note/legend/footer trên canvas. Khi hướng dẫn cũ trái khối này, áp dụng khối này.
+
+# PlantUML Diagrams Skill — BỘ LUẬT UML + BẢN NHÁP (không phải bản nộp)
+
+> [!IMPORTANT]
+> **Từ 2026-11-01: PlantUML chỉ là NHÁP.** Bản nộp **phải** vẽ tay bằng `handdrawn-diagrams`
+> (SVG sinh từ Python, toạ độ cứng, `vectors/*.svg` tách `images/*.png`, kiểm E1..E6) vì
+> công cụ ngoài **vẽ xấu và khó kiểm soát**. Giữ skill này cho: bộ luật UML/zero-color §0,
+> `reference/state-playbook.md` + `activity-rules.md` (SSOT nghiệp vụ), và phác bố cục nhanh.
 
 Mục tiêu: Tạo sơ đồ kỹ thuật **đúng 100% chuẩn quy ước UML 2.x / ISO**, **luôn luôn màu Trắng - Đen (B&W)**, khắc phục triệt để các nhược điểm của Mermaid (vẽ xấu, gãy góc, sai ký hiệu Use Case/UML).
 
@@ -55,7 +63,7 @@ Nếu người dùng nài nỉ dùng màu, Agent **ghi rõ một câu**: *"Theo 
 
 ## 1. QUY TẮC THẨM MỸ: CHUẨN GIÁO TRÌNH HỌC THUẬT & LUCIDCHART MONOCHROME
 
-Mọi sơ đồ PlantUML sinh ra cho báo cáo/đồ án bắt buộc tuân thủ bộ quy chuẩn thị giác (Visual Standards) chuẩn mực như Lucidchart, Visual Paradigm và giáo trình ĐH:
+Với Sequence/Class/ERD dùng PlantUML, áp dụng các gợi ý thị giác dưới đây; State/Activity vẽ tay theo playbook riêng. Các sơ đồ cho báo cáo/đồ án hướng đến quy chuẩn thị giác (Visual Standards) chuẩn mực như Lucidchart, Visual Paradigm và giáo trình ĐH:
 
 ```plantuml
 skinparam monochrome true
@@ -65,7 +73,7 @@ skinparam defaultFontSize 12
 skinparam classFontSize 13
 skinparam classAttributeFontSize 11
 skinparam classAttributeIconSize 0    ' BẮT BUỘC: Dùng ký tự text +, -, # thay vì icon tròn màu
-skinparam roundCorner 0               ' Hộp vuông vức sắc nét chuẩn mực giáo trình
+skinparam roundCorner 0               ' Chỉ Class/ERD; State phải bo góc theo state-playbook
 skinparam dpi 300
 skinparam linetype ortho              ' Đường nối vuông góc 90 độ tuyệt đối, không xiên vẹo
 skinparam nodesep 70                  ' Giãn cách ngang rộng rãi, chữ không đè lên nhau
@@ -95,7 +103,7 @@ skinparam ranksep 70                  ' Giãn cách dọc thoáng đãng
 | 3 | Tổng node/hình | ≤ 15; **> 15 bắt buộc phân rã** | Đếm trực quan |
 | 4 | Khoảng cách ngang giữa node (`nodesep`) | 60–80 | `skinparam nodesep` |
 | 5 | Khoảng cách dọc giữa tầng (`ranksep`) | 60–90 | `skinparam ranksep` |
-| 6 | Cỡ chữ nhỏ nhất khi in A4 | ≥ 9pt | `font-size` trong SVG |
+| 6 | Cỡ chữ nhỏ nhất khi in | ≥ 9pt tại kích thước chèn đã chọn | `font_px × insert_width_cm / canvas_width_px × 72 / 2.54` |
 | 7 | Tỷ lệ khung hình | 0.5 ≤ ratio ≤ 2.4 (lý tưởng 4:3–16:9) | `viewBox` |
 | 8 | Độ lệch trọng tâm khối so với tâm khung | ≤ 20% mỗi trục | Ước lượng thị giác |
 | 9 | Cụm dồn cục | Cấm ≥ 3 node cách nhau < 30px | Soi ảnh |
@@ -104,24 +112,26 @@ skinparam ranksep 70                  ' Giãn cách dọc thoáng đãng
 | 12 | Node mồ côi / trùng chồng | **Cấm** node rời không liên kết, node đè node | Soi ảnh |
 | 13 | Cân đối khoảng trắng | Không để trống hoác nửa hình, không dồn cục nửa còn lại | Soi ảnh |
 
-### Quy trình LÀM ĐẸP 3 VÒNG BẮT BUỘC (Beautify Loop)
+### Vòng lặp làm đẹp có bằng chứng (Beautify Loop)
 1. **Vòng 1 — Dựng:** Tạo `.puml` từ cấu trúc đúng ngữ nghĩa trước, chưa cần đẹp.
+   Riêng bố cục: **bắt buộc tiền-bố-cục adjacency-first** (bảng quan hệ → zone → thứ tự
+   khai báo theo zone) theo SSOT [`diagram-orchestrator/reference/layout-thinking.md`](../diagram-orchestrator/reference/layout-thinking.md) §1–§2 **trước khi viết code**. Cấm xếp node theo thứ tự tiện tay rồi mặc kệ cạnh bay.
 2. **Vòng 2 — Render + Soi:** Render PNG, **mở ảnh trực tiếp vào ngữ cảnh model**, chấm theo 13 tiêu chí trên. **Chỉ sửa MỘT biến số mỗi vòng** (Single-Variable Isolation), rồi render lại và soi lại.
 3. **Vòng 3 — Chuẩn hoá:** Căn lại khoảng thở (`nodesep`/`ranksep`), cân nhóm, rút gọn nhãn, xoá node mồ côi; render lại và soi lại.
-> Không được tuyên bố hoàn thiện nếu **chưa thực hiện tối thiểu 1 vòng render→soi→sửa→render→soi** có bằng chứng.
+> Phải render và soi ảnh. Chỉ sửa khi có lỗi cụ thể; không tạo một lần sửa vô nghĩa để đủ số vòng. Mỗi lần sửa thật phải render và soi lại.
 
 ---
 
-### 1.1.1. CLASS DIAGRAM: KHÔNG NHẦM “RENDER ĐƯỢC” VỚI “BỐ CỤC ĐẸP”
+### 1.1.1. CLASS DIAGRAM: KHÔNG NHẦM "RENDER ĐƯỢC" VỚI "BỐ CỤC ĐẸP"
 
 Với Class Diagram có từ 6 lớp trở lên, lớp trung tâm bậc cao, nhiều association cùng cặp lớp hoặc nhiều hidden links, đọc SSOT [class-diagram-layout.md](../diagram-orchestrator/reference/class-diagram-layout.md) trước khi bố trí.
 
 - Đếm lớp thực từ source; không tin comment hoặc tên file nếu số lớp trong render không khớp.
 - Phân tích domain group, bậc từng lớp, association song song, mật độ quan hệ và số hidden constraints trước khi vẽ.
-- Không dùng “class User ở đầu hàng” làm mặc định nếu nhiều liên kết buộc đi xuyên qua toàn hình. Bố trí hub gần vùng liên quan hoặc tách góc nhìn.
+- Không dùng "class User ở đầu hàng" làm mặc định nếu nhiều liên kết buộc đi xuyên qua toàn hình. Bố trí hub gần vùng liên quan hoặc tách góc nhìn.
 - Các association cùng cặp lớp nhưng khác vai trò (ví dụ reviewer/reviewee, files/resolves) có thể hợp lệ; **không tự xóa/gộp** để chữa giao cắt. Xác minh role ở đầu mút và multiplicity.
 - Cấu hình linetype ortho, nodesep, ranksep, together và hidden links không bảo đảm hết giao cắt. So sánh ảnh render; thử một biến mỗi vòng.
-- Nếu đường song song chụm thành “bó”, có cạnh vòng xa, vùng trắng lệch hoặc nhãn không thể gán đúng cạnh sau các thử nghiệm hợp lý, chuyển draw.io hoặc phân rã theo [manual-fallback.md](../diagram-orchestrator/reference/manual-fallback.md).
+- Nếu đường song song chụm thành "bó", có cạnh vòng xa, vùng trắng lệch hoặc nhãn không thể gán đúng cạnh sau các thử nghiệm hợp lý, chuyển draw.io hoặc phân rã theo [manual-fallback.md](../diagram-orchestrator/reference/manual-fallback.md).
 - Audit tĩnh chỉ cảnh báo hub/độ dày đồ thị; Visual Review phải kiểm tra ảnh render thực tế. Không được ghi PASS chỉ vì renderer trả exit code 0.
 
 ## 1.2. PLAYBOOK VẼ USE CASE (BƯỚC 0 → BƯỚC 4) & KỶ LUẬT THÉP
@@ -255,13 +265,21 @@ deactivate FE
 @enduml
 ```
 
-### 2.3. State Diagram (Vòng đời trạng thái)
+### 2.3. State Diagram (Vòng đời trạng thái) — BẮT BUỘC VẼ TAY
+
+> [!CAUTION]
+> **State Machine BẮT BUỘC VẼ TAY (draw.io/SVG)** — PlantUML snippet dưới đây CHỈ là bản nháp
+> tham chiếu mô hình, KHÔNG phải bản nộp. Quy tắc + thông số draw.io theo chuẩn ảnh mẫu
+> (state bo tròn, nhãn sự kiện đặt đúng trên cạnh, initial/final chuẩn UML):
+> [`reference/state-rules.md`](reference/state-rules.md) và SSOT
+> [`diagram-orchestrator/reference/tool-sweet-spot.md`](../diagram-orchestrator/reference/tool-sweet-spot.md) §0.1.
+
 ```plantuml
 @startuml
 skinparam monochrome true
 skinparam shadowing false
 
-[*] --> PENDING : Gửi yêu cầu
+[*] --> PENDING
 
 state PENDING {
   PENDING : Chờ đối tác phản hồi
@@ -275,7 +293,7 @@ state ACCEPTED {
   ACCEPTED : Mở hội thoại trò chuyện
 }
 
-ACCEPTED --> [*] : Hoàn tất kết nối
+ACCEPTED --> [*]
 REJECTED --> [*]
 CANCELLED --> [*]
 @enduml
@@ -306,6 +324,26 @@ class UserProfile {
 User "1" -- "0..1" UserProfile : sở hữu >
 @enduml
 ```
+
+**Access modifier trên thuộc tính/phương thức (bắt buộc ghi rõ, dùng ký tự text nhờ `classAttributeIconSize 0`):**
+
+| Ký hiệu | Tên | Quy tắc truy cập |
+| :---: | :--- | :--- |
+| `+` | **Public** | Truy cập được từ **mọi nơi** (anywhere). |
+| `-` | **Private** | Chỉ truy cập được **bên trong chính lớp đó**. |
+| `#` | **Protected** | Truy cập được **trong lớp và các lớp con** (subclasses). |
+| `~` | **Package** | Truy cập được **trong cùng package**. |
+
+> Cú pháp PlantUML: `+ id : UUID`, `- passwordHash : String`, `# refresh()`, `~ helper()`. **Cấm** để `classAttributeIconSize 1` (icon tròn màu) — phải hiện ký tự `+ - # ~` để người đọc thấy rõ phạm vi truy cập.
+
+### 2.5. Activity Diagram (luồng nghiệp vụ + swimlane) — BẮT BUỘC VẼ TAY
+
+> [!CAUTION]
+> **Activity Diagram BẮT BUỘC VẼ TAY (draw.io/SVG)** theo chuẩn ảnh mẫu swimlane 2 lane
+> ("Người dùng" | "Hệ thống", activity = khối chữ nhật, decision = hình thoi, start = chấm đen,
+> end = vòng tròn đôi). PlantUML snippet trong [`reference/activity-rules.md`](reference/activity-rules.md)
+> CHỈ là bản nháp tham chiếu mô hình, KHÔNG phải bản nộp.
+> **Luật cứng nhớ ngay:** **CẤM một đường thẳng dài vắt gần hết hình** — thấy đường dài thì **sắp lại layout / đưa merge về gần điểm rẽ**, KHÔNG kéo dây.
 
 ---
 
@@ -339,17 +377,23 @@ Output:
 
 ---
 
+## 4.1. Bẫy đã biết (Class Diagram)
+
+Chi tiết: `reference/pitfalls.md`. Tóm tắt: PlantUML auto-layout cho Class Diagram dễ xấu/crowded dù audit PASS; với ≥ 6 lớp hoặc hub bậc cao, ưu tiên vẽ tay SVG/draw.io và thêm `+ - # ~` trực tiếp vào bản gốc.
+
 ## 5. FALLBACK — Khi công cụ KHÔNG vẽ được: VẼ TAY nhưng BẮT BUỘC theo chuẩn
 
 PlantUML/Mermaid **không kiểm soát được vị trí phần tử**. Với **Use Case nhiều actor**, chúng tự dồn actor xuống đáy và kéo đường nối chằng chịt — SAI bố cục. Khi gặp, agent **được phép vẽ tay (SVG) hoặc xuất `.drawio`**, NHƯNG phải tuân thủ **NGHIÊM** chuẩn UML Use Case dưới đây. **TUYỆT ĐỐI KHÔNG tự do vẽ Use Case sai.**
 
-### 5.1 Ngưỡng chuyển sang vẽ tay
-- Số **actor người dùng ≥ 3** HOẶC tổng **use case > 12**.
-- Cần actor đứng **hai bên** / nhóm theo **cụm chức năng**.
-- Hoặc đã qua **≥ 2 vòng render → soi → sửa-1-biến** mà Visual Review vẫn FAIL
-  (dồn actor một phía, vòng xa, nhãn đè viền `cluster`, dồn cục).
-- Vẽ tay: **SVG trắng–đen** (font Segoe UI), hoặc tạo **`.drawio`** để người dùng mở diagrams.net chỉnh & export.
-- Quy trình đầy đủ (freeze ngữ nghĩa → dựng tay 6 bước → audit): xem SSOT
+### 5.1 Với USE CASE: vẽ tay là MẶC ĐỊNH (không chờ ngưỡng)
+
+> **Use Case mặc định vẽ tay.** PlantUML không ghim được vị trí actor/điểm neo đường nối nên dễ dồn actor về một phía và kéo dây chằng chịt. Vì vậy với Use Case, **đi thẳng vào draw.io/SVG tay** để chủ động đặt actor hai bên, canh cột/hàng và đi dây ngắn — không cần "thử auto cho đủ vòng rồi mới được vẽ tay". Auto-layout chỉ dùng làm **bản nháp tham chiếu**.
+>
+> Dấu hiệu càng chắc chắn phải vẽ tay: **≥ 3 actor người dùng** hoặc **> 12 use case**; cần actor đứng **hai bên**/nhóm theo cụm chức năng.
+
+- Vẽ tay: **SVG trắng–đen** (font Segoe UI), hoặc tạo **`.drawio`** để mở diagrams.net chỉnh & export.
+- **Duyệt bố cục BẰNG MẮT SOI ẢNH, KHÔNG bằng script:** mở PNG và tự trả lời *đường nối có đè? khoảng cách có đều? nhìn có dễ?* Script tự động chỉ đếm toạ độ nên không phán đúng được cái "đều/đẹp/dễ nhìn" → **không dùng script làm cổng quyết định bố cục**.
+- Quy trình đầy đủ (freeze ngữ nghĩa → dựng tay 6 bước → soi ảnh) + checklist chi tiết: skill `use-case-layout` và SSOT
   [`diagram-orchestrator/reference/manual-fallback.md`](../diagram-orchestrator/reference/manual-fallback.md).
   Cấm vẽ tay để che lỗi mô hình (thiếu Bước 0 / mô hình sai).
 
@@ -373,8 +417,84 @@ PlantUML/Mermaid **không kiểm soát được vị trí phần tử**. Với *
 - [ ] Chữ không bị cắt; đọc được ở **A4**; actor không chồng đường biên.
 
 > Chi tiết + ví dụ: [`reference/use-case-rules.md`](reference/use-case-rules.md).
+
+### 5.4. STATE DIAGRAM: vẽ tay là MẶT ĐỊNH (bắt buộc, không phải fallback)
+
+> [!CAUTION]
+> **State Machine mặc định vẽ tay** (`.drawio` mở bằng diagrams.net, hoặc SVG tay) theo quyết định
+> dự án [`tool-sweet-spot.md` §0.1](../diagram-orchestrator/reference/tool-sweet-spot.md). PlantUML
+> không ghim được vị trí state và điểm neo nhãn sự kiện trên cạnh → nhãn `event/guard` trôi giữa
+> hai state, dây chéo xuyên node, chu kỳ quay lui thành vòng xa. Chi tiết đầy đủ:
+> [`reference/state-rules.md`](reference/state-rules.md).
+
+**Trước khi vẽ State, đọc đầy đủ [state-playbook.md](reference/state-playbook.md).**
+- Chốt đối tượng và góc nhìn `declared` / `as-is` / `to-be`; đọc cả ma trận và lệnh ghi state.
+- State bo góc; initial chấm đen; final bullseye không cạnh ra. Tên “Hoàn tất” không có nghĩa final.
+- Cạnh initial/completion không bắt buộc nhãn. Guard chỉ cần xét xung đột theo cùng event.
+- Canvas không note/legend/footer hoặc chữ thuyết minh; nhãn composite và hành vi UML có nguồn vẫn hợp lệ.
+- Đặt spine rồi nhánh; composite chỉ gom exit chung đã chứng minh; không kéo dây quanh toàn canvas.
+- Chạy `scripts/render_state_model.py <model.json> --check-only`; xuất SVG/drawio chung hình học, render PNG và soi mọi crop. Script không thay mắt.
+
+### 5.5. ACTIVITY DIAGRAM: vẽ tay là MẶT ĐỊNH (bắt buộc, không phải fallback)
+
+> [!CAUTION]
+> **Activity mặc định vẽ tay** (`.drawio`/SVG tay) theo chuẩn ảnh mẫu swimlane: 1 bảng với
+> **dòng tiêu đề luồng + 2 lane dọc "Người dùng | Hệ thống"**. Quy tắc + thông số draw.io đầy đủ:
+> [`reference/activity-rules.md`](reference/activity-rules.md).
+
+**10 quy tắc BẮT BUỘC của Activity (vẽ tay theo ảnh mẫu):**
+1. **Khung swimlane = bảng:** tiêu đề luồng chạy ngang mép trên (vd "Đăng nhập"); lane dọc chia theo tác nhân; **Người dùng bên TRÁI, Hệ thống bên PHẢI**; đường phân lane là nét liền.
+2. **Mỗi bước = khối chữ nhật** đặt đúng lane của chủ thể thực hiện; bước của ai nằm trong lane của người đó — cấm đặt chệch lane.
+3. **Start = chấm đen đặc** (nếu vẽ), **end = vòng tròn đôi (bullseye)**; nhiều nhánh cùng hội tụ về 1 end duy nhất khi nghiệp vụ kết thúc chung.
+4. **Decision = hình thoi (diamond)**; **mọi lối ra phải có guard** ghi trên cạnh (`Hợp lệ` / `Không hợp lệ`), nhãn đặt ngay trên cạnh rẽ.
+5. **Spine chính trên→xuống trong từng lane**; nhánh ngoại lệ rẽ ngang sang lane khác rồi quay về gần điểm rẽ — **CẤM một đường thẳng dài vắt gần hết hình**.
+6. **Đường nối = mũi tên orthogonal (gập vuông 90°)**, không đi chéo xuyên khối; điểm giao bắt buộc phải có thì vẽ nhảy (bridge).
+7. Nhãn bước = **động từ + đối tượng, ≤ 25 ký tự**, tiếng Việt đủ dấu; 2 khối cùng lane cách đều nhau theo hàng.
+8. `fork`/`join` = thanh đậm ngang cho luồng song song; `merge` = diamond cho hợp nhất lựa chọn.
+9. **Zero-color:** ảnh mẫu đỏ/xanh chỉ là tham chiếu cấu trúc; nền trắng, viền/chữ đen; không `title` trong ảnh.
+10. **Nghiệm thu = MẮT SOI ẢNH PNG** (đè? đều? dễ nhìn? + Proof-of-View ≥ 3 nhãn nguyên văn), KHÔNG script tự PASS; file nguồn `.drawio`/`.svg` + xuất `.svg`/`.png` vào `docs/diagrams/`.
 6. **Kiểm tra bố cục đẹp (§1.1):** Đối chiếu 13 tiêu chí đo được. Đặc biệt kiểm tra: không node mồ côi, không dồn cục, trọng tâm không lệch, cỡ chữ ≥ 9pt khi in A4.
 7. **Bằng chứng soi ảnh (Proof-of-View):** Sau khi render, **bắt buộc mở PNG vào ngữ cảnh model** và ghi lại bằng chứng cụ thể (ít nhất 3 nhãn đọc được nguyên văn + vị trí + lỗi/không lỗi). Không có bằng chứng này → **KHÔNG được PASS**; nếu môi trường thiếu công cụ xem ảnh → báo `BLOCKED — Visual QA unavailable`.
 8. **Vòng lặp làm đẹp (§1.1):** Thực hiện tối thiểu 1 chu kỳ render→soi→sửa-1-biến→render→soi. Cấm tuyên bố hoàn thiện khi chưa qua chu kỳ này.
 9. **Cổng kiểm định tự động:** Chạy `node .claude/skills/diagram-auditor/scripts/audit-diagrams.mjs <thư-mục>` — 0 lỗi **đỏ** (đỏ = vi phạm màu/font/hình học). Cảnh báo vàng phải được Agent phân xử thủ công bằng mắt.
 
+---
+
+## ⚡ PROMPT BẮT BUỘC KHI GỌI SKILL NÀY (COPY VÀO PROMPT AGENT)
+
+> **KHI BẠN ĐƯỢC YÊU CẦU VẼ SƠ ĐỒ BẰNG PLANTUML, BẮT BUỘC THỰC HIỆN ĐÚNG THỨ TỰ SAU — KHÔNG BƯỚC NÀO ĐƯỢC BỎ QUA:**
+>
+> 1. **KIỂM TRA BƯỚC 0 (Use Case/Domain):** Nếu vẽ Use Case/ERD/Domain → kiểm tra tồn tại `docs/domain/step0-<du-an>.md` có bằng chứng từng trách nhiệm tác nhân. **Thiếu = DỪNG, KHÔNG VẼ**, báo: `⚠️ VI PHẠM KỶ LUẬT: thiếu Bước 0 — lỗi tư duy mô hình hóa.`
+> 2. **LẬP BẢNG ADJACENCY-FIRST** (`docs/diagrams/<ten>-model.md`): Mỗi FK/association = 1 dòng, ghi zone dự kiến, bắt buộc ngắn. Theo `diagram-orchestrator/reference/layout-thinking.md` §1.
+> 3. **VIẾT .puml THEO CHUẨN ZERO-COLOR** *(chỉ áp dụng Sequence/Class/ERD — State & Activity bỏ qua bước này, vẽ tay ngay theo §5.4–§5.5):* `skinparam monochrome true`, `classAttributeIconSize 0`, `linetype ortho`, `nodesep 70`, `ranksep 70`, **KHÔNG title**, font `"Segoe UI", Arial, "DejaVu Sans"`.
+> 4. **RENDER + AUDIT TỰ ĐỘNG:**
+>    ```bash
+>    node .claude/skills/plantuml-diagrams/scripts/render-puml.mjs --in <file>.puml
+>    node .claude/skills/diagram-auditor/scripts/audit-diagrams.mjs docs/diagrams/
+>    ```
+>    **Phải 0 lỗi ĐỎ** mới được tiếp tục.
+> 5. **VISUAL QA (BẮT BUỘC CÓ BẰNG CHỨNG):** Mở PNG vào ngữ cảnh model, ghi:
+>    - ≥ 3 nhãn đọc được nguyên văn + vị trí (ví dụ: "User tại cột trái hàng 2", "0..* trên đường User→ConnectionRequest")
+>    - SHA256 file + dung lượng + thời gian render
+>    - Danh sách lỗi/không lỗi cho 13 tiêu chí §1.1
+>    **Không bằng chứng = BLOCKED — Visual QA unavailable**
+> 6. **BEAUTIFY LOOP (TỐI THIỂU 1 VÒNG):** Render → Soi → Sửa **1 biến** → Render → Soi. Chỉ tuyên bố xong sau khi có bằng chứng vòng lặp.
+> 7. **PHÂN RÃ / VẼ TAY KHI CẦN:** Nếu > 9 lớp, aspect ratio > 2.4, hoặc ≥ 2 vòng vẫn FAIL → chuyển draw.io/SVG theo `manual-fallback.md`. **Cấm vá tham số vô hạn.**
+> 8. **BÀN GIAO:** Chỉ hiển thị ảnh `![Hình X.Y](path)`, caption `Hình X.Y: <tên>`, link `.puml`. **CẤM xả code block PlantUML ra chat.**
+>
+> **NHỮNG GÌ AGENT THƯỜNG LÀM SAI (ANTI-PATTERNS) — TUYỆT ĐỐI KHÔNG ĐƯỢC LÀM:**
+> - ❌ Vẽ Use Case chưa có Bước 0
+> - ❌ **Vẽ State Machine / Activity bằng PlantUML auto thay vì vẽ tay draw.io/SVG (§5.4–§5.5)**
+> - ❌ **Nhãn sự kiện/guard của State/Activity trôi khỏi đúng cạnh nó mô tả**
+> - ❌ Dùng màu / copy màu từ ảnh mẫu
+> - ❌ `classAttributeIconSize 1` (icon tròn thay `+ - #`)
+> - ❌ Nhúng `title` trong ảnh
+> - ❌ Nhãn verb trên đường ERD (`: "places"`)
+> - ❌ Association actor–usecase có mũi tên
+> - ❌ Dồn actor một phía / đáy
+> - ❌ Connector vòng xa (kéo dây né thay vì di chuyển node)
+> - ❌ Nén spacing (`nodesep 30`) để nhét vừa trang
+> - ❌ Chữ cụt không dấu / glyph vỡ
+> - ❌ Render xong exit code 0 → tự PASS (phải qua 5 cổng nghiệm thu)
+> - ❌ Không có file nguồn `.puml`/`.drawio` cùng tên
+> - ❌ Xả code block PlantUML ra chat (Zero Code Dumps)

@@ -1,0 +1,126 @@
+[diagram-auditor] Đang kiểm định chất lượng sơ đồ tại: E:/HOC TAP/my-project/btl-cnpm/private-docs/diagrams/svg (recursive=false)
+❌ [FAIL] act-01-dang-nhap.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] act-02-dat-hang-ky-quy.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] act-03-tai-xe-nhan-don.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 1 điểm va chạm/đè chữ: 'Hết 4 vòng: chỉ định' và 'hết 4 vòng' bị chồng đè toạ độ (overlapX=3.4px, overlapY=13.0px)
+❌ [FAIL] act-04-quet-tem-doi-soat.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] act-05-khieu-nai-phan-quyet.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] act-06-rut-tien.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] erd_01_loi-giao-dich-escrow.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 2 điểm va chạm/đè chữ: 'orderId : Int' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=4.6px, overlapY=7.0px); 'FK' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=12.0px, overlapY=5.0px)
+❌ [FAIL] erd_02_danh-muc-san-pham.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 2 điểm va chạm/đè chữ: 'categoryId : Int' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=26.2px, overlapY=7.0px); 'FK' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=12.0px, overlapY=5.0px)
+❌ [FAIL] erd_03_giao-van-tem-qr.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 2 điểm va chạm/đè chữ: 'orderId : Int' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=4.6px, overlapY=7.0px); 'FK' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=12.0px, overlapY=5.0px)
+❌ [FAIL] erd_04_cskh-khieu-nai-danh-gia.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 2 điểm va chạm/đè chữ: 'ticketId : Int' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=11.8px, overlapY=7.0px); 'FK' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=12.0px, overlapY=5.0px)
+❌ [FAIL] erd_05_dinh-danh-phan-quyen.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 1 điểm va chạm/đè chữ: 'FK' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=12.0px, overlapY=5.0px)
+❌ [FAIL] erd_06_cau-hinh-nhat-ky.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 2 điểm va chạm/đè chữ: 'actorId : Int?' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=11.8px, overlapY=7.0px); 'FK' và 'PK/FK = khoá chính/ngoại · hộp đứt = bảng ngoài nhóm' bị chồng đè toạ độ (overlapX=12.0px, overlapY=5.0px)
+❌ [FAIL] flow-01-quy-trinh-dat-hang.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 4 điểm va chạm/đè chữ: 'Người mua đặt hàng' và '2' bị chồng đè toạ độ (overlapX=13.2px, overlapY=5.2px); 'Sàn tách đơn theo shop' và '3' bị chồng đè toạ độ (overlapX=13.2px, overlapY=5.2px); 'Tài xế quét nhận hàng' và '5' bị chồng đè toạ độ (overlapX=13.2px, overlapY=5.2px)
+❌ [FAIL] flow-02-giai-ngan-3-dong.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] hang-muc-phan-ra-M1-M14.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] seq-34-dat-hang.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] seq-35-dong-goi-qr.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] seq-36-giao-hang.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] seq-37-giai-ngan.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] seq-38-nap-tien.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] seq-39-khieu-nai.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] slide-act-dang-nhap.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] slide-act-dat-hang.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] slide-erd-cot-loi.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] slide-seq-giai-ngan.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 1 điểm đường kẻ cắt ngang mặt chữ: Đường nối cắt ngang qua chữ 'alt' tại toạ độ (197.0, 604.0)
+❌ [FAIL] slide-usecase-nguoi-ban-v5.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 2 điểm đường kẻ cắt ngang mặt chữ: Đường nối cắt ngang qua chữ '«include»' tại toạ độ (1002.0, 518.0); Đường nối cắt ngang qua chữ '«include»' tại toạ độ (993.0, 513.5)
+❌ [FAIL] slide-usecase-nguoi-ban.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] slide-usecase-nguoi-mua-v5.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 1 điểm va chạm/đè chữ: '«include»' và 'Nạp tiền vào' bị chồng đè toạ độ (overlapX=4.8px, overlapY=7.0px)
+    - Phát hiện 5 điểm đường kẻ cắt ngang mặt chữ: Đường nối cắt ngang qua chữ '«include»' tại toạ độ (1002.0, 702.0); Đường nối cắt ngang qua chữ '«include»' tại toạ độ (993.0, 697.5)
+❌ [FAIL] slide-usecase-nguoi-mua.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] slide-usecase-noi-bo-v5.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 5 điểm đường kẻ cắt ngang mặt chữ: Đường nối cắt ngang qua chữ '«include»' tại toạ độ (1002.0, 518.0); Đường nối cắt ngang qua chữ '«include»' tại toạ độ (993.0, 513.5)
+❌ [FAIL] slide-usecase-noi-bo.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] slide-usecase-tai-xe-v5.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+    - Phát hiện 2 điểm đường kẻ cắt ngang mặt chữ: Đường nối cắt ngang qua chữ '«include»' tại toạ độ (1002.0, 610.0); Đường nối cắt ngang qua chữ '«include»' tại toạ độ (993.0, 605.5)
+❌ [FAIL] slide-usecase-tai-xe.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+❌ [FAIL] state-01-don-hang.svg:
+    - Thiếu file ảnh PNG tương ứng (cần đủ cả vector SVG và raster PNG 300DPI)
+    - Thiếu tệp nguồn chỉnh sửa được cùng tên (.puml/.dot/.drawio/.tldr/.mmd/.json); SVG/PNG không đủ để bảo trì sơ đồ.
+----------------------------------------------------
+[LƯU Ý NGHIỆM THU - ANTI-FALSE-PASS DOCTRINE]:
+  * Lỗi ĐỎ (FAIL) chặn cứng: banner, SVG hỏng, thiếu PNG, title nhúng, nhãn ERD,
+    quan hệ trùng, đè chữ, đường cắt chữ, VI PHẠM ZERO-COLOR, cỡ chữ < 9pt, tỷ lệ khung lệch.
+  * Cảnh báo VÀNG (PASS*) KHÔNG chặn tự động — nhưng Agent BẮT BUỘC soi mắt phân xử.
+  * Script KHÔNG THỂ thay thế kiểm tra ngữ nghĩa (Gate A) và soi trực quan bằng mắt (Gate C).
+  * Chỉ kiểm tra các path vertex nằm trong bounding box chữ; KHÔNG phải bộ phát hiện mọi giao cắt giữa các đoạn đường nối hoặc va chạm node-edge.
+  * Agent KHÔNG ĐƯỢC tuyên bố hoàn thành nếu chưa tự mở ảnh soi mắt + có bằng chứng soi ảnh!
+----------------------------------------------------

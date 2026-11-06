@@ -6,6 +6,8 @@
 > Quy tắc này sinh ra từ lỗi thật: node xếp theo thứ tự khai báo → cạnh bay vòng quanh hình,
 > nhãn cụt không dấu, thiếu đường quan hệ, nửa khung bỏ trống.
 
+> **Riêng Use Case:** trước khi chọn zone, đọc [actor-function-composition.md](../../use-case-layout/reference/actor-function-composition.md): phân vai theo nguồn, actor hai phía theo cụm, chức năng lệch có chủ đích, tia thẳng chung gốc ở thân. Không dùng một cột dài làm mặc định cho mọi vai trò.
+
 ## 0. Nguyên tắc mẹ: topology trước, tọa độ sau
 
 Auto-layout không phải một thuật toán duy nhất. Graphviz `dot` dùng layout phân tầng
@@ -70,6 +72,12 @@ Sau render, kiểm tra bằng mắt, không đoán từ code:
 1. **Ngân sách cạnh:** không cạnh nào dài quá **2.5× trung vị**; không cạnh nào xuyên qua
    **> 1 node/entity không liên quan**. Cạnh `USER→MESSAGE` chạy ngang đỉnh toàn hình
    hay `User→Participant` vòng chữ U quanh hình đều là FAIL bố cục.
+1b. **CẤM MỘT ĐƯỜNG THẲNG DÀI VẮT QUA HÌNH.** Chỉ cần **một connector đơn lẻ** chạy dài gần hết
+   chiều cao/rộng (điển hình: đường dọc bên phải để nhánh lỗi quay về điểm merge, hoặc mũi tên
+   thẳng vắt qua nhiều swimlane/tầng) → **FAIL bố cục ngay**, dù mọi cạnh khác đẹp. Cách sửa là
+   **SẮP LẠI LAYOUT**, không kéo dây: (a) đưa điểm merge về **sát decision/điểm rẽ**; (b) dời node
+   để hai đầu connector ở gần nhau; (c) nếu logic buộc xa → **phân rã** (sub-activity / sơ đồ con).
+   Cùng luật: `use-case-layout` §3.5, `plantuml-diagrams/reference/activity-rules.md`.
 2. **Test 4 góc phần tư:** chia khung thành 4; góc nào < 10% mực, hoặc một nửa khung chứa
    > 75% node → **chia lại zone** (quay về §1), không vá bằng tham số.
 3. Sửa luôn bằng **DI CHUYỂN NODE** (đưa hai đầu lại gần nhau). Cấm kéo dây vòng,
@@ -126,6 +134,11 @@ khoảng cách lớn sẽ tự loại bỏ giao cắt hoặc nhãn chồng.
 6. **Bằng chứng vòng lặp.** Bước nhảy điểm lớn nhất (3.5 → 5/6) đến từ §9.2 + §9.3
 (bỏ nhãn + cạnh kề), không phải từ cơ chế khóa rank — khớp quy tắc dừng §1
 (khóa rank là gợi ý yếu).
+7. **Sắp layout ERD cho rõ (checklist ngắn):** ① mỗi bảng là một khối gọn, **cột theo miền**
+   (identity / giao dịch / danh mục); ② **hub (bảng nhiều FK nhất) đặt cột giữa**; ③ mọi FK nối
+   **sang cột kề** (cạnh xa nhất ≤ 1 cột, cấm 1 đường dài vắt qua — §3.1b); ④ **cạnh trực giao
+   ≤ 1–2 gãy**, chân quạ + multiplicity đặt sát đầu mút của mình; ⑤ **không nhãn động từ trên đường**
+   (diễn giải tiếng Việt để ở bảng companion); ⑥ chữ ≥ 9pt ở A4, > 4 cột → **trang ngang hoặc tách miền**.
 
 ## 10. Class gọn như ảnh mẫu (reference-style Class)
 
@@ -197,6 +210,10 @@ khoảng cách lớn sẽ tự loại bỏ giao cắt hoặc nhãn chồng.
 
 ## 13. Activity gọn như ảnh mẫu (reference-style Activity)
 
+> **Cập nhật 2026-10-26:** Activity nay **BẮT BUỘC VẼ TAY** (draw.io/SVG) theo quyết định dự án
+> trong [`tool-sweet-spot.md`](tool-sweet-spot.md) §0.1 — PlantUML chỉ là bản nháp tham chiếu.
+> Các quy tắc bố cục dưới đây **vẫn áp dụng nguyên vẹn** cho bản vẽ tay.
+
 > Ground truth: Wikipedia Conducting + Ambler Enroll + Ambler Swimareas (tự tải, đã soi cả 3).
 
 1. **Một spine chính trên-xuống** (thường cột trái), nhánh rẽ phải rồi quay về
@@ -206,21 +223,40 @@ khoảng cách lớn sẽ tự loại bỏ giao cắt hoặc nhãn chồng.
 4. **Swimlane tách luồng chính/ngoại lệ** (Ambler swimareas: Basic Course vs
    Not-Eligible vs Appears...). Luồng phụ không chen vào spine chính.
 5. Start trên cùng, end dưới cùng; chỗ cắt nhau vẽ **nhảy (jump/bridge)** (wiki).
+6. **Swimlane theo tác nhân**: người dùng **trái**, hệ thống **phải**; **nhánh `if/else` quay về GẦN điểm rẽ** — **CẤM một đường thẳng dài vắt gần hết hình** (§3.1b). Mẫu + checklist đầy đủ: `plantuml-diagrams/reference/activity-rules.md`.
 
-## 14. State gọn theo chuẩn (reference-style State)
+## 14. State: một SSOT, không suy luật từ bố cục mẫu
 
-> Ground truth: legend notation Wikipedia (đã soi: state/transition/condition/entry
-> action) + văn bản Booch–Rumbaugh–Jacobson UML User Guide ch.8 (đã fetch).
-> Chưa tải được ảnh layout state hoàn chỉnh (Whimsical chỉ cho ảnh marketing) —
-> mục này dựa trên text đã xác minh,诚实 ghi nhận.
+Đọc [state-playbook.md](../../plantuml-diagrams/reference/state-playbook.md) trước mọi State.
+Spine theo vòng đời, nhánh ngoại lệ ở gần nguồn; composite chỉ gom exit chung có bằng chứng.
+Không ép Login hai hàng, mọi guard đối nhau, mọi cạnh có nhãn hay mọi state “Hoàn tất” thành final.
+Không note/legend/footer/chữ thuyết minh trên canvas. Chốt declared/as-is/to-be và đối chiếu ma trận với service trước khi đặt tọa độ.
 
-1. **Happy path thẳng hàng** theo chiều đọc (trái→phải hoặc trên→dưới).
-2. **Nhãn chuyển đủ cú pháp `Event [Guard] / Effect`**; các guard cùng state loại trừ
-   nhau (mutually exclusive) (flylib).
-3. **Superstate gom exits chung** (cancel/timeout): 1 đường từ superstate thay cho N
-   đường song song — Fig 8-3 rõ hơn 8-2 (flylib).
-4. **Entry/do/exit ghi trong state** (legend); initial + final bắt buộc.
-5. State nào > 4 transitions ra → tách superstate/composite **[heuristic]**.
+## 15. Tư duy kéo thả của con người (Human-Grade Interactive Diagramming Mindset)
+
+> Bổ sung từ thực chiến: Khắc phục triệt để các lỗi cố hữu khi AI vẽ hình bằng mã nguồn (PlantUML, Graphviz DOT, SVG code gen).
+
+1. **Bounding box co dãn tự nhiên (Elastic Bounding Box)**:
+   - Khi văn bản dài, con người kéo dãn chiều rộng `width` hoặc tăng chiều cao `height` của hộp; lề thở (padding) tối thiểu 12–16px.
+   - **Tuyệt đối cấm**: Dùng `<rect fill="#ffffff">` đè lên đường viền chữ nhật làm mất nét ô, đứt nét viền.
+   - Viền ô hình chữ nhật kỹ thuật/UML: 100% vuông vức 90 độ (`rx=0, ry=0`), nét viền đen sắc cạnh, liền mạch hoàn hảo.
+2. **Nhãn chuyển trạng thái / Mũi tên kết thúc**:
+   - Nhãn nằm nổi phía trên đường kẻ (`y - 8` hoặc `x + 10`), giữ khoảng cách thở >= 35-40px với mép các hộp trạng thái.
+   - Cấm nhãn dính sát sạt hoặc đè lên viền hộp; nhãn không chạm đầu mũi tên.
+3. **Sequence Diagram - Thông thoáng & Tab Frame độc lập**:
+   - Bước dọc giữa các thông điệp: >= 45-50px/bước.
+   - Khung nhóm/Giao dịch (Frame Transaction, Alt, Opt, Loop): Tab nhãn góc trên là một khối độc lập; thông điệp đầu tiên bên trong khung cách đỉnh khung tối thiểu 30–35px để không bị đè chữ lên tab frame.
+4. **Sơ đồ Hiện trạng / Quy trình (As-Is / Flow Diagram)**:
+   - Các bước quy trình xếp ngang tuần tự với khoảng cách >= 45-55px.
+   - Các khối bất cập / nguyên nhân (Pain Points) đặt thẳng hàng ở bên dưới bước bị ảnh hưởng, dùng mũi tên đỏ chỉ thẳng góc 90 độ đi lên. Không vẽ đường chéo hay bắt chéo luồng.
+5. **Use Case Diagram - Phân vùng Actor & Hành lang thông gió (Air Corridors)**:
+   - Người dùng cuối xếp bên trái (Lane L) theo vòng đời tương tác. Hệ thống/vận hành bên phải (Lane R).
+   - Giữa hai cột để lại "Hành lang thông gió" (Air Corridor) rộng rãi để các Use Case tương tác hai chiều (Chat, Đánh giá, Báo cáo) có đường nối thoáng đãng từ hai phía mà không cắt ngang các Use Case độc lập.
+6. **Chuẩn Học thuật Tuyệt đối**:
+   - CẤM nhúng tiêu đề to trong ảnh (tiêu đề thuộc về caption Word `Hình X.Y`).
+   - CẤM nhúng hộp chú thích nét đứt / note box / legend trong ảnh (giải thích thuộc về văn xuôi báo cáo).
+7. **Quy trình Visual Audit Loop**:
+   - Xuất PDF qua LibreOffice -> render từng trang sang PNG bằng PyMuPDF -> soi trực quan bằng mắt (`view_file`).
 
 ## 6. Nguồn-đi-kèm (source-or-nothing)
 

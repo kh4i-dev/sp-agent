@@ -1,6 +1,6 @@
 ---
 name: docx-report
-description: Tạo, đọc, audit và chỉnh sửa tài liệu Word (.docx) cho báo cáo/đồ án: heading & numbering, bảng, hình, caption, cross-reference, mục lục (TOC), style, render & kiểm tra trực quan. Dùng khi người dùng yêu cầu viết/sửa/kiểm tra file .docx, báo cáo, đồ án, luận văn, hoặc nhắc tới DOCX, Word, python-docx, OOXML, caption, TOC, render, đồ án môn học.
+description: "Tạo, đọc, audit và chỉnh sửa tài liệu Word (.docx) cho báo cáo/đồ án: heading & numbering, bảng, hình, caption, cross-reference, mục lục (TOC), style, render & kiểm tra trực quan. CỔNG PASS HAI ĐIỀU KIỆN — thiếu một là FAIL: (1) MÁY: render ra PDF + PNG từng trang, field TOC/PAGE tự cập nhật, cấu trúc/tiêu đề/bảng/caption đúng; (2) MẮT/VISION: agent có VISION (multimodal) soi từng trang PNG, xác nhận checklist (header bảng, caption, không rớt trang, font/lề, hình+caption khớp) và kết luận bố cục đã hợp lý chưa; model text-only không tính. Dùng khi viết/sửa/kiểm tra file .docx, báo cáo, đồ án, luận văn, hoặc nhắc tới DOCX, Word, python-docx, OOXML, caption, TOC, render, đồ án môn học."
 ---
 
 # DOCX Report Skill — Kỹ sư tài liệu Word
@@ -91,6 +91,7 @@ pip install python-docx docx-revisions Pillow
 > Chuyển `.doc` → `.docx`: `scripts/convert_doc.py`. · Tracked changes: `scripts/revisions.py`.
 > Quy mô & độ sâu báo cáo (chống báo cáo mỏng): `reference/report-scope.md`.
 > Ngôn từ caption / tên hình (mềm hóa, tránh cụm kỹ thuật cứng): `reference/caption-wording.md`.
+> Đặc tả use case (bộ 9 thành phần, ID luồng A/E + BR-xx, exception đủ 4 thứ, template, ví dụ): `reference/use-case-spec.md`.
 
 ## Phần đầu tài liệu (Bìa) — HỎI ĐỊNH DẠNG TRƯỚC (bất biến)
 
@@ -266,86 +267,97 @@ Mọi agent khi làm việc với file Word PHẢI KHẮC CỐT GHI TÂM 7 thấ
 9. **Bẫy Lẫn lộn Không gian Tài liệu (Monolithic Docs Pollution)**:
    - *Sai lầm:* Để chung file Báo cáo học thuật/BTL (.docx nộp bài) vào cùng thư mục với tài liệu dự án Open-Source.
    - *Thực tế:* Gây khó khăn khi phát hành mã nguồn mở, lẫn lộn thông tin sinh viên/đồ án với docs dự án.
-   - *Giải pháp:* **Phân tách 2 không gian tài liệu độc lập:** 1 thư mục/tài liệu cho Báo cáo học thuật (`reports/` hoặc `docs/report/`) và 1 thư mục `docs/` cho dự án Open-Source (chứa Architecture, Guides, API, Diagrams, Screenshots).
-10. **Bẫy Trộn lẫn Ảnh chụp và Sơ đồ (Screenshots vs. Diagrams Mixing)**:
-    - *Sai lầm:* Để file vẽ sơ đồ (`.puml`, `.dot`, `hinh_*.png`) vào thư mục `screenshots/`, hoặc xả code sơ đồ ra màn hình chat.
-    - *Giải pháp:*
-      - `docs/screenshots/`: 100% CHỈ chứa ảnh chụp màn hình UI thật của ứng dụng (`01_*.png` ...).
-      - `docs/diagrams/`: Chứa mã nguồn sơ đồ (`.puml`, `.dot`) và file ảnh xuất vector/raster (`.svg`, `.png`).
-      - CẤM xả khối mã nguồn sơ đồ ra chat, chỉ đưa ảnh render preview và link file.
-
-## Quy tắc patch (bất biến)
-
-- Không rewrite toàn bộ tài liệu nếu chỉ cần sửa một phần.
-- Không thay numbering thủ công nếu Word style/field làm được.
-- Không resize hình phá aspect ratio.
-- Không sửa nội dung bị đánh dấu "evidence" nếu không được yêu cầu.
-
-## Heading & Numbering
-
-```text
-Heading 1 = CHƯƠNG / tiêu đề cấp cao
-Heading 2 = 1. / 2. / 3.
-Heading 3 = 1.1. / 1.2.
-Heading 4 = 1.1.1.
-```
-
-> **QUY TẮC HEADING CHUẨN (bất biến):**
-> 1. **Khóa Heading 1 ở đầu trang (Page Break Before)**: Mọi `Heading 1` (CHƯƠNG / MỞ ĐẦU / KẾT LUẬN…) **BẮT BUỘC** đặt `paragraph_format.page_break_before = True` để luôn bắt đầu ở đầu một trang mới. Dùng thuộc tính `page_break_before` (thuộc tính đoạn) **KHÔNG** chèn ký tự ngắt trang thủ công `doc.add_page_break()` (tránh sinh trang trắng khi Heading 1 đã nằm sẵn đầu trang sau `Section Break`). Heading 2/3/4 **KHÔNG** ép ngắt trang (chỉ `keep_with_next = True` để chống mồ côi).
-> 2. **Heading cũng là Times New Roman**: Toàn bộ Heading 1–4 dùng **Times New Roman**, **màu đen `RGBColor(0,0,0)`**, **KHÔNG in nghiêng**. Phải sửa cả **cấp Style** (`doc.styles["Heading 1"]`) *và* mọi **run** thực tế trong đoạn heading (Style Word mặc định là `Calibri Light` + màu xanh theme — nếu bỏ qua sẽ lộ font lạ). Ép thêm `w:rFonts` (ascii/hAnsi/eastAsia/cs) để Word không fallback font.
-> 3. **Chống mồ côi heading**: Mọi Heading đặt `keep_with_next = True` để tiêu đề không bị bỏ trơ ở đáy trang.
-
-Mẫu Python-docx khóa Heading 1 + ép Times New Roman:
-```python
-from docx.oxml import OxmlElement
-from docx.oxml.ns import qn
-from docx.shared import Pt, RGBColor
-
-def format_heading_styles(doc, font_name="Times New Roman", sizes_pt=(16, 14, 13, 12)):
-    for level in range(1, 5):
-        st = doc.styles[f"Heading {level}"]
-        st.font.name = font_name          # Times New Roman, KHÔNG Calibri Light
-        st.font.bold = True
-        st.font.italic = False
-        st.font.color.rgb = RGBColor(0, 0, 0)   # màu ĐEN, không màu xanh theme
-        st.font.size = Pt(sizes_pt[level - 1])
-        # Ép w:rFonts đủ 4 khe để không fallback font khi render
-        rpr = st.element.get_or_add_rPr()
-        rfonts = rpr.find(qn("w:rFonts")) or OxmlElement("w:rFonts")
-        rpr.insert(0, rfonts)
-        for attr in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"):
-            rfonts.set(qn(attr), font_name)
-        st.paragraph_format.keep_with_next = True
-        if level == 1:
-            st.paragraph_format.page_break_before = True  # KHÓA HEADING 1 LUÔN ĐẦU TRANG MỚI
-
-    # Áp cả cho run thực tế trong tài liệu (style có thể bị direct formatting phủ)
-    for p in doc.paragraphs:
-        name = (p.style.name or "").lower()
-        if "heading" not in name and "tiêu đề" not in name:
-            continue
-        lvl = next((int(c) for c in name if c.isdigit()), 1)
-        p.paragraph_format.keep_with_next = True
-        p.paragraph_format.page_break_before = (lvl == 1)
-        for r in p.runs:
-            r.font.name = font_name
-            r.font.italic = False
-            r.font.color.rgb = RGBColor(0, 0, 0)
-```
-
-- Không giả heading bằng chữ đậm + cỡ lớn.
-- Không tự gõ số `1.1.1.` nếu hệ thống numbering đã quản lý.
-- Không đổi numbering hiện có nếu chưa audit TOC.
-- Sau khi sửa, kiểm tra lại Navigation Pane.
-
-## Bảng biểu (Tables) — Chuẩn học thuật bất biến
-
-> **QUY TẮC BẢNG CHUẨN:**
-> 1. **Nền bảng**: **100% TRẮNG TINH (KHÔNG ĐÁNH MÀU)**. Tuyệt đối không tô xám `#EAEAEA`, không tô xanh, không viền rườm rà. Nền mọi ô (kể cả hàng tiêu đề) luôn là màu trắng / trong suốt.
-> 2. **Tiêu đề cột (Header row 0)**: **IN ĐẬM (`bold=True`)**, **KHÔNG CĂN GIỮA** (căn lề trái `LEFT` hoặc căn theo kiểu dữ liệu), **KHÔNG IN NGHIÊNG**. Cỡ chữ 10.5–12pt. Bắt buộc có thuộc tính `<w:tblHeader/>` để tự động lặp lại khi sang trang.
-> 3. **Tên gọi của bảng / Chú thích (Caption)**: **ĐẶT Ở CUỐI BẢNG (ngay dưới bảng)**. **CHỮ THƯỜNG IN NGHIÊNG, CĂN GIỮA** (`italic=True`, `bold=False`, `alignment=CENTER`). Cỡ chữ 12–13pt. Sử dụng paragraph style riêng tên là `bảng` (hoặc `Table Caption`).
-> 4. **Khóa chống gãy hàng**: Mọi hàng (`trPr`) bắt buộc có `<w:cantSplit/>`.
-> 5. **Khóa cứng độ rộng cột (OOXML Table Grid)**: Tránh lỗi Word tự co dãn gây vỡ chữ, bắt buộc tái tạo `<w:tblGrid>` chứa `<w:gridCol w:w="..."/>` và dọn sạch `<w:tcW>` cũ trước khi gán mới.
+269:    - *Giải pháp:* **Phân tách 2 không gian tài liệu độc lập:** 1 thư mục/tài liệu cho Báo cáo học thuật (`reports/` hoặc `docs/report/`) và 1 thư mục `docs/` cho dự án Open-Source (chứa Architecture, Guides, API, Diagrams, Screenshots).
+270: 10. **Bẫy Trộn lẫn Ảnh chụp và Sơ đồ (Screenshots vs. Diagrams Mixing)**:
+271:     - *Sai lầm:* Để file vẽ sơ đồ (`.puml`, `.dot`, `hinh_*.png`) vào thư mục `screenshots/`, hoặc xả code sơ đồ ra màn hình chat.
+272:     - *Giải pháp:*
+273:       - `docs/screenshots/`: 100% CHỈ chứa ảnh chụp màn hình UI thật của ứng dụng (`01_*.png` ...).
+274:       - `docs/diagrams/`: Chứa mã nguồn sơ đồ (`.puml`, `.dot`) và file ảnh xuất vector/raster (`.svg`, `.png`).
+275:       - CẤM xả khối mã nguồn sơ đồ ra chat, chỉ đưa ảnh render preview và link file.
+276: 11. **Bẫy Rò rỉ Thụt Lề Đầu Dòng từ Style Normal vào Ô Bảng (Table Indent Leakage Trap)**:
+277:     - *Sai lầm:* Nghĩ rằng chỉ cần gán độ rộng cột `cell.width` hay `gridCol` là chữ trong bảng sẽ hiển thị chuẩn.
+278:     - *Thực tế:* Trong tài liệu tiếng Việt, style `Normal` thường có thuộc tính thụt lề dòng đầu 1.25 cm (`<w:ind w:firstLine="720"/>`). Do các đoạn văn `<w:p>` trong ô bảng không có khai báo `w:ind` độc lập, Word/LibreOffice để thuộc tính này rò rỉ vào mọi ô bảng, đẩy ký tự đầu tiên sang phải 1.25 cm. Ở các cột hẹp (Mã STT, Mã UC < 1500 twips), thụt lề này nuốt trọn hơn một nửa ô, bóp nghẹt diện tích khiến các mã định danh bị bẻ gãy rớt dòng dị dạng (`F-1` / `2`, `M` / `ã UC`).
+279:     - *Giải pháp:* Duyệt toàn bộ `<w:pPr>` trong mọi ô bảng, ép cứng `<w:ind w:firstLine="0" w:left="0" w:right="0"/>` và xóa sạch `w:firstLineChars`.
+280: 12. **Bẫy Bẻ Gãy Từ Ghép Tiếng Anh & Tên CSDL trong Bảng (CamelCase Word Fracture)**:
+281:     - *Sai lầm:* Giữ nguyên các định danh CSDL hoặc class camelCase dài (`ConnectionRequest`, `TutorVerificationDocument`) trong cột nội dung hẹp.
+282:     - *Thực tế:* Từ dài không có dấu cách nên khi ô bị co lại, Word tự động bẻ ngang từ mà không có gạch nối (`Connect` xuống dòng `ionRequest`), gây mất thẩm mỹ trầm trọng.
+283:     - *Giải pháp:* Việt hóa sang thuật ngữ nghiệp vụ thân thiện (`Yêu cầu PENDING`, `Tài liệu xác minh`) hoặc thiết kế độ rộng cột tối thiểu 1800–2200 twips.
+284: 
+285: ## Quy tắc patch (bất biến)
+286: 
+287: - Không rewrite toàn bộ tài liệu nếu chỉ cần sửa một phần.
+288: - Không thay numbering thủ công nếu Word style/field làm được.
+289: - Không resize hình phá aspect ratio.
+290: - Không sửa nội dung bị đánh dấu "evidence" nếu không được yêu cầu.
+291: 
+292: ## Heading & Numbering
+293: 
+294: ```text
+295: Heading 1 = CHƯƠNG / tiêu đề cấp cao
+296: Heading 2 = 1. / 2. / 3.
+297: Heading 3 = 1.1. / 1.2.
+298: Heading 4 = 1.1.1.
+299: ```
+300: 
+301: > **QUY TẮC HEADING CHUẨN (bất biến):**
+302: > 1. **Khóa Heading 1 ở đầu trang (Page Break Before)**: Mọi `Heading 1` (CHƯƠNG / MỞ ĐẦU / KẾT LUẬN…) **BẮT BUỘC** đặt `paragraph_format.page_break_before = True` để luôn bắt đầu ở đầu một trang mới. Dùng thuộc tính `page_break_before` (thuộc tính đoạn) **KHÔNG** chèn ký tự ngắt trang thủ công `doc.add_page_break()` (tránh sinh trang trắng khi Heading 1 đã nằm sẵn đầu trang sau `Section Break`). Heading 2/3/4 **KHÔNG** ép ngắt trang (chỉ `keep_with_next = True` để chống mồ côi).
+303: > 2. **Heading cũng là Times New Roman**: Toàn bộ Heading 1–4 dùng **Times New Roman**, **màu đen `RGBColor(0,0,0)`**, **KHÔNG in nghiêng**. Phải sửa cả **cấp Style** (`doc.styles["Heading 1"]`) *và* mọi **run** thực tế trong đoạn heading (Style Word mặc định là `Calibri Light` + màu xanh theme — nếu bỏ qua sẽ lộ font lạ). Ép thêm `w:rFonts` (ascii/hAnsi/eastAsia/cs) để Word không fallback font.
+304: > 3. **Chống mồ côi heading**: Mọi Heading đặt `keep_with_next = True` để tiêu đề không bị bỏ trơ ở đáy trang.
+305: 
+306: Mẫu Python-docx khóa Heading 1 + ép Times New Roman:
+307: ```python
+308: from docx.oxml import OxmlElement
+309: from docx.oxml.ns import qn
+310: from docx.shared import Pt, RGBColor
+311: 
+312: def format_heading_styles(doc, font_name="Times New Roman", sizes_pt=(16, 14, 13, 12)):
+313:     for level in range(1, 5):
+314:         st = doc.styles[f"Heading {level}"]
+315:         st.font.name = font_name          # Times New Roman, KHÔNG Calibri Light
+316:         st.font.bold = True
+317:         st.font.italic = False
+318:         st.font.color.rgb = RGBColor(0, 0, 0)   # màu ĐEN, không màu xanh theme
+319:         st.font.size = Pt(sizes_pt[level - 1])
+320:         # Ép w:rFonts đủ 4 khe để không fallback font khi render
+321:         rpr = st.element.get_or_add_rPr()
+322:         rfonts = rpr.find(qn("w:rFonts")) or OxmlElement("w:rFonts")
+323:         rpr.insert(0, rfonts)
+324:         for attr in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"):
+325:             rfonts.set(qn(attr), font_name)
+326:         st.paragraph_format.keep_with_next = True
+327:         if level == 1:
+328:             st.paragraph_format.page_break_before = True  # KHÓA HEADING 1 LUÔN ĐẦU TRANG MỚI
+329: 
+330:     # Áp cả cho run thực tế trong tài liệu (style có thể bị direct formatting phủ)
+331:     for p in doc.paragraphs:
+332:         name = (p.style.name or "").lower()
+333:         if "heading" not in name and "tiêu đề" not in name:
+334:             continue
+335:         lvl = next((int(c) for c in name if c.isdigit()), 1)
+336:         p.paragraph_format.keep_with_next = True
+337:         p.paragraph_format.page_break_before = (lvl == 1)
+338:         for r in p.runs:
+339:             r.font.name = font_name
+340:             r.font.italic = False
+341:             r.font.color.rgb = RGBColor(0, 0, 0)
+342: ```
+343: 
+344: - Không giả heading bằng chữ đậm + cỡ lớn.
+345: - Không tự gõ số `1.1.1.` nếu hệ thống numbering đã quản lý.
+346: - Không đổi numbering hiện có nếu chưa audit TOC.
+347: - Sau khi sửa, kiểm tra lại Navigation Pane.
+348: 
+349: ## Bảng biểu (Tables) — Chuẩn học thuật bất biến
+350: 
+351: > **QUY TẮC BẢNG CHUẨN:**
+352: > 1. **Nền bảng**: **100% TRẮNG TINH (KHÔNG ĐÁNH MÀU)**. Tuyệt đối không tô xám `#EAEAEA`, không tô xanh, không viền rườm rà. Nền mọi ô (kể cả hàng tiêu đề) luôn là màu trắng / trong suốt.
+353: > 2. **Tiêu đề cột (Header row 0)**: **IN ĐẬM (`bold=True`)**, **KHÔNG CĂN GIỮA** (căn lề trái `LEFT` hoặc căn theo kiểu dữ liệu), **KHÔNG IN NGHIÊNG**. Cỡ chữ 10.5–12pt. Bắt buộc có thuộc tính `<w:tblHeader/>` để tự động lặp lại khi sang trang.
+354: > 3. **Tên gọi của bảng / Chú thích (Caption)**: **ĐẶT Ở CUỐI BẢNG (ngay dưới bảng)**. **CHỮ THƯỜNG IN NGHIÊNG, CĂN GIỮA** (`italic=True`, `bold=False`, `alignment=CENTER`). Cỡ chữ 12–13pt. Sử dụng paragraph style riêng tên là `bảng` (hoặc `Table Caption`).
+355: > 4. **Khóa chống gãy hàng**: Mọi hàng (`trPr`) bắt buộc có `<w:cantSplit/>`.
+356: > 5. **Khóa cứng độ rộng cột & bảng (OOXML Table Grid & Fixed Layout)**: Bắt buộc tái tạo `<w:tblGrid>` chứa `<w:gridCol w:w="..."/>`, dọn sạch `<w:tcW>` cũ trước khi gán mới, và khóa cứng `<w:tblLayout w:type="fixed"/>`, `<w:tblW w:type="dxa" w:w="..."/>`.
+357: > 6. **Triệt tiêu 100% rò rỉ thụt lề (Zero Indent Leakage)**: Mọi đoạn văn `<w:p>` trong ô bảng phải có thẻ `<w:ind w:firstLine="0" w:left="0" w:right="0"/>` để chặn thuộc tính `w:firstLine="720"` (1.25 cm) của style `Normal` rò rỉ vào ô bảng gây thụt đầu dòng và bẻ gãy từ.
+358: > 7. **Khóa chống ngắt dòng mã định danh (`w:noWrap`)**: Cột STT, Mã UC, Mã chức năng (`F-01`, `F-12`) bắt buộc có `<w:noWrap/>` trong `<w:tcPr>`, căn giữa (`CENTER`) để ngăn Word ngắt dòng tại dấu gạch nối (`-`).
+359: > 8. **Căn lề chuẩn & CẤM căn đều (`both`) trong ô bảng**: Cột mã/STT căn giữa, cột nội dung căn trái (`LEFT`). **TUYỆT ĐỐI CẤM căn đều hai bên (`both`/justified)** trong ô bảng vì Word sẽ kéo dãn khoảng cách giữa các từ một cách dị dạng khi gặp từ dài.
 
 > **Lưu ý quy ước caption:** Vị trí caption **dưới bảng** là quy ước của skill này (khớp mẫu tham khảo TNUT). Nhiều trường yêu cầu **tên bảng ghi TRÊN bảng** — hãy kiểm tra quy định của trường trước; nếu vậy thì **bỏ qua** bước chuyển caption, chỉ giữ định dạng chữ nghiêng/căn giữa. `edit_docx.py --style-captions` **tự chuyển** caption đang nằm trên bảng/hình xuống dưới; nếu trường yêu cầu caption trên bảng thì **không** dùng cờ này cho caption bảng.
 
@@ -357,10 +369,35 @@ from docx.oxml import OxmlElement, parse_xml
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
-def format_academic_table(table, col_widths, font_size_pt=11):
+def format_academic_table(table, col_widths, font_size_pt=10.5):
+    """
+    Chuẩn hóa bảng học thuật chuyên nghiệp (Zero-Indent, Fixed Width, No-Wrap Code Columns):
+    - Triệt tiêu 100% hiện tượng thụt lề đầu dòng kế thừa từ style Normal (firstLine="720").
+    - Cố định độ rộng từng cột và tổng chiều rộng bảng (tblLayout=fixed, tblW dxa).
+    - Căn giữa cột Mã/STT, căn trái các cột nội dung (CẤM căn đều 'both'/justified gây giãn từ).
+    - Khóa không ngắt dòng trên cột Mã (w:noWrap).
+    - Nền trắng tinh khiết, viền đen sắc nét.
+    """
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
     table.allow_autofit = False
+
+    total_width_dxa = sum(int(w.inches * 1440) for w in col_widths)
+    tblPr = table._tbl.tblPr
+    
+    # 0. Khóa cứng tblW và tblLayout fixed
+    tblW = tblPr.find(qn('w:tblW'))
+    if tblW is None:
+        tblW = OxmlElement('w:tblW')
+        tblPr.append(tblW)
+    tblW.set(qn('w:w'), str(total_width_dxa))
+    tblW.set(qn('w:type'), 'dxa')
+
+    tblLayout = tblPr.find(qn('w:tblLayout'))
+    if tblLayout is None:
+        tblLayout = OxmlElement('w:tblLayout')
+        tblPr.append(tblLayout)
+    tblLayout.set(qn('w:type'), 'fixed')
 
     # 1. Khóa cứng độ rộng bằng tblGrid
     tblGrid = table._tbl.find(qn('w:tblGrid'))
@@ -371,7 +408,6 @@ def format_academic_table(table, col_widths, font_size_pt=11):
         col = OxmlElement('w:gridCol')
         col.set(qn('w:w'), str(int(w.inches * 1440)))
         tblGrid.append(col)
-    tblPr = table._tbl.tblPr
     table._tbl.insert(table._tbl.index(tblPr) + 1, tblGrid)
 
     # 2. Lặp lại header hàng 0 khi sang trang
@@ -384,10 +420,10 @@ def format_academic_table(table, col_widths, font_size_pt=11):
         trPr = row._tr.get_or_add_trPr()
         trPr.append(parse_xml(r'<w:cantSplit xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"/>'))
         for col_idx, cell in enumerate(row.cells):
+            tcPr = cell._tc.get_or_add_tcPr()
             if col_idx < len(col_widths):
                 w = col_widths[col_idx]
                 w_dxa = int(w.inches * 1440)
-                tcPr = cell._tc.get_or_add_tcPr()
                 for old_w in tcPr.findall(qn('w:tcW')):
                     tcPr.remove(old_w)
                 tcPr.append(parse_xml(f'<w:tcW xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" w:w="{w_dxa}" w:type="dxa"/>'))
@@ -395,19 +431,42 @@ def format_academic_table(table, col_widths, font_size_pt=11):
                 for old_shd in tcPr.findall(qn('w:shd')):
                     tcPr.remove(old_shd)
 
+            # Khóa không ngắt dòng trên cột đầu tiên nếu là mã ngắn (Mã UC, F-01, STT)
+            if col_idx == 0:
+                if tcPr.find(qn('w:noWrap')) is None:
+                    tcPr.append(OxmlElement('w:noWrap'))
+
             for p in cell.paragraphs:
                 p.paragraph_format.space_before = Pt(2)
                 p.paragraph_format.space_after = Pt(2)
                 p.paragraph_format.line_spacing = 1.15
+                
+                # BẮT BUỘC TRIỆT TIÊU THỤT ĐẦU DÒNG TRONG Ô BẢNG (Zero Indentation)
+                # Chống rò rỉ thụt lề 1.25cm (firstLine="720") từ style Normal
+                pPr = p._p.get_or_add_pPr()
+                ind = pPr.find(qn('w:ind'))
+                if ind is None:
+                    ind = OxmlElement('w:ind')
+                    pPr.append(ind)
+                ind.set(qn('w:firstLine'), '0')
+                ind.set(qn('w:left'), '0')
+                ind.set(qn('w:right'), '0')
+                if qn('w:firstLineChars') in ind.attrib:
+                    del ind.attrib[qn('w:firstLineChars')]
+
+                # Căn chỉnh văn bản: Cột 0 căn giữa, các cột nội dung căn trái (CẤM căn đều 'both')
                 if row_idx == 0:
-                    # Tiêu đề cột: IN ĐẬM, KHÔNG CĂN GIỮA (căn trái), KHÔNG NGHIÊNG
-                    p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
                     for r in p.runs:
                         r.font.bold = True
                         r.font.italic = False
                         r.font.size = Pt(font_size_pt)
                         r.font.color.rgb = RGBColor(0, 0, 0)
                 else:
+                    if col_idx == 0:
+                        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                    else:
+                        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
                     for r in p.runs:
                         r.font.size = Pt(font_size_pt)
                         r.font.color.rgb = RGBColor(0, 0, 0)
@@ -489,6 +548,15 @@ python scripts/replace_docx_images.py report.docx --mapping map.json
 ```
 *Tác dụng:* Bảo toàn 100% định dạng trang, kiểu bảng biểu, heading, mục lục và tự động hiệu chỉnh `wp:extent` để không bị méo ảnh mới.
 
+> **CẢNH BÁO (bài học thực chiến 2026-10-27):** `replace_docx_images.py` ghi lại
+> `document.xml` bằng lxml nên **đổi hết prefix namespace sang `ns0:`, `ns1:`…** và
+> bỏ `standalone="yes"`. Word mở file và báo **"The file appears to be corrupted."**
+> (python-docx vẫn đọc được nên rất dễ lọt). Khi cần thay ảnh an toàn, ưu tiên
+> **byte-level swap**: copy nguyên xi mọi entry của gói ZIP, chỉ thay bytes của
+> `word/media/<tên>.png` (xem `../safe-docx-modifier/scripts/replace_images.py` — ZIP swap in-place); ảnh mới **phải cùng
+> tỉ lệ khung** với ảnh cũ để không phải sửa `wp:extent`. Sau khi thay, **bắt buộc mở
+> thử bằng Word COM** (`Documents.Open(..., ReadOnly=True)`) trước khi báo xong.
+
 ## Caption & Cross-reference
 
 ```text
@@ -540,10 +608,18 @@ Checklist chuẩn hóa Luận văn / Đồ án học thuật:
 [ ] Công thức toán: Căn giữa, số thứ tự (Chương.Số) căn sát lề phải.
 [ ] Đánh số trang: Phần đầu số La Mã (i, ii, iii...); Thân bài từ Chương 1 số Ả Rập (1, 2, 3...).
 [ ] Không lẫn Calibri/Arial ngoài ý muốn.
+[ ] KHÔNG CHỮ MÀU: chạy `python scripts/check_docx_monochrome.py <file.docx>` → phải SACH.
+[ ] Đặc biệt style `Hyperlink` = 000000 (mặc định Word là 0000FF → MỤC LỤC in ra xanh).
+[ ] (Nếu xuất PDF) chạy `project-handbook/scripts/check_pdf_monochrome.py <file.pdf>` → phải SACH.
 ```
 
 Nguyên tắc: giữ emphasis cần thiết, không xóa style đặc thù của code/hình, không đổi nội dung.
 Sau normalize **bắt buộc render lại**.
+
+> **Bẫy màu chữ hay bị bỏ qua nhất — style `Hyperlink`:** Word định nghĩa sẵn char style `Hyperlink`
+> màu `0000FF`; MỤC LỤC / DANH MỤC BẢNG là trường TOC (hyperlink) nên **in ra xanh dù thân bài đen**.
+> Sửa tối thiểu: đổi `<w:color>` của style `Hyperlink` thành `000000`, **bỏ** `w:themeColor`, **giữ** `<w:u>`.
+> Chi tiết + các bẫy màu khác: [`reference/rules.md`](reference/rules.md) mục **2b**.
 
 
 ## Accessibility & Privacy
@@ -567,6 +643,19 @@ Kiểm tra: không mất nội dung, số trang thay đổi có lý do, hình/ca
 > **CẤM TUYỆT ĐỐI**:
 > - CẤM kết luận DOCX hoàn thiện hoặc báo cáo hoàn thành chỉ dựa trên code Python hay text log extraction!
 > - CẤM audit suông không có bằng chứng ảnh chụp thật từ trang tài liệu!
+
+> [!CAUTION]
+> **PASS TÀI LIỆU = HAI ĐIỀU KIỆN — THIẾU MỘT = KHÔNG ĐƯỢC BÁO HOÀN THIỆN.**
+>
+> | # | Điều kiện | Bằng chứng bắt buộc |
+> | :-- | :--- | :--- |
+> | **ĐK1 — MÁY** | Render thật ra **PDF + PNG từng trang**; field TOC/TOF/TOT/PAGE tự cập nhật; `inspect_docx`/audit script **0 lỗi**; ảnh nhúng là **ảnh thật** (file `.png` tồn tại, không placeholder), rộng 14–15.5 cm, khớp caption `Hình X.Y` |
+> | **ĐK2 — MẮT/VISION** | Agent **có VISION (multimodal) soi từng trang PNG** bằng công cụ xem ảnh, xác nhận Checklist §1–7 (header bảng, caption, không rớt trang, font/lề, hình+caption khớp, heading đúng đầu trang; với hình: bố cục cân đối, chú thích liền hình). Ghi **`Vision audit by: <model-id>` + ≥3 chi tiết nguyên văn + kết luận "sắp xếp đã hợp lý chưa"**. Model text-only đọc text extraction **không tính** |
+>
+> - Chỉ chạy script (ĐK1) → **FAIL — visual QA missing** (script 0 lỗi không thay được mắt soi).
+> - Chỉ nhìn ảnh (ĐK2) nhưng chưa render / chưa cập nhật field / thiếu ảnh thật → **FAIL — automated gate not met**.
+> - **Audit bằng model text-only (không vision) → FAIL** (không có chứng kiến thực tế; phải giao vision subagent/model nếu model hiện tại không đọc được ảnh).
+> - **Sơ đồ nhúng trong DOCX còn phải qua `diagram-auditor`**: ĐK1 (script + file nguồn `.py`/`.puml`/`.dot` tồn tại + ảnh `.png`/`.svg` tồn tại) + ĐK2 (soi ảnh + kết luận "sắp xếp hợp lý"). Thiếu file nguồn sinh sơ đồ = **FAIL**.
 
 ### Pipeline Render Bắt buộc:
 ```bash
