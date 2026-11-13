@@ -19,9 +19,9 @@ Trạng thái: **FIXED** = đã đồng bộ; **BY-DESIGN** = khác ngữ cảnh
 
 | ID | Chủ đề | Các bên | Mức | Trạng thái | Cách chốt |
 |---|---|---|---|---|---|
-| PROSE-1 | Dấu em dash `—` | `human-report-writing` ↔ `docx-report`, `ppt-master` | HIGH | FIXED | `docx-report` mang luật cấm + defer; `ppt-master` nêu rõ luật raw-Unicode chỉ là *hình thức ký tự SVG* |
+| PROSE-1 | Dấu em dash `—` | `human-report-writing` ↔ `docx-report-tnut`, `ppt-master` | HIGH | FIXED | `docx-report-tnut` mang luật cấm + defer; `ppt-master` nêu rõ luật raw-Unicode chỉ là *hình thức ký tự SVG* |
 | PROSE-2 | Bold / bullet / ngôi kể / heading | `writing-guidelines` (Vercel) ↔ `human-report-writing` | HIGH | FIXED | Scope: `writing-guidelines` = docs sản phẩm (EN); báo cáo học thuật dùng `human-report-writing` |
-| PROSE-3 | Vị trí caption bảng (trên/dưới) | `docx-report` ↔ `human-report-writing/checklist.md` | HIGH | FIXED | Tuỳ quy định trường; mặc định `docx-report` = dưới bảng; hình luôn caption dưới |
+| PROSE-3 | Vị trí caption bảng (trên/dưới) | `docx-report-tnut` ↔ `human-report-writing/checklist.md` | HIGH | FIXED | Tuỳ quy định trường; mặc định `docx-report-tnut` = dưới bảng; hình luôn caption dưới |
 | DIAG-1 | Ý nghĩa "chỉ dùng màu khi có quy ước" | `diagram-orchestrator/design-principles.md` ↔ zero-color hard-block | MED | FIXED | Bỏ ngoại lệ màu → zero-color tuyệt đối; phân biệt bằng nét đứt/`doublecircle`/stereotype |
 | DIAG-2 | Ví dụ JSON có `color`/`title`; nhúng tiêu đề vào ảnh | `tldraw-diagrams` ↔ `plantuml`/`simplified`/`auditor` | HIGH | FIXED | Bỏ color+title khỏi ví dụ; thêm luật Zero-Title-in-Canvas; caption `Hình X.Y:` |
 | DIAG-3 | Ngưỡng tỷ lệ khung doc vs script | `diagram-auditor` SKILL ↔ `audit-diagrams.mjs` | HIGH | FIXED | Khuyến nghị 0.5–2.4; **hard-fail** `>3.8` / `<0.28` — ghi rõ là cùng một luật |
@@ -51,7 +51,7 @@ Trạng thái: **FIXED** = đã đồng bộ; **BY-DESIGN** = khác ngữ cảnh
 | DOCS-2 | Placeholder `TBD`/`[To be written]` vs `{{PLACEHOLDER}}` | `doc-architect`/`doc-coauthoring` ↔ `living-docs check` | MED | FIXED | TBD tạm trong phiên, không ship; `check` chỉ chặn `{{PLACEHOLDER}}` (ghi ở AGENTS #11) |
 | DOCS-3 | Template README (3 bản khác nhau) | `documentation`/`documentation-and-adrs`/`doc-architect` | MED | FIXED | `doc-architect` sở hữu template README; skill khác trỏ về |
 | DOCS-4 | Hệ số xác minh nguồn (≥3 vs ≥2) + chuẩn trích dẫn (IEEE/APA vs NBR 6023) | `research-report` ↔ `research-artifacts` | MED | FIXED | Scope: research-report = báo cáo học thuật (≥3, IEEE/APA); research-artifacts = OKF bundle (≥2, NBR 6023) |
-| DOCS-5 | Lề trên/dưới + Heading 3 in nghiêng (nội bộ `docx-report`) | `docx-report/reference/rules.md` ↔ `tnut-thesis-template-guide.md`; `human-report-writing/checklist.md` | MED | MỞ | Chốt theo mẫu trường (TNUT 2.5cm / H3 không nghiêng) — cân nhắc khi có mẫu trường cụ thể |
+| DOCS-5 | Lề trên/dưới + Heading 3 in nghiêng (nội bộ `docx-report-tnut`) | `docx-report-tnut/reference/rules.md` ↔ `tnut-thesis-template-guide.md`; `human-report-writing/checklist.md` | MED | MỞ | Chốt theo mẫu trường (TNUT 2.5cm / H3 không nghiêng) — cân nhắc khi có mẫu trường cụ thể |
 | SHEET-1 | Recalc Excel bắt buộc vs file Power Query/custom XML | `xlsx` ↔ `xlsx-sheet` | MED | FIXED | `xlsx`: thêm ngoại lệ chính thức — không recalc file Power Query/custom XML, hỏi người dùng |
 
 ## C. Bảo trì
@@ -62,5 +62,6 @@ Trạng thái: **FIXED** = đã đồng bộ; **BY-DESIGN** = khác ngữ cảnh
 
 ## D. Debt đang theo dõi (phát hiện bởi audit tự động)
 
-- `docx-report/SKILL.md` 625 dòng (>500 theo chuẩn AGENTS.md): cần tách phần mẫu Python / bảng cờ
+- `docx-report-tnut/SKILL.md` 625 dòng (>500 theo chuẩn AGENTS.md): cần tách phần mẫu Python / bảng cờ
   sang `reference/`. Chưa tách vì rủi ro vỡ tham chiếu; `tools/audit-skills.ps1` đang giám sát (WARN).
+

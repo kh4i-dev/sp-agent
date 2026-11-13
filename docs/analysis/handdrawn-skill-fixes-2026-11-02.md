@@ -10,4 +10,5 @@ Kiểm chứng: test_pipeline.py 9/9; selftest E1..E6, đường cong và 12 reg
 
 Giới hạn: bbox chữ ước lượng, fan parser theo mẫu r=10, chưa chứng minh spec/SVG đồng nhất, PNG chỉ kiểm header; nghiệp vụ/thẩm mỹ vẫn cần nguồn và ảnh thật. Đợt này sửa skill và bộ kiểm, chưa vẽ lại hoặc duyệt lại ảnh btl-cnpm.
 
-Cấu trúc: 45 frontmatter hợp lệ; các skill sơ đồ không quá 500 dòng; hash hai mirror của các skill đã sửa trùng nhau. Cảnh báo ngoài phạm vi: docx-report/SKILL.md hiện 714 dòng.
+Cấu trúc: 45 frontmatter hợp lệ; các skill sơ đồ không quá 500 dòng; hash hai mirror của các skill đã sửa trùng nhau. Cảnh báo ngoài phạm vi: docx-report-tnut/SKILL.md hiện 714 dòng.
+

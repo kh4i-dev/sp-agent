@@ -129,7 +129,7 @@ foreach ($n in $skillNames) {
     if (@("plantuml-diagrams","tldraw-diagrams","simplified-diagrams","use-case-layout","diagram-orchestrator","diagram-auditor") -contains $n) {
         if ($content -notmatch "(?i)zero-color|zero color|tr\u1eafng") { Add-Finding $n "WARN" "thieu quy uoc zero-color / trang-den" }
     }
-    if (@("docx-report","human-report-writing") -contains $n) {
+    if (@("docx-report-tnut","human-report-writing") -contains $n) {
         if ($content -notmatch "(?i)em dash|em-dash") { Add-Finding $n "WARN" "thieu luat cam em dash" }
     }
 
@@ -281,3 +281,4 @@ if ($globalFindings.Count -gt 0) {
 Write-Output ""
 Write-Output ("================ KET QUA: {0} FAIL, {1} WARN ================" -f $allFail, $allWarn)
 if ($allFail -gt 0) { exit 1 } else { exit 0 }
+
